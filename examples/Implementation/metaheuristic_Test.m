@@ -263,13 +263,13 @@ for call_count = 1:nb_solver_calls
             falsif_pb.max_time = time_lim;
             
             if (call_count>1 && init_from_xbest==1)
-                rand_id_xbest = max(1, round(rand*call_count));
+                rand_id_xbest = max(1, floor(rand*call_count))
             
                 if rand_id_xbest> call_count 
                  error('Error in rand_id_xbest');
                 end
-            
-                falsif_pb.x0 = (xbest_vec(rand_id_xbest))';
+                xbest_vec(:,rand_id_xbest)
+                falsif_pb.x0 = (xbest_vec(:,rand_id_xbest))';
             end
             
             
@@ -313,12 +313,13 @@ for call_count = 1:nb_solver_calls
     % update best robustness value
      if solver_index == 2 % pseudorandom sampling
          [new_obj_best, new_best_id] = min(Out.lower_bounds.vals)
-         new_xbest = Out.lower_bounds.pts(new_best_id);
+         new_xbest = (Out.lower_bounds.pts(new_best_id,:))';
      else
          new_obj_best = falsif_pb.obj_best
          new_xbest = falsif_pb.x_best;
      end
     
+
      
      xbest_vec = [xbest_vec, new_xbest]
    
@@ -348,6 +349,7 @@ for call_count = 1:nb_solver_calls
     if (l>cov_monitoring_length)
         cov_diff = current_coverage_value - ...
             coverage_graph_data(l-cov_monitoring_length,2);
+
         cov_not_stagnant = cov_diff > cov_epsilon;
         
         
