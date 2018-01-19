@@ -50,8 +50,11 @@ switch setup
 end
 
 disp('The system specification is in an object file named CBS')
+CBS=Sys.copy();
+
 disp('You selected the following STL formula for falsification')
 disp(phi)
+
 disp('Press any key to continue')
 pause
 
@@ -234,7 +237,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('Specify time limit on computation in seconds: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
             delete('var*','outcm*')
-            if strcmp(user_reset,1)
+            if user_reset==1
                 falsif_pb = FalsificationProblem(CBS, phi); 
             end
             falsif_pb.setup_solver('cmaes');
@@ -276,6 +279,14 @@ for call_count = 1:nb_solver_calls
     end   % end of switch  
     
     total_num_simulations = total_num_simulations+size(new_pts,2); % update total nb simulations
+    
+    % update best robustness value
+    if solver_index ~= 2 % pseudorandom sampling
+        min_robustness = min(Out.lower_bounds);
+    else
+        min_robustness = falsif_pb.obj_best;
+    end
+    
     current_coverage_value = Sys.ComputeCellOccupancyCoverage; % recompute current coverage
     coverage_graph_data = ...
     [coverage_graph_data; [total_num_simulations current_coverage_value]]; % update coverage graph data
