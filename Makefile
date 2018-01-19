@@ -1,6 +1,6 @@
 
-clean_files1 = Implementation/*_breach*
-clean_files2 = {outcmaes* *~}
+clean_files1 = Implementation/*_breach* Implementation/{out*,cl*.mat}
+clean_files2 = outcmaes* *~
 
 
 
