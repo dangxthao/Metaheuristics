@@ -29,6 +29,7 @@ switch user_reset
         clear global
         global start
         start = true;
+        user_reset = 1;
 
         addpath('../../src')
         addpath('../../../breach')
@@ -131,7 +132,9 @@ for call_count = 1:nb_solver_calls
             % init_sim = max_sim (init_sim=nb sim required for classification
             Out = StatFalsify(Out,CBS,phi,w_rob,max_sim,max_sim,time_lim);
             new_pts = transpose(Out.new_samples.pts); % column vectors of newly simulated points.
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            % Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            Sys.AddPoints(new_pts); 
+
             
             time = toc;
             fprintf('Computation time = %f seconds \n',time);
@@ -230,7 +233,8 @@ for call_count = 1:nb_solver_calls
             falsif_pb.solve()
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points
 
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            % Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            Sys.AddPoints(new_pts); 
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
@@ -276,7 +280,8 @@ for call_count = 1:nb_solver_calls
             timervar_2 = tic;
             falsif_pb.solve()
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            % Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            Sys.AddPoints(new_pts); 
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
@@ -295,7 +300,8 @@ for call_count = 1:nb_solver_calls
             timervar_2 = tic;
             falsif_pb.solve()
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            % Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            Sys.AddPoints(new_pts); 
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
