@@ -93,9 +93,9 @@ cov_monitoring_length = 1;
 %%%%%% Falsification Loop %%%%%%%%%
 for call_count = 1:nb_solver_calls
     
-    coverage_graph_data = [];
+    graph_data = [];
     total_num_simulations = 0; % total number of simulations
-    current_coverage_value = 0; % current coverage value
+    
     
     
     
@@ -288,14 +288,14 @@ for call_count = 1:nb_solver_calls
     end
     
     current_coverage_value = Sys.ComputeCellOccupancyCoverage; % recompute current coverage
-    coverage_graph_data = ...
-    [coverage_graph_data; [total_num_simulations current_coverage_value]]; % update coverage graph data
+    graph_data = ...
+    [graph_data; [total_num_simulations current_coverage_value min_robustness]]; % update graph data
     
     % the coverage graph is monotonic, we check the evolution of coverage
     % for non-increase by cov_epsilon
-    l = size(coverage_graph_data,1);
+    l = size(graph_data,1);
     if (l>cov_monitoring_length)
-        cov_diff = current_coverage_value - coverage_graph_data(l-cov_monitoring_length,2);
+        cov_diff = current_coverage_value - graph_data(l-cov_monitoring_length,2);
         cov_not_stagnant = cov_diff > cov_epsilon;
     
         if (~cov_not_stagnant) 
