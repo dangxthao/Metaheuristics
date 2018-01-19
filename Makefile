@@ -1,5 +1,6 @@
 
-
+clean_files1 = Implementation/*_breach*
+clean_files2 = {outcmaes* *~}
 
 
 
@@ -17,4 +18,4 @@ upload:
 	make add; make commit;  git push
 
 clean:
-	rm outcmaes* *~
+	rm $(clean_files1) $(clean_files2)
