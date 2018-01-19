@@ -13,12 +13,14 @@
 %   5) Other parameters specific to the falsification method.
 
 %% Preliminary settings
-disp('Do you want to start a new falsification process?')
-disp('Enter <0> if you want to continue the previously started falsification process')
-disp('Enter <1> otherwise')
-% Answer whether the user wants to reset settings
+% disp('Do you want to start a new falsification process?')
+% disp('Enter <0> if you want to continue the previously started falsification process')
+% disp('Enter <1> otherwise')
+% % Answer whether the user wants to reset settings
+% 
+% user_reset = input('');
 
-user_reset = input('');
+user_reset = 1;
 switch user_reset
     case 1
         bdclose all
@@ -75,7 +77,7 @@ fprintf('\n Coverage increase threshold is %d \n',cov_epsilon)
 
 %% Setting falsification method and parameters
 msg1 = sprintf('\nChoose a falsification method\n');
-msg2 = sprintf('Press 1 : Classification guided sampling\n');
+msg2 = sprintf('Press 1:  Classification guided sampling\n');
 msg3 = sprintf('Press 2:  Pseudo random sampling\n');
 msg4 = sprintf('Press 3:  Global_nelder_mead\n');
 msg5 = sprintf('Press 4:  CMA-ES\n');
@@ -87,22 +89,22 @@ solver_index = input([msg1,msg2,msg3,msg4,msg5,msg6]);
 global Out
 
 cov_monitoring_length = 1;
+stagnant_count=0;
+min_robustness=inf;
 
+robustness_graph_data = [];
+coverage_graph_data = [];
+xbest_vec = [];
 
+total_num_simulations = 0; % total number of simulations
+current_coverage_value = 0; % current coverage value
 
 %%%%%% Falsification Loop %%%%%%%%%
 for call_count = 1:nb_solver_calls
     
-    coverage_graph_data = [];
-    total_num_simulations = 0; % total number of simulations
-    current_coverage_value = 0; % current coverage value
-    
-    
-    
-    
     switch solver_index % run the chosen solver
 
-        case 2 %classification-based 
+        case 2 % pseudo-random sampling
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_limit = inf; %computation time limit
 
@@ -129,7 +131,8 @@ for call_count = 1:nb_solver_calls
             % init_sim = max_sim (init_sim=nb sim required for classification
             Out = StatFalsify(Out,CBS,phi,w_rob,max_sim,max_sim,time_lim);
             new_pts = transpose(Out.new_samples.pts); % column vectors of newly simulated points.
-
+            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            
             time = toc;
             fprintf('Computation time = %f seconds \n',time);
 
@@ -241,13 +244,35 @@ for call_count = 1:nb_solver_calls
                 falsif_pb = FalsificationProblem(CBS, phi); 
             end
             falsif_pb.setup_solver('cmaes');
-            falsif_pb.solver_options.SaveVariables = 'off';
+            %falsif_pb.solver_options.SaveVariables = 'off';
+            falsif_pb.solver_options.SaveVariables = 'on';
+            
+            
+            
             %fprintf('\n Choose one of the following seeds for cmaes:\n')
             %r = input('Choose a non-negative integer for cmaes: ');
-            r = rand;
+            r = round(rand*10000000000);
             falsif_pb.solver_options.Seed = r;
+            
+            
+            disp('Initialize from currently best points')
+            disp('Press 1: Yes; Press 0: No')
+            init_from_xbest = input('');
+            
+            falsif_pb.solver_options.Restarts = 3;
             falsif_pb.max_time = time_lim;
-
+            
+            if (call_count>1 && init_from_xbest==1)
+                rand_id_xbest = max(1, round(rand*call_count));
+            
+                if rand_id_xbest> call_count 
+                 error('Error in rand_id_xbest');
+                end
+            
+                falsif_pb.x0 = (xbest_vec(rand_id_xbest))';
+            end
+            
+            
             timervar_2 = tic;
             falsif_pb.solve()
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
@@ -280,32 +305,105 @@ for call_count = 1:nb_solver_calls
     
     total_num_simulations = total_num_simulations+size(new_pts,2); % update total nb simulations
     
-    % update best robustness value
-    if solver_index ~= 2 % pseudorandom sampling
-        min_robustness = min(Out.lower_bounds);
-    else
-        min_robustness = falsif_pb.obj_best;
-    end
+    %disp('Current min robustness ')
+    %min_robustness
     
-    current_coverage_value = Sys.ComputeCellOccupancyCoverage; % recompute current coverage
-    coverage_graph_data = ...
-    [coverage_graph_data; [total_num_simulations current_coverage_value]]; % update coverage graph data
+    
+    
+    % update best robustness value
+     if solver_index == 2 % pseudorandom sampling
+         [new_obj_best, new_best_id] = min(Out.lower_bounds.vals)
+         new_xbest = Out.lower_bounds.pts(new_best_id);
+     else
+         new_obj_best = falsif_pb.obj_best
+         new_xbest = falsif_pb.x_best;
+     end
+    
+     
+     xbest_vec = [xbest_vec, new_xbest]
+   
+     robustness_diff =  min_robustness - new_obj_best
+     if min_robustness > new_obj_best
+         min_robustness=new_obj_best
+     end
+     
+    robustness_graph_data =...
+        [robustness_graph_data; [total_num_simulations min_robustness]] 
+  
     
     % the coverage graph is monotonic, we check the evolution of coverage
     % for non-increase by cov_epsilon
+    % recompute current coverage
+    current_coverage_value = Sys.ComputeLogCellOccupancyCoverage; 
+    % update coverage graph data
+    coverage_graph_data = ...
+    [coverage_graph_data; [total_num_simulations current_coverage_value]] 
+  
     l = size(coverage_graph_data,1);
-    if (l>cov_monitoring_length)
-        cov_diff = current_coverage_value - coverage_graph_data(l-cov_monitoring_length,2);
-        cov_not_stagnant = cov_diff > cov_epsilon;
     
-        if (~cov_not_stagnant) 
-         solver_index = 2; % switch to pseudo-random sampling
-         disp('Pseudo-sampling is used to improve coverage')
-         disp('Press any key to continue')
-         pause
-        end       
+    %pause
+    
+    solver_index
+    
+    if (l>cov_monitoring_length)
+        cov_diff = current_coverage_value - ...
+            coverage_graph_data(l-cov_monitoring_length,2);
+        cov_not_stagnant = cov_diff > cov_epsilon;
+        
+        
+      
+        cov_not_stagnant
+        
+        if (~cov_not_stagnant)
+            stagnant_count = stagnant_count + 1; 
+        end
+    
+        if (stagnant_count>cov_monitoring_length)            
+%             solver_index = 2; % switch to pseudo-random sampling
+            stagnant_count=0;
+            disp('Coverage stagnant \n')
+            %msg1 = sprintf('\nCoverage stagnant - Choose a falsification method\n');
+%             msg2 = sprintf('Press 1:  Classification guided sampling\n');
+%             msg3 = sprintf('Press 2:  Pseudo random sampling\n');
+%             msg4 = sprintf('Press 3:  Global_nelder_mead\n');
+%             msg5 = sprintf('Press 4:  CMA-ES\n');
+%             msg6 = sprintf('Press 5:  simulannealbnd\n');
+% 
+%             solver_index = input([msg1,msg2,msg3,msg4,msg5,msg6]);
+%             disp('Pseudo-sampling is used to improve coverage')
+%             disp('Press any key to continue')
+%             pause         
+        else
+            stagnant_count=stagnant_count+1;
+            %% Pick another falsification method and parameters
+%             msg1 = sprintf('\nChoose a falsification method\n');
+%             msg2 = sprintf('Press 1:  Classification guided sampling\n');
+%             msg3 = sprintf('Press 2:  Pseudo random sampling\n');
+%             msg4 = sprintf('Press 3:  Global_nelder_mead\n');
+%             msg5 = sprintf('Press 4:  CMA-ES\n');
+%             msg6 = sprintf('Press 5:  simulannealbnd\n');
+% 
+%             solver_index = input([msg1,msg2,msg3,msg4,msg5,msg6]);
+        
+        end
+        
+       
     end
     
-    
-    
+disp('Curent solver call done! Press any key to continue')
+
+%% Pick another falsification method and parameters
+msg1 = sprintf('\nChoose a falsification method\n');
+msg2 = sprintf('Press 1:  Classification guided sampling\n');
+msg3 = sprintf('Press 2:  Pseudo random sampling\n');
+msg4 = sprintf('Press 3:  Global_nelder_mead\n');
+msg5 = sprintf('Press 4:  CMA-ES\n');
+msg6 = sprintf('Press 5:  simulannealbnd\n');
+
+solver_index = input([msg1,msg2,msg3,msg4,msg5,msg6]);   
+
+%% limit on computation time for each solver call
+time_lim = input('Specify Computation Time Limit for each Solver Call in seconds: '); 
+fprintf('\n Computation Time Limit for Next Solver Call is %d seconds\n',time_lim)
+
 end % end of for-loop call_count
