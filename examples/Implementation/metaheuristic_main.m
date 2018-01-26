@@ -320,6 +320,8 @@ for call_count = 1:nb_solver_calls
             
             if ~isempty(trace)
                 trace.PlotSignals
+                disp('Exit from CMAES')
+                exit(0)
             end
             
         case 3 %Simulated Annealing 

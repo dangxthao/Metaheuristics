@@ -28,7 +28,7 @@ max_sim = inf; %maximal number of simulations
 %% Thao uncommented this to allow automatic calls 
 % fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')
 % r = input('0, 5000, 10000 or 15000\n');
-r = abs(round(rand*100)+1)
+r = abs(round(rand*100)+1);
 rng(r,'twister');  
 tic
 

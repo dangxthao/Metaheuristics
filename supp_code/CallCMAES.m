@@ -43,7 +43,7 @@ if (call_count>1 && init_from_xlog==1)
      error('Error in rand_id_xlog');
     end
     
-    xlog_vec(:,rand_id_xlog)
+    xlog_vec(:,rand_id_xlog);
     falsif_pb.x0 = (xlog_vec(:,rand_id_xlog))';
 end
 
