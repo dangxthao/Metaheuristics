@@ -1,7 +1,7 @@
 
 bdclose all
 close all
-clear
+% clear
 InitBreach
 
 

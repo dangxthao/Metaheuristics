@@ -44,6 +44,8 @@ classdef CoverageBreachSet < BreachSimulinkSystem
     %                   the point that was added (the added point may
     %                   differ from the point provided as input in the case
     %                   were the "snap_to_grid" flag is set).
+    %       Addpoints -  Adds multiple points via the Addpoint method.
+    %
     %
     %       SetEpsGridsize -  Sets the "eps" grid size for the parameter
     %                         set, which is the width of the (rectangular) 
@@ -218,6 +220,20 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             for ip = varying_parameter_indices
                 lower_left_corner = [lower_left_corner; this.Domains(ip).domain(1)];
             end
+        end
+        
+        function [varargout] = AddPoints(this,new_points)
+            
+            % Add a collection of new points to the space.
+            
+            % Assume that for an "row x col" matrix that represents the new points,
+            % each col represents a unique point.
+            num_points = size(new_points,2);
+            for ind = 1:num_points
+                thisPoint = new_points(:,ind);
+                this.AddPoint(thisPoint);
+            end
+            
         end
         
         function [varargout] = AddPoint(this,new_point)
