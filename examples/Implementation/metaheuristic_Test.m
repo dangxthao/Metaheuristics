@@ -30,6 +30,7 @@ switch user_reset
         global start
         start = true;
 
+        addpath('../../supp_code')
         addpath('../../src')
         addpath('../../../breach')
     otherwise 
@@ -64,16 +65,18 @@ pause
 
 
 %% limit on nb of solver calls
-nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
-fprintf('\n Computation Time Limit is %d seconds\n',nb_solver_calls)
+%nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
+%fprintf('\n Computation Time Limit is %d seconds\n',nb_solver_calls)
+nb_solver_calls = 20
+%% limit on computation time for each solver call
+%time_lim = input('Specify Computation Time Limit for each Solver Call in seconds: '); 
+%fprintf('\n Computation Time Limit for each Solver Call is %d seconds\n',time_lim)
+time_lim = 50
 
 %% limit on computation time for each solver call
-time_lim = input('Specify Computation Time Limit for each Solver Call in seconds: '); 
-fprintf('\n Computation Time Limit for each Solver Call is %d seconds\n',time_lim)
-
-%% limit on computation time for each solver call
-cov_epsilon = input('Specify coverage increase threshold : '); 
-fprintf('\n Coverage increase threshold is %d \n',cov_epsilon)
+%cov_epsilon = input('Specify coverage increase threshold : '); 
+%fprintf('\n Coverage increase threshold is %d \n',cov_epsilon)
+cov_epsilon = 1e-2
 
 %% Setting falsification method and parameters
 msg1 = sprintf('\nChoose a falsification method\n');
@@ -94,7 +97,13 @@ min_robustness=inf;
 
 robustness_graph_data = [];
 coverage_graph_data = [];
+
+% xlog_vec: matrix (whose each column vector is a point) to store all the 
+%           points explored by all solvers so far
+% xbest_vec: Matrix (whose each column vector is a point) to store the 
+%          best  solution at each solver call
 xbest_vec = [];
+xlog_vec = []; 
 
 total_num_simulations = 0; % total number of simulations
 current_coverage_value = 0; % current coverage value
@@ -105,36 +114,57 @@ for call_count = 1:nb_solver_calls
     switch solver_index % run the chosen solver
 
         case 2 % pseudo-random sampling
-            %time_lim = input('\n Specify time limit of computation in seconds\n');
-            %time_limit = inf; %computation time limit
-
-            snap_grid = 'y';
-            switch snap_grid
-                case 'y'
-                CBS.SetSnapToGrid(true);
-                case 'n'
-                CBS.SetSnapToGrid(false);
-                otherwise
-                    error('no epsilon resolution specified')
-            end
-
-            max_sim = inf; %maximal number of simulations
-
-            fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')
-            r = input('0, 5000, 10000 or 15000\n');
-            rng(r,'twister');  
-            tic
-
-            w_rob=0.5; % weight for robustness
-
-            % since this is pseudo-random sampling only, without classification
-            % init_sim = max_sim (init_sim=nb sim required for classification
-            Out = StatFalsify(Out,CBS,phi,w_rob,max_sim,max_sim,time_lim);
-            new_pts = transpose(Out.new_samples.pts); % column vectors of newly simulated points.
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+%             %time_lim = input('\n Specify time limit of computation in seconds\n');
+%             %time_limit = inf; %computation time limit
+% 
+%             snap_grid = 'y';
+%             switch snap_grid
+%                 case 'y'
+%                 CBS.SetSnapToGrid(true);
+%                 case 'n'
+%                 CBS.SetSnapToGrid(false);
+%                 otherwise
+%                     error('no epsilon resolution specified')
+%             end
+% 
+%             max_sim = inf; %maximal number of simulations
+% 
+%             fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')
+%             r = input('0, 5000, 10000 or 15000\n');
+%             rng(r,'twister');  
+%             tic
+% 
+%             w_rob=0.5; % weight for robustness
+% 
+%             % since this is pseudo-random sampling only, without classification
+%             % init_sim = max_sim (init_sim=nb sim required for classification
+%             Out = StatFalsify(Out,CBS,phi,w_rob,max_sim,max_sim,time_lim);
+%             
+%             new_pts = transpose(Out.new_samples.pts); % column vectors of newly simulated points.
+%             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+%             xlog_vec = [xlog_vec, new_pts];
+%             
+%             time = toc;
+%             fprintf('Computation time = %f seconds \n',time);
             
-            time = toc;
-            fprintf('Computation time = %f seconds \n',time);
+             if strcmp(user_reset,1)
+                falsif_pb = FalsificationProblem(CBS, phi); 
+             end
+            
+             CallPseudo(CBS, phi, time_lim); %this call updates Out
+             
+             % adding new points to Sys
+             new_pts = transpose(Out.new_samples.pts); % column vectors of newly simulated points.
+             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+             
+             % adding new points to xlog
+             xlog_vec = [xlog_vec, new_pts];
+             
+             % adding the best point to xbest
+             [new_xbest, new_best_id] = min(Out.lower_bounds.vals);
+             %new_xbest = (Out.lower_bounds.pts(new_best_id,:))';
+             xbest_vec = [xbest_vec, new_xbest];
+             
 
         case 1 
             time_lim = inf;
@@ -228,9 +258,11 @@ for call_count = 1:nb_solver_calls
 
             timervar_2 = tic;
             falsif_pb.solve()
+            
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-
             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts); 
+            xlog_vec = [xlog_vec, new_pts];
+            
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
@@ -255,28 +287,31 @@ for call_count = 1:nb_solver_calls
             falsif_pb.solver_options.Seed = r;
             
             
-            disp('Initialize from currently best points')
+            disp('Initialize from current points')
             disp('Press 1: Yes; Press 0: No')
-            init_from_xbest = input('');
+            init_from_xlog = input('');
             
             falsif_pb.solver_options.Restarts = 3;
             falsif_pb.max_time = time_lim;
             
-            if (call_count>1 && init_from_xbest==1)
-                rand_id_xbest = max(1, floor(rand*call_count))
+            if (call_count>1 && init_from_xlog==1)
+                rand_id_xlog = max(1, floor(rand*call_count))
             
-                if rand_id_xbest> call_count 
-                 error('Error in rand_id_xbest');
+                if rand_id_xlog> call_count 
+                 error('Error in rand_id_xlog');
                 end
-                xbest_vec(:,rand_id_xbest)
-                falsif_pb.x0 = (xbest_vec(:,rand_id_xbest))';
+                xlog_vec(:,rand_id_xlog)
+                falsif_pb.x0 = (xlog_vec(:,rand_id_xlog))';
             end
             
             
             timervar_2 = tic;
             falsif_pb.solve()
+            
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            xlog_vec = [xlog_vec, new_pts];
+            
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
@@ -287,15 +322,20 @@ for call_count = 1:nb_solver_calls
             %%
             %time_lim = input('Specify time limit on computation: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            if strcmp(user_reset,1)
+            %if strcmp(user_reset,1)
+            if user_reset==1
                 falsif_pb = FalsificationProblem(CBS, phi); 
             end
             falsif_pb.setup_solver('simulannealbnd');
             falsif_pb.max_time = time_lim;
+            
             timervar_2 = tic;
             falsif_pb.solve()
+            
             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+            xlog_vec = [xlog_vec, new_pts];
+            
             trace = falsif_pb.GetBrSet_False();
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
@@ -317,11 +357,11 @@ for call_count = 1:nb_solver_calls
      else
          new_obj_best = falsif_pb.obj_best
          new_xbest = falsif_pb.x_best;
+         xbest_vec = [xbest_vec, new_xbest]
      end
     
-
      
-     xbest_vec = [xbest_vec, new_xbest]
+     
    
      robustness_diff =  min_robustness - new_obj_best
      if min_robustness > new_obj_best
