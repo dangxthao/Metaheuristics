@@ -132,11 +132,11 @@ classdef StatFalsify
                CBS.SetParam(param_names, newsample.point);
                CBS.Sim();
                newsample.val = CBS.CheckSpec(phi);
-               disp(newsample.val)
+               %disp(newsample.val)
 
      % Updates status of falsified
           if newsample.val<0 
-                   disp('\nFalsified in StatFalsify\n');
+                   disp('Falsified in StatFalsify');
                    new_fig = gcf;
                    CBS.PlotSignals;
                    falsified = true;
@@ -549,8 +549,8 @@ end
             
         run = (time<max_time) && num_sim<max_simulations && ~this.falsified ;        
         while run && start == 1
-        disp('num_sim =')   
-        disp(num_sim)
+%         disp('num_sim =')   
+%         disp(num_sim)
        % Perform classification.
        % Find new subrectangles, clusters and compute the vector of lowest robustness
        % values for the collection of clusters.      
@@ -635,7 +635,7 @@ end
            end
            
            run = (time<max_time) && num_sim<max_simulations && ~this.falsified;
-           this.falsified
+           %this.falsified
            
               if (singular(i)) && run
           % Perform singularity based sampling
@@ -665,8 +665,7 @@ end
               this.clusters{i} = samples;
               if this.falsified
                   this.falsifier_region = this.regions{i};
-                  disp('here 1')
-                  error('Falsified')
+                  disp('Falsified (and exit from StatFalsify')
                   return;
                   %break;
               end

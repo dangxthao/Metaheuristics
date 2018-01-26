@@ -124,6 +124,9 @@ xlog_vec = [];
 total_nb_sim = 0; % total number of simulations
 current_coverage_value = 0; % current coverage value
 
+
+
+TotCompTime = tic;
 %%%%%% Falsification Loop %%%%%%%%%
 for call_count = 1:nb_solver_calls
     
@@ -261,6 +264,13 @@ for call_count = 1:nb_solver_calls
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
             
+            if ~isempty(trace)
+                trace.PlotSignals
+                disp('Exit from Global Nelder Mead')
+                comptime = toc(TotCompTime);
+                fprintf('Exit! TOTAL Computation time = %f seconds \n',comptime );
+                exit(0)
+            end
             
         %%%%%%%%%
         %%%%%%%%%
@@ -269,7 +279,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('Specify time limit on computation in seconds: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
             
-            time_lim = 100
+            time_lim = 150
             
             delete('var*','outcm*')
             
@@ -321,6 +331,8 @@ for call_count = 1:nb_solver_calls
             if ~isempty(trace)
                 trace.PlotSignals
                 disp('Exit from CMAES')
+                comptime = toc(TotCompTime);
+                fprintf('Exit! TOTAL Computation time = %f seconds \n',comptime );
                 exit(0)
             end
             
@@ -329,7 +341,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('Specify time limit on computation: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
             
-            time_lim = 100
+            time_lim = 150
             %if strcmp(user_reset,1)
             %if user_reset==1
             
@@ -362,6 +374,14 @@ for call_count = 1:nb_solver_calls
             time = toc(timervar_2);
             fprintf('Computation time = %f seconds \n',time);
             
+            if ~isempty(trace)
+                trace.PlotSignals
+                disp('Exit from Simulated Annealing')
+                comptime = toc(TotCompTime);
+                fprintf('Exit! TOTAL Computation time = %f seconds \n',comptime );
+                exit(0)
+            end
+            
         otherwise
                 error('no input')
     end   % end of switch  
@@ -384,7 +404,11 @@ for call_count = 1:nb_solver_calls
      end
     
      if (min_robustness<=0)
-        error('Falsifier Found!');
+        disp('Falsifier Found!');
+        
+        comptime = toc(TotCompTime);
+        fprintf('Exit! TOTAL Computation time = %f seconds \n',comptime );
+        exit(0)
      end
      
      if (call_count==1)  
@@ -464,3 +488,4 @@ for call_count = 1:nb_solver_calls
 
 
 end % end of for-loop call_count
+
