@@ -1,0 +1,6 @@
+
+ *** Running Simulated Annealing
+ Simulated Annealing time = 311.935674 seconds
+ Best Robustness Value of this call = 47.435515
+ Best Robustness Value so far = 47.435515Curent solver call done!
+ *** Running Global Nelder Mead

@@ -51,6 +51,7 @@ fprintf('\n Grid discretization unit for both signal ranges is 4 units\n')
 R1 = [35,100];
 R2 = [0,40];
 Sys = BrSys.copy;
+signal
 Sys.SetParamRanges(signal,[ones(N1,1)*R1;ones(N2,1)*R2]);
 Sys.SetEpsGridsize([4*ones(N1,1);4*ones(N2,1)]);
 Sys.SetDeltaGridsize(2*Sys.epsgridsize);

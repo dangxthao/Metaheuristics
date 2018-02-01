@@ -26,7 +26,7 @@ function x0 = initSolver(xlog_vec, xbest_vec, strategy_id, winlen)
                     winlen1 = nb_pt_xbest;
                 end 
                 
-                rand_id_xbest = nb_pt_xbest - floor(rand*winlen1);  
+                rand_id_xbest = nb_pt_xbest - floor(rand*winlen1); 
 
                 if (rand_id_xbest<0 || rand_id_xbest>nb_pt_xbest)
                  error('Error in rand_id_xbest');
@@ -36,9 +36,10 @@ function x0 = initSolver(xlog_vec, xbest_vec, strategy_id, winlen)
 
         otherwise
             error('error in strategy_id')
-    disp('Initial point :');
-    x0
+    
     
     end %end of switch
+    disp('Initial point :');
+    x0
 
     

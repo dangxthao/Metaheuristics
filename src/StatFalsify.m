@@ -553,7 +553,10 @@ end
 %         disp(num_sim)
        % Perform classification.
        % Find new subrectangles, clusters and compute the vector of lowest robustness
-       % values for the collection of clusters.      
+       % values for the collection of clusters. 
+       
+       numel(this.regions) %Thao
+       
         for i = 1:numel(this.regions);
               bounds = this.regions{i};
               samples = this.clusters{i};
@@ -637,7 +640,7 @@ end
            run = (time<max_time) && num_sim<max_simulations && ~this.falsified;
            %this.falsified
            
-              if (singular(i)) && run
+          if (singular(i)) && run
           % Perform singularity based sampling
                disp('singlular')
                nb = init_samples-numel(samples.vals);
