@@ -13,8 +13,8 @@ fprintf('\n Creating breach interface with simulink model %s\n',model_name)
 simTime = 30 ; 
 fprintf('\n Simulation time horizon is %d seconds\n',simTime)
 
-fprintf('\n Press any key to continue')
-pause
+% fprintf('\n Press any key to continue')
+% pause
 
 BrSys = CoverageBreachSet(model_name,{});
 BrSys.SetTime([0 simTime]);
