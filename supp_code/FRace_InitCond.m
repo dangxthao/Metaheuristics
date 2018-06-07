@@ -1,4 +1,4 @@
-function x0 = initSolver(CBS,nbsamples,solver_index,Xlog,Xbest,strategy_id,winlen)
+function x0 = FRace_InitCond(CBS,nbsamples,solver_index,Xlog,Xbest,strategy_id,winlen)
  % initSolver(xlog_vec, xbest_vec)
  % function: pick an initial point for solvers 
  %
@@ -58,7 +58,7 @@ xbest_vec= [];
                     xlog_vec = [xlog_vec, Xlog.xlogCMAES, Xlog.xlogSA];
                 end
                 
-                nb_pt_xlog=size(xlog_vec,2)
+                nb_pt_xlog = size(xlog_vec,2)
                 if (nbsamples>nb_pt_xlog)
                     nbsamples = nb_pt_xlog;
                 end
