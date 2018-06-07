@@ -35,6 +35,7 @@ switch user_reset
         addpath('../../supp_code')
         addpath('../../src')
         addpath('../../../breach')
+        addpath('../MRS')
         
         InitBreach
         
@@ -55,7 +56,7 @@ if (user_reset==1)
     disp('Choose an example or manual input to run the algorithm')
     disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
     %setup = input('');
-    setup = 4;
+    setup = 3;
     switch setup
         case 1
             PTC_setup
@@ -115,7 +116,7 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
-solver_index = 2; %cmaes 1, SA 2, GNM 3
+solver_index = 1; %cmaes 1, SA 2, GNM 3
 round_count=1;
 
 global Out
@@ -504,9 +505,12 @@ for call_count = 1:nb_solver_calls
             timervar_sa = tic;
             falsif_pb.solve();
             
-            new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
+            new_pts = falsif_pb.X_log; % column vectors of newly simulated points
             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
             Xlog.xlogSA = [Xlog.xlogSA, new_pts];
+            
+            new_obj_val = falsif_pb.obj_log;
+            Vlog.objlogSA = [Vlog.objlogSA, new_obj_val];
             
             new_obj_best = falsif_pb.obj_best;
             
@@ -750,7 +754,6 @@ for call_count = 1:nb_solver_calls
         prev_solver_index = solver_index;
     end  
     
-    stagnant_count
     stagnant_count
     rob_stagnant
     cov_monitoring_length
