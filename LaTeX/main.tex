@@ -1,0 +1,71 @@
+\documentclass[10pt,oneside,letterpaper]{article}
+\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{verbatim}
+\usepackage{outlines} % For outlines
+\usepackage{enumitem} 
+
+\usepackage{outlines,color,url}
+\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+
+\usepackage{amsmath,amsthm, amssymb}
+
+% For outlines
+\setenumerate[1]{label=\Roman*.}
+\setenumerate[2]{label=\Alph*.}
+\setenumerate[3]{label=\roman*.}
+\setenumerate[4]{label=\alph*.}
+
+\newcommand{\jim}[1]{{{\color{blue} \textbf{Jim: #1}}}}
+
+\newcommand{\commentout}[1]{}
+
+\title{Metaheuristics to falsify properties of cyber-physical systems}
+\author{Thao Dang, James Kapinski, Hisahiro Ito}
+\date{}
+
+\begin{document}
+
+\maketitle
+
+\begin{abstract}
+Cyber-physical systems (CPSs) are used in many mission-critical applications, and the scale and complexity of these systems is growing rapidly.
+New approaches are needed to increase the confidence in the correctness of complex CPS designs.
+Falsification techniques offer a practical solution. 
+A falsification method takes a system model, along with a specification that defines the correct behavior of the system, and performs a best-effort search over inputs and system parameters for behaviors that violate the specification; essentially performing automated bug finding.
+Falsification methods rely on a global optimizer to guide the search; one challenge with falsification is that it can be difficult to select the most effective optimizer and optimization parameters.
+To address this, we introduce a new metaheuristic that automatically focuses computing resources on the most effective optimizer for a given falsification task.
+Given a collection optimizers, our approach makes heuristic decisions to switch optimizers based on
+evolving measures of both cost and the coverage of the decision space.
+The technique is able to automatically falsify properties for complex CPS design models more efficiently than existing techniques.
+We demonstrate the efficacy of the approach using several examples, including an automotive hydrogen fuel cell control system.
+
+\end{abstract}
+
+\begin{outline}[enumerate]
+\1 Introduction
+	\2 The challenge of falsification
+	\2 Falsification generally and via STL for CPS
+	\2 Coverage
+	\2 Metaheuristics in optimization
+	\2 Overview of our approach
+\1 Preliminaries: \emph{For much of the notation, we can reuse the notation from the CAV paper with Arvind, as it provides a way to introduce STL, robustness, and falsification but then quickly move to a general global optimization setting.}
+	\2 General notation
+		\3 $\Pi$ is a set of global optimization solvers
+		\3 For a given solver $\pi\in \Pi$, $\Theta$ is a set of solver \emph{configurations}
+		\3 $J$ is a cost evaluation
+		\3 $x(t)$ is a trace of the system
+	\2 Falsification
+	\2 STL
+		\3 $\varphi$ is an STL property 
+		\3 $\rho$ maps a trace and an STL formula to a real number
+	\2 Coverage
+		\3 $H$ takes a collection of points and maps it to a real number representing the \emph{coverage} of the space points.
+\1 Method
+	\2 Monitoring robustness and coverage across iterations
+	\2 Changing solver based on heuristic rules, informed by robustness and coverage
+	\2 F-Race for tuning parameters
+\1 Experiments
+\1 Conclusions
+\end{outline}
+
+\end{document}
