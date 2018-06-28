@@ -1,0 +1,196 @@
+\section{Heuristic Rules for Sequential Solver Execution}
+
+
+
+\begin{algorithm}
+\caption{Abstract Algorithm for Sequential Solver Execution \label{algoSolverCombination}}
+\begin{algorithmic}
+%\Require  
+%\Ensure  
+\State $r = 1$
+\State $blocking = false$
+\State $\paramset = ( \emptyset, \ldots, \emptyset)$ \Comment{{\em  vector of intermediate point sets for each solver}}
+  	
+\While{$r \le r_{max}$} \Comment{{\em  $r_{max}$ is the maximal number of rounds}}
+   \If{($blocking$)}
+	 \State $\solver = PseudoRand$
+	 \State $\{ \bestobj, \paramset_{\solver} \} = Run(\solver, \param_{\solver}, \exectime_{\solver})$ \Comment{{\em Run the solver $\solver$ for $\exectime_{\solver}$ time from the initial point $\param_s$}}
+    
+    
+    \Else
+
+       \State $\overline{\solverset}= \solverset$ \Comment{{\em  $\overline{\solverset}$ denotes the set of exploitation-driven solvers to run}}
+       \State $\paramset_o = \paramset$  \Comment{{\em Store the previous intermediate points in $\paramset_o$}}
+	\While{$\solverset_e \neq \emptyset$} 
+ 		\State $\solver = Select(\overline{\solverset})$
+ 		\State $\overline{\solverset} = \overline{\solverset} \setminus \solver$
+		\State
+		\State $\param_{\solver} = Init(\paramset)$
+  		\State $\{ \bestobj, \paramset_{\solver} \} = Run(\solver, \param_{\solver}, \exectime_{\solver})$ \Comment{{\em Run the solver $\solver$ for $\exectime_{\solver}$ time from the initial point $\param_s$}}
+      		 \State $\solver = Select(\overline{\solverset})$
+ 	 \EndWhile
+         \EndIf
+         
+	 \State
+\State $blocking =  DetectBlocking(\paramset, \paramset_o)$
+\State $r++$
+\EndWhile
+\end{algorithmic}
+\end{algorithm}
+
+Borrowing the terminology from \cite{}, we divide the solvers used in this work into two rough categories: {\em exploitation} driven and {\em exploration} driven. The solvers of the first category try to make greedy changes (often small) around the current point, while those of the second make random changes which could be both large and small and thus allow quickly enlarge the exploration space. The pseudo-random search method used in this work belongs to the second category. For the first category, we make use of a number of well-known solvers, namely Simulated Annealing \cite{}, Global Nelder-Mead \cite{}, CMA-ES \cite{}.
+
+Our abstract algorithm for sequential solver execution is organized in rounds. In each round, all the solvers of the exploitation-driven category are sequentially executed.  A solver $\solver$ starts from an initial point $\param$ (in the parameter space defining the parameterized input signals) for some execution time $\exectime_{\solver}$. The best objective value obtained from this run is denoted by 
+$$\{ \bestobj, \paramset \} = Run(\solver, \param_{\solver}, \exectime_{\solver}).$$ 
+Note that a solver is often configurable, that is its internal parameters can be modified. Tuning a solver configuration is important to achieve its good performance. Indeed, a number of approaches to learning these internal parameters have been proposed in the literature \cite{}. For simplicity of presentation, we omit the internal parameters of the solvers in this current discussion. However, as we will show later, a similar idea will be used to select promising initial points for the exploration. After each round, it is also possible to save a set $ \paramset$ of some or all the points in the parameter space that the solver has explored in this run. Let us call these {\em intermediate points} (the term 'intermediate' here does not refer to their temporal order). These points can be exploited to derive good initializations for the solvers to be executed. 
+
+When a solver gets stuck around some local optimum, it is important to be able to detect such blocking situations, and switch to another solver, since different solvers use different search methods and may take the current exploration out of the local optima. On the other hand, one need not start uniquely from the best points that have been found so far, the previously explored points $\paramset$ in can indicate promising regions to the next solver. For example, if the next solver is CMA-ES (the principle of which is to update the mean and the covariance matrix of normally distributed samples in each of its internal iteration), we can define an initial mean and a covariance matrix using only the previously explored points with good objective values. We defer a discussion on this initialization procedure for each solver in Section \ref{sec:init}. Let us now proceed with the situation where no exploitation driven solver can make the exploration escape a local optimum. The detection of such situations can be done using coverage and robustness monitoring. 
+
+\subsubsection*{Coverage and Robustness Monitoring for Detection of blocking exploration states}
+By {\em exploration state}, we mean the pair $(\bestobj, \paramset)$ where $\paramset$ is the set of intermediate points and $\bestobj$ is the best objective value discovered so far. An exploration state is said {\em blocking}, if the exploration continued with any exploitation driven solver in $\solverset$ does not improve the objective value within some execution time limit. Such a blocking exploration state is detected based on some criteria on the coverage and robustness evolution. When both the robustness and coverage values remain stagnant for a number of rounds, we consider that the exploration gets in a blocking state and the pseudo-random search method should be used to get the exploration out of it.
+
+
+%\begin{verbatim}
+%     fprintf(1,'\n Best Robustness Value of this call = %f', new_obj_best);    
+%     fprintf(fileID,'\n Best Robustness Value of this call = %f', new_obj_best);
+%     
+%     if (new_obj_best<=0)
+%        fprintf(fileID,'\n Falsifier Found!');
+%        
+%        comptime = toc(TotCompTime);
+%        fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+%        error('Falisifier found! Exit normally');
+%     end
+%     
+%     
+%     if (call_count==1)  
+%         min_robustness=new_obj_best;
+%         rob_stagnant = false;
+%         rob_improved = true;
+%         rob_stagnant_count=0; 
+%     else    
+%         rob_improved = false;
+%         if min_robustness > new_obj_best
+%            rob_stagnant = false; 
+%            rob_change=(min_robustness - new_obj_best)/min_robustness;
+%            if (rob_change > rob_epsilon_percent)
+%                rob_improved = true;
+%            end   
+%            min_robustness=new_obj_best;
+%         else 
+%             if (~(solver_index==0) && ~(solver_index==4))
+%                 rob_stagnant_count=rob_stagnant_count+1; 
+%             end
+%         end
+%         
+%         if rob_stagnant_count>rob_stagnant_win
+%             rob_stagnant = true;
+%         end
+%         
+%     end 
+%     
+%     fprintf(1,'\n Best Robustness Value so far = %f', min_robustness);   
+%     fprintf(fileID,'\n Best Robustness Value so far = %f', min_robustness);
+%     
+%     
+%    robustness_graph_data=...
+%        [robustness_graph_data; [total_nb_sim min_robustness]]; 
+%  
+%    
+%    % the coverage graph is monotonic, we check the evolution of coverage
+%    % for non-increase by cov_epsilon
+%    % recompute current coverage
+%    current_coverage_value = Sys.ComputeLogCellOccupancyCoverage; 
+%    % update coverage graph data
+%    coverage_graph_data= ...
+%       [coverage_graph_data; [total_nb_sim current_coverage_value]]; 
+%    
+%    solver_index_data=[solver_index_data; solver_index]; 
+%   
+%   
+%    fprintf(1,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
+%    fprintf(fileID,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
+%    fprintf(1,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
+%    fprintf(fileID,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
+%    for iii  = 1:call_count
+%      fprintf(1,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
+%          robustness_graph_data(iii,2),coverage_graph_data(iii,2));
+%      fprintf(fileID,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
+%          robustness_graph_data(iii,2),coverage_graph_data(iii,2));     
+%    end 
+%    
+%    
+%    l = size(coverage_graph_data,1);
+%    
+%    if (l>cov_monitoring_length)
+%        cov_diff = current_coverage_value - ...
+%            coverage_graph_data(l-cov_monitoring_length,2);
+%        
+%        if (cov_diff<cov_epsilon)
+%           stagnant_count = stagnant_count + 1; 
+%           %coverage does not increases sufficiently
+%        else
+%           %coverage increases sufficiently
+%           stagnant_count=0;
+%        end 
+%    
+%        if (stagnant_count>cov_monitoring_length) 
+%            cov_stagnant=true;
+%            fprintf(fileID,'\n Coverage stagnant');
+%        else
+%            stagnant_count=stagnant_count+1;
+%        end
+%    end
+%    
+%    % memorizing the previous optimizer
+%    if (~(solver_index==0)) 
+%        prev_solver_index = solver_index;
+%    end  
+%    
+%    stagnant_count
+%    rob_stagnant
+%    cov_monitoring_length
+%    local_optimum_stuck=(stagnant_count>=cov_monitoring_length) && rob_stagnant
+%    
+%    
+%    if (~local_optimum_stuck)
+%        cov_monitoring_length=cov_monitoring_win;
+%        PR_duration=0;
+%        solver_index = prev_solver_index + 1;
+%        
+%%             if (solver_index==3) 
+%%                 solver_index=1; %skip GNM
+%%             end    
+%        if (solver_index>(Nb_Optimizers-1)) 
+%            fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
+%            fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
+%            solver_index = 1;
+%            round_count = round_count + 1;
+%            
+%            rob_stagnant
+%            
+%            if rob_stagnant
+%                %strategy_id = 2 %Thao
+%                %solver_index=0
+%                strategy_id = 0
+%            else
+%                if rob_improved
+%                    strategy_id = 2
+%                else 
+%                    strategy_id = 1
+%                end    
+%            end    
+%        end
+%        
+%    else %if local optima stuck
+%        solver_index=0; %use pseudorandom sampling to increase coverage
+%        PR_duration=PR_duration+1;
+%
+%        cov_monitoring_length=PR_duration;
+%    end 
+%    
+%    fprintf(1,'\n Solver call %d done', call_count);
+%    fprintf(fileID,'\n Solver call %d done', call_count);
+%
+%end % end of for-loop call_count
+%\end{verbatim}
