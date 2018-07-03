@@ -1,0 +1,82 @@
+\section{Preliminaries}
+
+We consider dynamical system models, represented by the following mapping
+
+\begin{eqnarray}
+\outsig = \transfunc (\paramsorig, \inputs),
+\end{eqnarray}
+where $\paramsorig \in \paramsorigset$ is a set of parameters that affect the system behaviors, and $\inputs \in \inputset$ is a function of time that represents the inputs to the system.
+Parameters $\paramsorig$ could contain a set of system initial conditions as well as some finite set of variables that affect how the system maps inputs to outputs.
+Each $\inputs$ is a function $\timeinterval \mapsto \inputspace$, where $\timeinterval$ is an interval (either continuous or discrete) from $0$ to some finite value, and $\inputspace$ is some metric space of finite dimension.
+Similarly, we assume that each output signal $\outsig \in \outsigset$ is a function $\timeinterval \mapsto \outspace$, where $\outspace$ is some metric space of finite dimension.
+
+Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but we restrict our investigation to the class of  input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
+can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions.
+
+We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$ and define $\paramset = \paramsorigset \times \inputparamset$.
+We define a function 
+\begin{eqnarray} \label{eq:behaviorfunc}
+y &=& \behaviorfunc(\param),
+\end{eqnarray}
+where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\inputparams))$.
+Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
+
+\paragraph{Signal Temporal Logic} 
+
+We assume that the correct or expected behaviors for system (\ref{eq:behaviorfunc}) is provided in an unambiguous form that can be efficiently measured and quantified. For this purpose, we use the signal temporal logic (STL) language to define the system specifications.
+STL is a modal logic that is well-defined over discrete or real-valued signals and discrete or continuous time \cite{MalerN04}.
+STL is appropriate for specifying correct behavior for CPSs, as it can be defined over the real-valued, continuous-time signals that characterize CPS behaviors.
+  
+Below we present an overview of STL and refer the reader to \cite{MalerN04} for a detailed presentation.
+An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
+Atomic predicates are defined over signal values and have the form $\spec$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
+Temporal operators ``always'' ($\G$), ``eventually'' ($\F$), and ``until'' ($\U$) have the usual meaning and are scoped using intervals of the form $(a,b)$, $(a,b]$, $[a,b)$, $[a,b]$, or $(a,\infty)$, where 
+$a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language:
+\begin{equation}~\label{eqn:stl-gen}
+\spec ~ := ~ \true \; | \; f(\outsig(t))\sim 0 \; | \; \neg \spec \; | \;
+\spec_1 \wedge \spec_2 \; | \; \spec_1 \U_I \spec_2:~~\sim \in \{ <,\leq,>,\geq,=,\neq \}
+\end{equation}
+The $\F$ operator is defined as $\F_I \spec \triangleq \true \U_I \spec$, and the $\G$ operator is defined as $\G_I \spec \triangleq \neg (\F _I \neg \spec)$. When omitted, the interval $I$ is taken  to be $[0,\infty)$. The semantics are described informally as follows. The signal $\outsig$ satisfies $f(\outsig)> 0$ at time $t$ if $f(\outsig(t))>0$. It satisfies $\spec = \G_{(0,1]}(f(\outsig)=0)$ if for all time $0< t \leq 1$, $f(\outsig(t))=0$. The signal satisfies $\spec= \F_{[1,2)}(f(\outsig)<0)$ iff there exists a time $t$ such that $1\leq t < 2$ and $f(\outsig(t))<0$. The two-dimensional signal $\outsig=(\outsig_1,\outsig_2)$ satisfies the formula $\spec=(\outsig_1>0)\U_{[2.8,4.5]}(\outsig_2<0)$ iff there is some time $t$ where $2.8 \leq t \leq 4.5$, $\outsig_2(t)<0$, and $\forall t'$ in $[2.8,t)$, $\outsig_1(t')>0$. 
+
+Given a signal $\outsig$ and an STL formula $\spec$, we use computationally efficient methods to determine \emph{how well} $\outsig$ satisfies $\spec$.
+The method uses the quantitative semantics for STL, which 
+is defined formally in \cite{DonzeM10}, and which we describe informally as follows. The
+quantitative semantics defines a function $\rho$ such that a positive sign of
+$\rho(\spec,\outsig,t)$ indicates that $(\outsig,t)$ satisfies
+$\spec$, and its absolute value estimates the \emph{robustness} of
+this satisfaction. If $\phi$ is an inequality of the form
+$f(\outsig)>b$, then its robustness is $\rho(\spec,\outsig,t) = f(\outsig(t))-b$.  
+When $t$ is omitted, we assume $t=0$ (i.e., $\rho(\spec,\outsig)=\rho(\spec,\outsig,0)$ ).
+For the conjunction of two
+formulas $\spec := \spec_1 \wedge \spec_2$, we have
+$\rho(\spec,\outsig)=\min \left( \rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$,
+while for the disjunction $\spec := \spec_1 \vee \spec_2$, we have
+$\rho(\spec,\outsig)=\max\left(\rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$.
+For a formula with until operator as $\spec := \spec_1 \U_I \spec_2$,
+the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
+  I}\left(\min\left(\rho(\spec_2,\outsig,t^\prime),\min_{t^{\prime\prime}\in
+  [t,t^\prime]}\left(\rho(\spec_1,\outsig,t^{\prime\prime})\right)\right)\right).$
+
+\paragraph{Property Falsification}	
+
+Property falsification is a means of performing automatic bug-finding in system designs.
+Given a system model such as (\ref{eq:behaviorfunc}) and a system property $\spec$ provided in the form of an STL formula, 
+falsification is a process by which a parameter value $\param \in \paramset$
+such that $y=\behaviorfunc(\param)$ does not satisfy $\spec$, which is denoted $\outsig
+\not\models \spec$. Such a behavior $y$ is called a counterxample. 
+Note that a counterexample is identified when 
+$\rho(\spec,\param)<0$. We call the task of finding a counterexample 
+a {\em falsification problem}. 
+
+\paragraph{Optimization and Solvers}	
+
+We formulate the property falsification task as an optimization problem, which we then attempt to solve using existing algorithms, such as simulated annealing or gradient descent. Specifically, we apply nonlinear optimization techniques to the following problem.
+\begin{eqnarray} \label{eq:optim1}
+\min_{\param \in \paramset} && \rho(\spec,y) \\ \nonumber
+s.t. && y=\behaviorfunc(\param)
+\end{eqnarray}
+
+The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms.
+Instead, we seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
+
+In the next section, we describe a method that iteratively selects from a collection of different existing optimization algorithms, each time using information about the progress of the search to decide which of the algorithms to use in the next iteration.

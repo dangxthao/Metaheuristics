@@ -8,7 +8,7 @@
 \usepackage{outlines,color,url}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
-\usepackage{amsmath,amsthm, amssymb}
+\usepackage{amsmath,amsthm, amssymb,eufrak}
 
 % For outlines
 \setenumerate[1]{label=\Roman*.}
@@ -20,7 +20,7 @@
 
 \newcommand{\commentout}[1]{}
 
-\input{macro}
+\input{macros}
 
 \title{Metaheuristics to falsify properties of cyber-physical systems}
 \author{Thao Dang, James Kapinski, Hisahiro Ito}
@@ -75,7 +75,10 @@ We demonstrate the efficacy of the approach using several examples, including an
 \end{outline}
 
 
-\input {solverswitch}
+\input{prelims}
 
+\input{solverswitch}
 
+\bibliographystyle{abbrv}
+\bibliography{bibliography} 
 \end{document}
