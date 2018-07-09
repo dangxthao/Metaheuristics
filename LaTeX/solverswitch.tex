@@ -29,7 +29,7 @@
 		%\State
 		\State $\Gamma = Init(\explostateSet)$
 		\State \Comment{{\sf run solver $\solver$ for $\exectime_{\solver}$ time from initial points $\Gamma$}}
-  		\State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \param, \exectime_{\solver})$
+  		\State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \Gamma, \exectime_{\solver})$
 		\State $\coverage = updateCoverage(\coverage,  \explostateSet)$
       	
  	 \EndFor
