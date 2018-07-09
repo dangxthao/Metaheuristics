@@ -103,13 +103,15 @@ In the follwoing we show how this idea can be applied to the problem of solver i
 
 \subsection{F-Race based algorithm for solver initialization}
 
-First, we describe how the F-Race is applied to our solver initialization problem. Each iteration of the procedure corresponds to a solver run. In the first iteration, we sample a set of parameter values $\paramset^0$ which serve as initial candidates. Then, in each iteration, to each candidate, we apply one available solver for some time and record the corresponding cost. The same candidate parameter value can be explored with different search algorithms. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. 
+First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points which are not promising to explore from. The initial points are then selected from the remaining explored points.
 
-Suppose now that the current run is $k$ and let $\Gamma^k$ be the set of the candidate parameter values that are still in the race. Let $m_k = | \Gamma^k | $ be the size of the set $\paramset^k$. Let $m_s$ be the number of solvers, that is $m_s = | \solverset |$. The Friedman test assumes that the costs are $k$ mutually independent $m$-variate random variables. We construct a cost matrix $C^k$ of size $m_s \times m_k$ where the $\solver^{th}$ line is
+Each iteration of the F-Race procedure corresponds to a number of solver runs. In the first iteration, we sample a set of parameter values $\paramset^0$ which serve as initial candidates. Then, to each candidate, we apply one available solver for some time and record the corresponding cost. The same candidate parameter value can be explored with different search algorithms. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. 
+
+Suppose now that the current iteration is $k$ and let $\Gamma^k$ be the set of the candidate parameter values that are still in the race. Let $m_k = | \Gamma^k | $ be the size of the set $\Gamma^k$. Let $m_s$ be the number of solvers, that is $m_s = | \solverset |$. The Friedman test assumes that the costs are $k$ mutually independent $m$-variate random variables. We construct a cost matrix $C^k$ of size $m_s \times m_k$ where the $\solver^{th}$ line is
 \begin{eqnarray}\label{eq:C}
 c_{\solver}(\param^{q_1})  \; c_{\solver}(\param^{q_2}) \; \ldots  \; c_{\solver}(\param^{q_{m_k})} 
 \end{eqnarray}
-Element $c_{\solver}(\param^{q_i})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by the solver $\solver$. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
+Element $c_{\solver}(\param^{q_i})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by the solver $\solver$. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix for the Friedman test but is kept for consideration. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
 be the sum of ranks for $\param^i$ with $1 \leq i \leq m_k$. 
 %(average ranks are used in case of ties)
 
@@ -119,7 +121,7 @@ To perform the Friedman test \cite{FRace2010}, we determine
 \end{eqnarray*}
 If the value of $\tau$ is larger than the $1 - \alpha$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom, the null hypothesis that all parameter values are equivalent is rejected \cite{Papoulis1991}. 
 
-If at the run $k$ this hypothesis is not rejected, we keep the current set of parameter values. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove from the current set  the values with differences in cost beyond some given threshold.  
+If at iteration $k$ this hypothesis is not rejected, we keep the current set of parameter values. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove from the current set  the values with differences in cost beyond some given threshold.  
  
  \subsection{Iterated F-Race based algorithm for solver initialization}
 The F-Race method can also be iterated as follows. Each iteration corresponds to a round, and in each round a number of candidate parameter values remaining from the previous round are used to bias the sampling of new candidates, in view of sampling around the most promising ones. The iterative F-Race can be summarized by three steps in the $r^{th}$ round: 
@@ -146,14 +148,14 @@ which decreases iteration after iteration. The number $N^r$ of candidates can va
   \State $\Gamma  = \Gamma  \cup  Sample(N^{r}, \pi^r)$
    \State
   \ForAll{$\solver \in \solverset$} 
-     \State \Comment{{\em Run solver $\solver$ from parameter values in $\Gamma^k$, if it is not done, for $\exectime_{s}^k$ time}}    
+     \State \Comment{{\em Run solver $\solver$ from some parameter values in $\Gamma$, if it is not done, for $\exectime_{s}$ time}}    
     % \State \Comment{{\em Some intermediate explored points are added in $\Gamma^k$ to produce the new set  $\Gamma^k$} }   
-      \State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \Gamma, \exectime_{\solver}^k)$    
-      \State  Update the cost table $C^k$ for parameter values and their costs in $\explostateSet[\solver]$ as in (\ref{eq:C})
+      \State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \Gamma, \exectime_{\solver})$    
+      \State  Update the cost table $C$ for parameter values and their costs in $\explostateSet[\solver]$ as in (\ref{eq:C})
      %\State $C^k =  C^k \cup c(\Theta^k, A_s, t_{s}^k)$  
      \EndFor
    \State
-   \State Run F-Race based algorithm on $C^k$ to exclude the least promising candidates from $\explostateSet$. 
+   \State Run F-Race based algorithm on $C$ to exclude the least promising candidates from $\explostateSet$. 
    \State Let $\Gamma$ be the updated parameter value set 
    \State
   \State $r++$  %\Comment{{\em Increment the iteration counter}} 
