@@ -103,7 +103,7 @@ In the follwoing we show how this idea can be applied to the problem of solver i
 
 \subsection{F-Race based algorithm for solver initialization}
 
-First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points from which it is not promising to explore. The initial points are then selected from the remaining explored points.
+First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points from which it is not promising to explore. The initial points are then selected from the remaining (more promising) explored points.
 
 Each iteration of the F-Race procedure corresponds to a number of solver runs. In the first iteration, we sample a set of parameter values $\paramset^0$ which serve as initial candidates. Then, to each candidate, we apply one available solver for some time and record the corresponding cost. The same candidate parameter value can be explored with different search algorithms. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. 
 
