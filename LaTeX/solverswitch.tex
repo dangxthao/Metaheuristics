@@ -109,15 +109,15 @@ Suppose now that the current run is $k$ and let $\Gamma^k$ be the set of the can
 \begin{eqnarray}\label{eq:C}
 c_{\solver}(\param^{q_1})  \; c_{\solver}(\param^{q_2}) \; \ldots  \; c_{\solver}(\param^{q_{m_k})} 
 \end{eqnarray}
-Element $c_{\solver}(\param^{q_i})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by the solver $\solver$. If a parameter value has not been used with a solver $\solver$, its associated cost is set to $\infty$. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
+Element $c_{\solver}(\param^{q_i})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by the solver $\solver$. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
 be the sum of ranks for $\param^i$ with $1 \leq i \leq m_k$. 
 %(average ranks are used in case of ties)
 
 To perform the Friedman test \cite{FRace2010}, we determine
 \begin{eqnarray*}
-T & = \displaystyle{ \frac{ (m_k-1) \sum_{j=1}^{m_k} (R_j - (\frac{m_s(m_k+1)}{2})^2 } {\sum_{i=1}^l \sum_{j=1}^{m_k}  R^2_{ij} -  \frac{m_s m_k (m_k+1)^2}{4} }} \nonumber \\ 
+\tau & = \displaystyle{ \frac{ (m_k-1) \sum_{j=1}^{m_k} (R_j - (\frac{m_s(m_k+1)}{2})^2 } {\sum_{i=1}^l \sum_{j=1}^{m_k}  R^2_{ij} -  \frac{m_s m_k (m_k+1)^2}{4} }} \nonumber \\ 
 \end{eqnarray*}
-If the value of $T$ is larger than the $1 - \alpha$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom, the null hypothesis that all parameter values are equivalent is rejected \cite{Papoulis1991}. 
+If the value of $\tau$ is larger than the $1 - \alpha$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom, the null hypothesis that all parameter values are equivalent is rejected \cite{Papoulis1991}. 
 
 If at the run $k$ this hypothesis is not rejected, we keep the current set of parameter values. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove from the current set  the values with differences in cost beyond some given threshold.  
  
