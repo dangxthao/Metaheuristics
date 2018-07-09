@@ -70,11 +70,11 @@ In our falsification setting, we will use these concepts for slightly different 
 
 The solver initialization problem can be formally defined by the following elements
 \begin{itemize}
-\item $\Gamma$ is the set of initial parameter values.
+\item $\Gamma$ is the set of parameter values.
 \item $\solverset$ is the set of solver indices.
 %\item $\pi_I$ is a probability measure over the set $I$.
 \item $\exectime : \solverset \to \real_+$ is a function associating to every solver of index $\solver$ an execution time.
-\item $c(\param, \solver, t)$ is a (random) variable representing the objective function value obtained by running the solver $\solver$ from the initial point $\param \in \paramset$ for $t$ time. 
+\item $c(\param, \solver, \exectime_{\solver})$ is a (random) variable representing the objective function value obtained by running the solver $\solver$ from the point $\param \in \paramset$ for $\exectime_{\solver}$ time. 
 %\item $C \subset \real$ is the set of possible cost values for all configurations $\theta \in \Theta$ and $\iota \in I$.
 %\item $\pi_C$ is a probability measure over the set $C$. Thus $\pi_C(c ~|~ \theta, \iota)$ is the probability that $c$ is the cost of running configuration $\theta$ on instance $\iota$.
 %\item $C(\theta) = C(\theta ~|~ \Theta, I, \pi_I, \pi_C, t)$ is the criterion that needs to be optimized with respect to $\theta$. In the most general case it measures in some sense the desirability of the configuration $\theta$.
