@@ -103,7 +103,7 @@ In the follwoing we show how this idea can be applied to the problem of solver i
 
 \subsection{F-Race based algorithm for solver initialization}
 
-First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points which are not promising to explore from. The initial points are then selected from the remaining explored points.
+First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points from which it is not promising to explore. The initial points are then selected from the remaining explored points.
 
 Each iteration of the F-Race procedure corresponds to a number of solver runs. In the first iteration, we sample a set of parameter values $\paramset^0$ which serve as initial candidates. Then, to each candidate, we apply one available solver for some time and record the corresponding cost. The same candidate parameter value can be explored with different search algorithms. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. 
 
@@ -111,7 +111,7 @@ Suppose now that the current iteration is $k$ and let $\Gamma^k$ be the set of t
 \begin{eqnarray}\label{eq:C}
 c_{\solver}(\param^{q_1})  \; c_{\solver}(\param^{q_2}) \; \ldots  \; c_{\solver}(\param^{q_{m_k})} 
 \end{eqnarray}
-Element $c_{\solver}(\param^{q_i})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by the solver $\solver$. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix for the Friedman test but is kept for consideration. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
+Element $c_{\solver}(\param^{q_i}) = c(\param^{q_i}, \solver, \exectime_{\solver})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by executing the solver $\solver$ for some $\exectime_{\solver}$ time. For simplicity of presentation, we consider $\exectime_{\solver}$ is constant for all the solvers. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix for the Friedman test but is kept for consideration. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
 be the sum of ranks for $\param^i$ with $1 \leq i \leq m_k$. 
 %(average ranks are used in case of ties)
 
