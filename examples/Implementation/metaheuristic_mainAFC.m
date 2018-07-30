@@ -319,7 +319,7 @@ for call_count = 1:nb_solver_calls
             fprintf(fileID,'\n **** Running CMAES');
             
             if (call_count==1) 
-                time_lim = 300
+                time_lim = 8000
             else
                 time_lim = 300
             end

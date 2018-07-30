@@ -35,7 +35,7 @@ input_str = {};
 input_cp = [];
 input_intp = {};
 for ii = 1:9
-    input_str{end+1} = ['In' num2str(ii)];
+    input_str{end+1} = ['In' num2str(ii)]
     input_cp = [input_cp 4];
     input_intp{end+1} = 'previous';
 end

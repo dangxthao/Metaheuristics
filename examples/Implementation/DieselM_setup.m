@@ -1,6 +1,9 @@
 %% Breach Interface Object Creation
+close all
+clear all
+warning('off', 'ALL')
 
-model_name = 'KD_cl_harness_forthao'
+model_name = 'KD_cl_harness_forthao';
 load('expcon.mat')
 load('KD_const_coeffs_0624.mat')
 load('pexhat_stuff.mat')
@@ -13,6 +16,8 @@ fprintf('\n Simulation time horizon is %d seconds\n',simTime)
 
 BrSys = CoverageBreachSet(model_name,{});
 BrSys.SetTime([0 simTime]);
+
+
 
 %% Set input signals
 
@@ -27,8 +32,8 @@ Input_Gen.cp = N;
 BrSys.SetInputGen(Input_Gen);
 % Specifying parameter names
 for i=0:N-1
-    signal_u0{1,i+1}=strcat('In1',num2str(i));
-    signal_u1{1,i+1}=strcat('In2',num2str(i));
+    signal_u0{1,i+1}=strcat('In1_u',num2str(i));
+    signal_u1{1,i+1}=strcat('In2_u',num2str(i));
 end
 
 %% Initializing CBS object parameters
@@ -41,6 +46,7 @@ fprintf('\n Grid discretization unit for In1 signal value range is 4 units\n')
 Sys = BrSys.copy();
 Sys.SetParamRanges(signal_u0,ones(N,1)*[0 40]);
 Sys.SetParamRanges(signal_u1,ones(N,1)*[1800 3000]);
+
 %%%%%%%%%%%%%%%%%%
 
 
@@ -83,10 +89,22 @@ Sys.SetParamRanges(signal_u1,ones(N,1)*[1800 3000]);
 
 
 
-
-
-Sys.SetEpsGridsize(4*ones(N,1));
+gridsizeMat = [];
+for ii = 1:2
+    gridsizeMat = [ gridsizeMat; 4*ones(N,1) ]
+end
+Sys.SetEpsGridsize(gridsizeMat);
 Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 
+
+% Sys.SetEpsGridsize(4*ones(N,1));
+% Sys.SetDeltaGridsize(2*Sys.epsgridsize);
+
 %% Specifying STL formula
-phi =  'alw_[15,30] ( x1[t] < 5 )';
+phi = STL_Formula('phi','alw_[15,30] (OutSignal1[t] < 5)')
+% phi = STL_Formula('phi','alw_[15,30](Out1[t]<5)');
+% phi = set_params(phi, {'sim_time'}, [simTime]);
+% phitest1 = STL_Formula('phitest1','ev(RPM[t]>2520)');
+% phi = STL_Formula('check', 'alw_[0.1, sim_time] (Out1[t] > -0.001)'); 
+% phi = set_params(phi, {'sim_time'}, [sim_time]);
+

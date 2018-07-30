@@ -35,7 +35,7 @@ switch user_reset
         addpath('../../supp_code')
         addpath('../../src')
         addpath('../../../breach')
-        addpath('../DieselEngineExampleForThao')
+        addpath('../DieselEngineExampleForThao/')
         
         InitBreach
         
@@ -118,7 +118,7 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
-solver_index = 1; %PR 0, cmaes 1, SA 2, GNM 3
+solver_index = 0; %PR 0, cmaes 1, SA 2, GNM 3
 round_count=1;
 
 global Out
