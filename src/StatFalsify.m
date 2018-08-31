@@ -548,7 +548,7 @@ end
  
             
         run = (time<max_time) && num_sim<max_simulations && ~this.falsified ;        
-        while run && start == 1
+        while run % && start == 1 Thao
 %         disp('num_sim =')   
 %         disp(num_sim)
        % Perform classification.
