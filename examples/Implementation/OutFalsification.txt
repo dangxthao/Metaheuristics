@@ -1,0 +1,6 @@
+
+ *** Running PseudoRandom
+ PseudoRandom time = 14.549929 seconds
+ Best Robustness Value of this call = -13.679689
+ Falsifier Found!
+ Exit! TOTAL Computation time = 14.655988 seconds

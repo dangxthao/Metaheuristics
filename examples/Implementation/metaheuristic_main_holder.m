@@ -32,10 +32,10 @@ switch user_reset
         global start
         start = true;
 
-        addpath('../supp_code')
-        addpath('../src')         
-        addpath('../../breach')
-        addpath('../FctOpt')
+        addpath('../../supp_code')
+        addpath('../../src')         
+        addpath('../../../breach')
+        addpath('../../FctOpt')
         
         InitBreach
         
