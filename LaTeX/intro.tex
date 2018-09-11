@@ -1,0 +1,50 @@
+\section{Introduction} \label{sec:introduction}
+
+Development of hybrid and cyber-physical systems (CPS) is becoming increasingly challenging as the designs for modern CPS become more and more complex.
+As these systems are found in many safety-critical applications, like aircraft, medical devices, and automobiles, it is vital that these systems behave in a manner consistent with their design expectations. Despite this, it is difficult to verify that CPS designs meet their requirements for complex applications.
+We address this challenge by presenting a new method to automatically identify incorrect system behaviors.
+Our method searches for faulty system behaviors using a metaheuristic falsification approach, which leverages a combination of existing search techniques.
+The technique leverages notions of behavior robustness, with respect to requirements, in combination with notions of coverage of the search space, to improve the overall search performance.
+
+Property \emph{falsification} has garnered much interest recently as a way to perform automatic bug-finding for complex CPS design models.
+Falsification is a family of techniques that use global optimizers to automatically find critical system behaviors.
+Optimizer performance can be a bottleneck for falsification procedures in some cases, and in other cases, optimizers can altogether fail to identify critical cases.
+We present an enhanced falsification method, based on a metaheuristic, that is able to leverage strengths in each of a collection of existing falsification tools. %, while reducing the impact of weaknesses in each.
+
+Many existing falsification techniques rely on a requirement provided in some precise and unambiguous logical language. Two such languages that are appropriate for CPS applications are metric temporal logic (MTL) and signal temporal logic (STL) \cite{Koymans1990,MalerN04}.
+MTL and STL allow behaviors defined using real-valued signals over dense time.
+A key feature of MTL and STL is that they are equipped with \emph{robust} semantics. This means that, for a given behavior, methods exist to efficiently compute a real value, called the robustness, that indicates how well the behavior does or does not satisfy the requirement \cite{FainekosP06fates,DonzeM10}. A positive robustness value indicates the behavior satisfies the requirement; a negative robustness value indicates the behavior does not satisfy the requirement. 
+Falsification procedures use the robustness as the cost for a global optimizer and then rely on the optimizer to search for behaviors with low robustness value. If the optimizer can identify a behavior with negative corresponding robustness value, then the behavior is in violation of the requirement. Thus, the optimizer can be used to automatically find behaviors that violate (falsify) the requirement.
+
+Falsification techniques have been applied to many CPS systems and are finding application in industry, using tools like S-TaLiRo and Breach \cite{TaliroLFS11,BreachCAV10}.
+One remaining challenge is in determining how to provide guidance to the designers when the falsification method fails to identify a violating behavior.
+%Generally speaking, in those cases, nothing can be concluded.
+Because falsification techniques are \emph{best effort} methods, they are not guaranteed to find a falsifying case, if one exists.
+In other words, the absence of a falsifying case does not indicate that the system is incapable of exhibiting bad behaviors.
+So the question is, if no falsifying trace is found by the optimizer, what can be concluded? In these cases, one useful piece of information that can be reported back to the designers is the degree to which the search space was covered in the attempt to falsify the property.
+%This leads us to consider the notion of \emph{coverage} of the possible test cases.
+Previous work considered falsification methods that attempt to maximize the amount of coverage of the search space when performing the falsification \cite{Dreossi2015,Adimoolam2017}, and these methods were capable of reporting the coverage back to the user.
+In the present work, we utilize these notions of coverage, together with the robustness values, to make heuristic decisions about how to guide the falsification search.
+The core idea is that, given a collection of traditional search algorithms, we can judiciously switch between algorithms online, if we consider 
+the evolution of both the robustness values and the coverage of the search space.
+
+%The idea of using heuristics to guide global optimizations is not new (see for example \cite{}).
+
+Global optimization algorithms can be classified into one of two categories: exploration-based and exploitation-based. 
+Exploration-based methods use various techniques, including stochastic methods, to investigate a widely distributed area of the search space, to identify regions that are most promising, with respect to the cost function.
+Exploitation-based methods, on the other hand, use estimates of the shape of the cost function surface, often locally, to identify a candidate direction that is most likely to yield a decrease in cost.
+Each method has its strengths and weaknesses.
+Exploration methods are able to search the decision space broadly and are not in danger of getting trapped in local minima, but they may be inefficient in terms of identifying appropriate directions to search.
+By contrast, exploitation methods are designed to efficiently identify promising local search directions, but they are in danger of getting trapped in local optima.
+
+The technique we present leverages the strengths of both exploration and exploitation methods of search and reduces the impact of their weaknesses.
+We introduce a new metaheuristic approach to the search problem, which uses measures of both robustness and coverage to make decisions about how best to guide the search.
+Our method is an iterative procedure that utilizes several existing search algorithms, some that are characterized as exploration-based methods and some that are characterized as exploitation-based methods.  
+For each iteration of our search procedure, our method considers the evolution of both the best-case robustness value (the optimization cost) as well as the evolution of a coverage measure.
+We use the information to make online decisions about when and how to switch from one optimization strategy to another. 
+For example, if we are using an exploitation-based method, and we decide that the decrease in robustness has ``stalled" (is not decreasing quickly) and the coverage is ``low", we will switch from the exploitation-based method to an alternative exploration-based method.
+If, alternatively, we are using an exploration-based method, and we decide that the coverage is relatively ``high" and the robustness is near zero, then we will switch to an exploitation-based method, using the current best point as an initial condition.
+ 
+We demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system.
+
+
