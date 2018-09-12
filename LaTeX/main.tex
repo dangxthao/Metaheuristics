@@ -31,19 +31,10 @@
 \maketitle
 
 \begin{abstract}
-Cyber-physical systems (CPSs) are used in many mission-critical applications, and the scale and complexity of these systems is growing rapidly.
-New approaches are needed to increase the confidence in the correctness of complex CPS designs.
-Falsification techniques offer a practical solution. 
-A falsification method takes a system model, along with a specification that defines the correct behavior of the system, and performs a best-effort search over inputs and system parameters for behaviors that violate the specification; essentially performing automated bug finding.
-Falsification methods rely on a global optimizer to guide the search; one challenge with falsification is that it can be difficult to select the most effective optimizer and optimization parameters.
-To address this, we introduce a new metaheuristic that automatically focuses computing resources on the most effective optimizer for a given falsification task.
-Given a collection optimizers, our approach makes heuristic decisions to switch optimizers based on
-evolving measures of both cost and the coverage of the decision space.
-The technique is able to automatically falsify properties for complex CPS design models more efficiently than existing techniques.
-We demonstrate the efficacy of the approach using several examples, including an automotive hydrogen fuel cell control system.
-
+\input{abstract}
 \end{abstract}
 
+\iffalse
 \begin{outline}[enumerate]
 \1 Introduction
 	\2 The challenge of falsification
@@ -66,14 +57,13 @@ We demonstrate the efficacy of the approach using several examples, including an
 \1 Method
 	\2 Monitoring robustness and coverage across iterations
 	\2 Changing solver based on heuristic rules, informed by robustness and coverage
-	
-	
-	
 	\2 F-Race for tuning parameters
 \1 Experiments
 \1 Conclusions
 \end{outline}
+\fi
 
+\input{intro}
 
 \input{prelims}
 
