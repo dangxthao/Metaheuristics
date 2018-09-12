@@ -101,7 +101,7 @@ Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 % Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 
 %% Specifying STL formula
-phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 5)')
+phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 41.1)')
 % phi = STL_Formula('phi','alw_[15,30](Out1[t]<5)');
 % phi = set_params(phi, {'sim_time'}, [simTime]);
 % phitest1 = STL_Formula('phitest1','ev(RPM[t]>2520)');
