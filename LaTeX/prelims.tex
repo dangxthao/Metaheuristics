@@ -70,13 +70,13 @@ a {\em falsification problem}.
 
 \paragraph{Optimization and Solvers}	
 
-We formulate the property falsification task as an optimization problem, which we then attempt to solve using existing algorithms, such as simulated annealing or gradient descent. Specifically, we apply nonlinear optimization techniques to the following problem.
+We formulate the property falsification task as an optimization problem as follows.
 \begin{eqnarray} \label{eq:optim1}
 \min_{\param \in \paramset} && \rho(\spec,y) \\ \nonumber
 s.t. && y=\behaviorfunc(\param)
 \end{eqnarray}
+This optimization problem is challenging for a number of reasons. First, this optimization problem is mixed in the sense that it contains both discrete and continuous variables. Note that the above constraints defined by $\behaviorfunc$ are not explicitly specified but implicitly as the feasible runs of a highly nonlinear hybrid systems each of which for a given parameter can only be determined approximately using numerical simulation. For such constraints, in general there are no algorithms that can guarantee to find a global optimum \cite{FloudasPardalos2009}. In case the dynamics are continuous, well-known methods for global optimization are only efficient if the cost functions are convex or have some structural properties. Similarly, existing discrete optimization techniques, often faced with the combinatorial explosion issue, are designed to efficiently address specific classes of problems. Another particularity of the systems we want to handle is that formal mathematical models are often entirely unavailable for such systems. However, the systems can be queried through simulations or test executions that measure or observe some output signals for given input signals. This gives rise to a hard problem of determining the gradients of the cost function, which are often required by traditional continuous optimization techniques. 
 
-The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms.
-Instead, we seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
+The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing, CMA-ES, {\em etc}. Instead, we seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
 
 In the next section, we describe a method that iteratively selects from a collection of different existing optimization algorithms, each time using information about the progress of the search to decide which of the algorithms to use in the next iteration.
