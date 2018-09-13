@@ -143,7 +143,7 @@ $10$ dimensional search space.
 %any fixed seed for random sampling, these results are reproducible.
 \begin{table}[ht]
 \caption{Experimental results}
-\vspace{-0.5em}
+%\vspace{-0.5em}
 %\vspace{-1.5em}
 \label{tab:results}
 \begin{center}
@@ -156,28 +156,61 @@ $10$ dimensional search space.
  &  PTC & Aut. Trans & Diesel  & PTC & Aut. Trans. & Diesel  \\
 \hline
 \cline{2-6}
- CMA-ES &   &   &  413.252 &  &  & \checkmark \\
+ CMA-ES & T.O (5000)  & T.O. (2000)  &  413.252 &  &  & \checkmark \\
 \hline
 \cline{2-6}
- Simulated Annealing &   &   & TO  &  &  & No\\
+ Simulated Annealing &   &   & TO (2000)   &  &  &  \\
 \hline
 \cline{2-6}
-Global Nelder-Mead &   &   &  TO &  &   & No \\
+Global Nelder-Mead &   &   &  TO (2000)  &  &   &  \\
 \hline
 \cline{2-6}
-Pseudo-random sampling &   &   & TO  &  &  & No \\
+Pseudo-random sampling &  TO (5000)  &  T.O. (2000) & TO (2000)  & &  &  \\
 \hline
 \cline{2-6}
- Combined Metaheuristics & 2702.54 &  692.1 & 299.501  &  &  & \checkmark \\
+Classification + CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996  & \checkmark  & \checkmark  & \checkmark  \\
+\hline
+\cline{2-6}
+ Combined Metaheuristics & 1276.80 &  899.15 & 299.501  & \checkmark  & \checkmark  & \checkmark \\
 \hline
 \hline
 \end{tabular}
 \end{center}
 {\small \emph{T.O.}: Exceeded indicated time out limit which is 2000 seconds in this experiment.\\
 
-Property for the diesel model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
+Property for the PTC model $\G_{[5,50]}( (verificaton_measurement[t] < 0.05) \land ( verificaton_measurement[t] > - 0.05 ))$. Property for the Automatic Transmission model $\phi =  \G(RPM[t] < 2520) \land  \F_{[0,10]}(speed[t] > 50)$. Property for the Diesel Engine model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
 %\emph{Seed}: Index for a sequence of random numbers in MATLAB. \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.
 }
+\end{table}
+
+
+\begin{table}[ht]
+\caption{Experiments with different seeds on the Automatic Transmission benchmark}
+%\vspace{-0.5em}
+%\vspace{-1.5em}
+\label{tab:SeedResults}
+\begin{center}
+\begin{tabular}{|c|c|c|c|c|}
+\hline
+Seed &  \multicolumn{2}{|c|}{Computation time (s)} & \multicolumn{2}{|c|}{Falsification}\\
+\hline
+\cline{2-4}
+ &  Classification + CMA-ES  \cite{CAV2017}  & Metaheuristics & Classification + CMA-ES  \cite{CAV2017}  & Metaheuristics \\
+\hline
+\cline{2-4}
+ 0 &   996  & \checkmark &   991.41  & \checkmark \\
+\hline
+ 5000 & 1382  & \checkmark &  899.15  & \checkmark \\
+ \hline
+10000 &  1720  & \checkmark &  966.87  & \checkmark \\
+\hline
+15000 &  1355  & \checkmark & 911.55 & \checkmark \\
+\hline
+\end{tabular}
+\end{center}
+Property $\phi =  \G(RPM[t] < 2520) \land  \F_{[0,10]}(speed[t] > 50)$. 
+\emph{Seed}: Index for a sequence of random numbers in MATLAB.
+% \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.}
 \end{table}
 
 
