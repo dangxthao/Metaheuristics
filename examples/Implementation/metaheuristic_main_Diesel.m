@@ -34,7 +34,7 @@ switch user_reset
 
         addpath('../../supp_code')
         addpath('../../src')
-        addpath('../../../breach')
+        addpath('../../../breach-dev')
         addpath('../DieselEngineExampleForThao/')
         
         InitBreach
@@ -73,6 +73,7 @@ if (user_reset==1)
             phi = input('Enter the STL-formula to be falsified: '); 
     end
 end
+phi = BreachRequirement(phi);
 
 disp('The system specification is in an object file named CBS')
 CBS=Sys.copy();
@@ -118,7 +119,7 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
-solver_index = 2; %PR 0, cmaes 1, SA 2, GNM 3
+solver_index = 0; %PR 0, cmaes 1, SA 2, GNM 3
 round_count=1;
 
 global Out
