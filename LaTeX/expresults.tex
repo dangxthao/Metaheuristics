@@ -16,21 +16,16 @@ implementation\footnote{We use the robustness evaluation function from
 the Breach toolbox \cite{}}
 with the following standard approaches: CMA-ES, Simulated Annealing, Global
 Nelder-Mead algorithm implementations (integrated in
-Breach~\cite{BreachCAV10}), and the S-TaLiRo tool~\cite{TaliroLFS11}
-by setting Simulated Annealing as optimization algorithm\footnote{We
-used the latest version available in October 2016, on the
-site \url{https://sites.google.com/a/asu.edu/s-taliro/home}.}. %Our
-experiments were performed on a computer with 1.4GHz processor with
+Breach~\cite{BreachCAV10}). Our experiments were performed on a computer with 1.4GHz processor with
 4GB RAM, running MATLAB R2015 64-bit version.  Also, we compare with a
 random sampling method, where in each iteration a pseudo-randomly
 selected point is tested only if it falls in a grid cell wherein no
 other point has been previously tested.  The grid used in this method
-is the same as the grid chosen in our falsification approach.  We will
+is the same as the grid chosen to define the coverage.  We will
 call this method as grid based random sampling, for the sake of
 reference during comparison.
 
 
-\vspace{-1em}
 \subsection{Automative Powertrain Control} \label{sec:PTC}
 We consider a Simulink model of a closed loop of an Automative Powertrain Control
 subsystem (PTC). The model contains a representation of an internal combustion engine and an
@@ -45,16 +40,14 @@ in~\cite{Dreossi2015}: $\phi = \G_{[5,10]}\lt(\eta<0.5\rt)$.
 %We allow $\theta$ to take any value in $[0,40]$, while we fix $w=1000$ and $h=1$. 
 
 \emph{\textbf{Input signal settings.}}
-Compared to~\cite{Dreossi2015}, we consider a smaller input range for
+We consider an input range for
 the Pedal Angle as $[0,40]$ and fix the Engine Speed and
-Sensor Offset as $1000$ and $1$, respectively. Reducing the ranges
-makes the properties more robust and consequently difficult to
-falsify.  The time horizon is $50$s.  We use piecewise constant
+Sensor Offset as $1000$ and $1$, respectively. The time horizon is $50$s.  We use piecewise constant
 signal for testing, where the Pedal Angle is parameterized by $10$
 uniformly spaced control points in the time horizon.  Thus, we
 have a $10$ dimensional search space $\cpset$.% to search for a counterexample of $\phi$.  
 
-\emph{\textbf {Algorithm setting.}}  For our algorithm, {\bf SETTING}
+\emph{\textbf {Algorithm setting.}}  For our algorithm, {\bf TODO}
 
 %The global search time is $\Tglobalmax= $ seconds.  
 
@@ -67,24 +60,8 @@ consists of hypercubes of side length $\epsilon=4$.
  \emph{\textbf {Results.}} Our algorithm successfully found a counterexample in less
 than ??? seconds for all seeds. 
 
-As an estimate of the classification
-frequency, the final number of separate rectangles constructed for
-while testing the first seed were 30.  
-
-In comparison, 
-
-%the tool S-TaLiRo could falsify but took 4481 seconds.  The grid based random sampling
-%found a falsifier for only the seeds 15000 and 20000, but failed to do
-%so on the other seeds before maximum time limit was reached.  The
-%other methods were not successful in finding a falsifier within the
-%default stopping time of 5000 seconds.  Both the CMA-ES and
-%Nelder-Mead became stuck without reduction in robustness value until the 
-%default stopping time was reached.  The results are presented in
-%Table~\ref{tab:results}.  We note that for any fixed seed for random
-%sampling, these results are reproducible.
 
 
-\vspace{-1em}
 \subsection{Automatic transmission} \label{sec:autotrans}
 We consider the benchmark model of an Automatic Transmission control
 system, which appeared in~\cite{FainekosARCH1415}\footnote{The model
@@ -116,19 +93,11 @@ signals for testing, where the throttle signal is parametrized by $7$
 control points and the break has $3$ control points. Thus, we have a
 $10$ dimensional search space.
 
-\emph{\textbf{Algorithm setting}}.  
+\emph{\textbf{Algorithm setting}}.  {\bf TODO}
 
-%% For S-TaLiRo implementation, we modified a script available in the
-%% distribution of S-TaLiRo\footnote{The used distribution is available
-%% at~\url{sites.google.com/a/asu.edu/s-taliro/s-taliro/download}}
-%% according to the above specifications.  The type of signals is set as
-%% piecewise constant and the maximum number of tests (robustness
-%% evaluations) in the experiment is set to $20000$. The script runs the
-%% Simulated Annealing algorithm for falsification with the seed zero,
-%% which is the default solver. The other solvers, i.e., uniform search, CMA-ES, S-TaLiRo-Simulated
-%% Annealing and Global Nelder-Mead, are the ones implemented in Breach and the maximum time for search is $3000$s.
 
-\emph{\textbf{Results.}} 
+
+\emph{\textbf{Results.}}  {\bf TODO}
 %Our algorithm (classification guided
 %global search with local search) successfully found a counterexample in
 %less than $2000$ seconds for all randomly chosen seeds. As an indication of the 
@@ -141,37 +110,41 @@ $10$ dimensional search space.
 %optimum without any significant reduction in robustness value.  The
 %results are presented in Table~\ref{tab:results}.  We note that for
 %any fixed seed for random sampling, these results are reproducible.
+
+
+\subsection{Diesel model} \label{sec:diesel} {\bf TODO}
+
 \begin{table}[ht]
 \caption{Experimental results}
 %\vspace{-0.5em}
 %\vspace{-1.5em}
 \label{tab:results}
 \begin{center}
-\begin{tabular}{|c|c|c|c||c|c|c|}
+\begin{tabular}{|c|c|c|c||}
 \hline
 \hline
-\multirow{1}{*}{Search method} & \multicolumn{3}{|c|}{Computation time (s)} & \multicolumn{3}{|c|}{Falsification}\\
+\multirow{1}{*}{Search method} & \multicolumn{3}{|c|}{Computation time (s)} \\
 \hline
-\cline{2-6}
- &  PTC & Aut. Trans & Diesel  & PTC & Aut. Trans. & Diesel  \\
+\cline{2-4}
+ &  PTC & Aut. Trans & Diesel    \\
 \hline
-\cline{2-6}
- CMA-ES & T.O (5000)  & T.O. (2000)  &  413.252 &  &  & \checkmark \\
+\cline{2-4}
+ CMA-ES & T.O (5000)  & T.O. (2000)  &  413.252  \\
 \hline
-\cline{2-6}
- Simulated Annealing &   & T.O. (2000)  & TO (2000)   &  &  &  \\
+\cline{2-4}
+ Simulated Annealing &   & T.O. (2000)  & TO (2000)     \\
 \hline
-\cline{2-6}
-Global Nelder-Mead &   &  TO (2000)  &  TO (2000)  &  &   &  \\
+\cline{2-4}
+Global Nelder-Mead &   &  TO (2000)  &  TO (2000)    \\
 \hline
-\cline{2-6}
-Pseudo-random sampling &  TO (5000)  &  T.O. (2000) & TO (2000)  & &  &  \\
+\cline{2-4}
+Pseudo-random sampling &  TO (5000)  &  T.O. (2000) & TO (2000)    \\
 \hline
-\cline{2-6}
-Classification + CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996  & \checkmark  & \checkmark  & \checkmark  \\
+\cline{2-4}
+Classification + CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996    \\
 \hline
-\cline{2-6}
- Combined Metaheuristics & 1276.80 &  899.15 & 299.501  & \checkmark  & \checkmark  & \checkmark \\
+\cline{2-4}
+ Combined Metaheuristics & 1276.80 &  899.15 & 299.501   \\
 \hline
 \hline
 \end{tabular}

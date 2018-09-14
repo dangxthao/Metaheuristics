@@ -1,6 +1,12 @@
-\section{Heuristic Rules for Sequential Solver Execution}
+\section{Heuristic Rules for Sequential Solver Execution}\label{Solvers}
 
-
+\subsubsection*{Exploitation-driven versus exploration-driven solvers}
+Our abstract algorithm for sequential solver execution is organized in iterations, as shown in Algorithm \ref{algoSolverCombination}. Borrowing the terminology from \cite{}, we roughly divide the solvers used in this work into two categories: 
+\begin{itemize}
+\item {\em Exploitation-driven} : The solvers of this category try to make greedy changes (often small) around the current point. Among the existing solvers of this category, we make use of a number of well-known solvers, namely Simulated Annealing \cite{}, Global Nelder-Mead \cite{}, CMA-ES \cite{}. The solvers of this category are used to explore locally around some potential points. They are efficient when starting at the initial points that are chosen appropriately. They can be used as long as they make progresses, that is the objective values keep getting improved.
+\item {\em Exploration-driven}: The solvers of this category make random changes, which could be both large and small, and thus quickly enlarge the exploration space. Such solvers are particularly useful to help the exploration escape local optima where the objective value does not get improved after a long .exploration. The pseudo-random sampling method used in this work belongs to this category. Note also that the pseudo-random search method does not need an initial point, as shown in Algorithm \ref{algoSolverCombination}. 
+\end{itemize}
+Before continuing, we remark that a solver is often configurable, that is its configuration parameters can be modified. As an example of solver configurations, if the solver is Simulated Annealing, the configuration parameters include the initial temperature, the number of iterations on one temperature stage and the temperature cooling rate. Indeed, a number of approaches to learning these configuration parameters have been proposed in the literature \cite{}. For simplicity of presentation, we omit the internal configurations of the solvers. However, a method for selecting promising initial points for the next explorations can be applied to automatically tune solver configurations. 
 
 \begin{algorithm}
 \caption{Abstract Algorithm for Sequential Solver Execution \label{algoSolverCombination}}
@@ -8,86 +14,115 @@
 %\Require  
 %\Ensure  
 \State \Comment{{\sf $\solver$ is the solver index}}
-\State \Comment{{\sf $\explostateSet[ \solver ] $ is set of exploration states for solver $\solver$}}
-\State \Comment{{\sf  $r_{max}$ is the maximal number of rounds}}
+\State \Comment{{\sf $\explostateSet$ is set of visited states}}
+%\State \Comment{$\explostateSet = (\explostateSet_{\solver})_{\solver \in \solversetall}$ is vector of all $\explostateSet_{\solver}$}
+\State \Comment{{\sf  $k_{max}$ is the maximal number of iterations}}
+\State
 
-\State $r = 1$
-\State $blocking = false$
-\State $\forall \solver  \in  \solverset, \explostateSet [ \solver ] = \emptyset$   	
-\While{$r \le r_{max}$} 
-   \If{($blocking$)}
-	 \State $\solver = PseudoRand$
-	 \State \Comment{{\sf run the pseudo-random solver for $\exectime_{\solver}$ time}}   
-	 \State $\{ \bestobj, \explostateSet [\solver] = Run(\solver, \exectime_{\solver})$ 
-	  \Else
+\State $k= 1$
+%\State $blocking = false$
+%\State $\forall \solver  \in  \solversetall, \explostateSet_{\solver} = \emptyset$   	
+\While{$k \le k_{max}$}  
       %\State \Comment{{\sf  $\solverset$ is the set of all available exploitation-driven solvers}}
        %\State $\overline{\solverset}= \solverset$    \Comment{{\sf  $\overline{\solverset}$ is the set of solvers to run in this round}}
-      % \State $\explostateSet_o = \explostateSet$  \Comment{{\sf Store the previous set of exploration states in $\paramset_o$}}
-	 \ForAll{$\solver \in \solverset$}  		
+      % \State $\explostateSet_o = \explostateSet$  \Comment{{\sf Store the previous set of visited states in $\paramset_o$}}
 	        %\State $\solver = Select(\overline{\solverset})$
  		%\State $\overline{\solverset} = \overline{\solverset} \setminus \solver$
-		%\State
-		\State $\Gamma = Init(\explostateSet)$
-		\State \Comment{{\sf run solver $\solver$ for $\exectime_{\solver}$ time from initial points $\Gamma$}}
-  		\State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \Gamma, \exectime_{\solver})$
-		\State $\coverage = updateCoverage(\coverage,  \explostateSet)$
-      	
- 	 \EndFor
-         \EndIf	
+		%\State		
+		\State \Comment{{\sf executing all the exploitation-driven solver $\solver$}}
+  		\State $\{ \bestobj, \explostateSet \} = Exploitation(\solversetall, \explostateSet)$ 	 
+	 
          \State
+\State $\coverage = updateCoverage(\coverage,  \explostateSet)$
+\State
 \State \Comment{{\sf blocking detection based on coverage and robustness evolution}}
 \State $blocking =  DetectBlocking(\coverage, \bestobj)$ 
-\State $r++$
+ \If{($blocking$)}
+	 \State $\solver = PseudoRand$
+	 \State \Comment{{\sf run the pseudo-random solver for $\exectime_{\solver}$ time}}   
+	 \State $(\bestobj, \explostateSet)= Run(\solver, \exectime_{\solver})$ 
+ \EndIf	
+ \State        
+\State $k++$
 \EndWhile
 \end{algorithmic}
 \end{algorithm}
 
-\subsubsection*{Exploitation-driven versus exploration-driven solvers}
-Our abstract algorithm for sequential solver execution is organized in rounds, as shown in Algorithm \ref{algoSolverCombination}. Borrowing the terminology from \cite{}, we divide the solvers used in this work into two rough categories: 
-\begin{itemize}
-\item {\em Exploitation-driven} : The solvers of this category try to make greedy changes (often small) around the current point. Among the existing solvers of this category, we make use of a number of well-known solvers, namely Simulated Annealing \cite{}, Global Nelder-Mead \cite{}, CMA-ES \cite{}. The solvers of this category are used to explore locally around some potential points. They are efficient when starting at the initial points that are chosen appropriately. They can be used as long as they make the exploration progress, that is the objective values keep getting improved.
-\item {\em Exploration-driven}: The solvers of this category make random changes, which could be both large and small, and thus quickly enlarge the exploration space. Such solvers are particularly useful to help the exploration escape local optima where the objective value does not get improved. The pseudo-random search method used in this work belongs to this category. Note also that the pseudo-random search method does not need an initial point, as shown in Algorithm \ref{algoSolverCombination}. 
-\end{itemize}
+\subsubsection*{Exploitation to improve robustness}
+Let us now proceed to explain the execution of a exploitation-driven solvers used in Algorithm \ref{algoSolverCombination}. This procedure is detailed in Algorithm \ref{algoSolverExpl}. We specify a maximum computation time budget for the search from a parameter point because arriving at a global optimum may be infeasible for all possible parameter points.  We denote the set of exploitation-driven solvers by $\solversetRho$ (the letter $\rho$ indicates that these solvers are used to improve the robustness). An exploitation-driven solver with index $\solver$ starts from a set $\Gamma$ of initial points (in the parameter space $\paramset$ defining the parameterized input signals) for some execution time $\exectime_{\solver}$. The corresponding best cost value is denoted by $\bestobj$. By {\em visited state}, we mean the pair $(\param, \bestobj)$ where $\param$ is a parameter point and $\bestobj$ is its associated cost values. Let $\explostateSet$ denote a set of {\em intermediate visited states} (by `intermediate' we mean the points successively computed by the solver scheme). Note that in this abstract algorithms the states in $\explostateSet$ are not distinguished by the solvers that generate them; however in our implementation, we store visited states by each solver $\solver$ separately, because we want to avoid applying a solver to a point explored previously by the same solver, unless it is a last visited point. Indeed, the random nature of some solvers are only theoretical, therefore under the same configuration and from the same initial point, such solvers in practice often follow the same path. The reason we store the visited states is that they can reflect the relation between the cost function and the parameter and can thus indicate promising regions to the next solvers. We use them to derive next solver good initializations, which is summarized in the function $InitialPointSelection(\explostateSet)$ in Algorithm \ref{algoSolverExpl}. We defer a discussion on this procedure in Section \ref{sec:init}.
 
-Note that a solver is often configurable, that is its internal parameters can be modified. As an example of internal parameters, if the search solver is Simulated Annealing, the internal parameters include the initial temperature, the number of iterations on one temperature stage and the temperature cooling rate. Tuning a solver configuration is important to achieve its good performance. Indeed, a number of approaches to learning these internal parameters have been proposed in the literature \cite{}. For simplicity of presentation, we omit the internal configurations of the solvers. However, as we will show later, a similar idea will be used to select promising initial points for the exploration. 
+\begin{algorithm}
+\caption{$\{ \bestobj, \explostateSet \}=Exploitation(\solversetall, \explostateSet)$ 
+(Executing the exploitation-driven solvers) \label{algoSolverExpl}}
+\begin{algorithmic}
+%\Require  
+%\Ensure  		
+	        %\State $\solver = Select(\overline{\solverset})$
+ 		%\State $\overline{\solverset} = \overline{\solverset} \setminus \solver$
+		%\State
+		\ForAll{$\solver \in \solversetall$} 
+		\State $\Gamma = InitialPointSelection(\explostateSet)$
+		\State \Comment{{\sf run solver $\solver$ for $\exectime_{\solver}$ time from initial points $\Gamma$}}
+  		\State $\{ \bestobj, \explostateSet \} = Run(\solver, \Gamma, \exectime_{\solver})$ 
+		\EndFor
+\end{algorithmic}
+\end{algorithm}
 
-Let us now discuss how the exploitation-driven solvers are used. We denote the set of exploitation-driven solvers by $\solverset$. An exploitation-driven solver with index $\solver$ starts from a set of initial points $\Gamma$ (in the parameter space $\paramset$ defining the parameterized input signals) for some execution time $\exectime_{\solver}$. The best objective value obtained after executing a solver is denoted by $\bestobj$. It is also possible to save some or all of the parameter points that the solver has explored in this run, together with their objective function values. By {\em exploration state}, we mean the pair $(\param, \bestobj)$ where $\param$ is a parameter point and $\bestobj$ is its associated objective values. Let $\explostateSet^{\solver}$ denote a set of {\em intermediate exploration states} (the term 'intermediate' here does not refer to their temporal order) for each solver. These points can be used to derive good initializations for the solvers to be executed, which is summarized in the function $Init(\explostateSet)$ in Algorithm \ref{algoSolverCombination}. On the other hand, one need not start uniquely from the best points that have been found so far, the previous explorartion states can indicate promising regions to the next solvers. For example, if the next solver is CMA-ES (the principle of which is to update the mean and the covariance matrix of normally distributed samples in each of its internal iteration), we can define an initial mean and a covariance matrix using only the previously explored points with good objective values. We defer a discussion on this initialization procedure for each solver in Section \ref{sec:init}. 
 
-Note that we store exploration states by different solvers separately, because we want to avoid applying a solver to a point explored previously by the same solver, unless it is one of the best points explored by that solver. Indeed, the random nature of some solvers are only theoretical, therefore under the same configuration and from the same initial point, such solvers in practice often follow the same path. When a solver gets stuck around some local optimum, it is important to be able to detect such blocking situations, and switch to another solver, since different solvers use different search methods and may take the current exploration out of the local optima. 
+%On the other hand, one need not start uniquely from the best points that have been found so far, the previous explorartion states can indicate promising regions to the next solvers. For example, if the next solver is CMA-ES (the principle of which is to update the mean and the covariance matrix of normally distributed samples in each of its internal iteration), we can define an initial mean and a covariance matrix using only the previously explored points with good objective values. We defer a discussion on this initialization procedure for each solver in Section \ref{sec:init}. 
 
-Let us proceed with a situation where no exploitation-driven solver can make the exploration escape a local optimum. The detection of such situations can be done using coverage and robustness monitoring, as discussed in the subsequent paragraph. To get  the exploration out of a blocking situation, an exploration-driven solver, such as a pseudo-random search method, can be used.  
+\subsubsection*{Exploration to escape local minima}
+Let us proceed with a situation where a exploitation-driven solver is stuck around a local optimum. It is important to be able to detect such blocking situations and switch to another solver, since different solvers using different search methods may take the current exploration out of the local optima. The search is said {\em blocking}, if it, continued with {\em any} exploitation driven solver, does not improve the objective value within some execution time limit. Recall that in our falsification context, objective functions are robustness functions of output trajectories of the dynamical system in \ref{eq:behaviorfunc}. Once a blocking state is detected, an exploration-driven solver, such as a pseudo-random search method, can be used to escape that blocking state. 
 
- 
 
-\subsubsection*{Coverage and robustness monitoring for detection of blocking situations}
-The exploration is said {\em blocking}, if the exploration, continued with any exploitation driven solver in $\solverset$, does not improve the objective value within some execution time limit. In our falsification context, objective functions are robustness functions of output trajectories of the dynamical system in \ref{eq:behaviorfunc}. A blocking situation can be detected based on the coverage and robustness evolution. More concretely, when both the robustness and coverage values remain stagnant, that is they do not decrease and increase respectively by some predefined amounts, for a number of rounds, we consider that the exploration gets in a blocking situation. Due to the monotonicity of the coverage and robustness evolution with respect to the number of runs, the detection of a blocking state is done by comparing the coverage and the robustness values of the current round and those of the previous round. 
+To detect a blocking situation we monitor the coverage and robustness evolution. More concretely, when both the robustness and coverage values remain stagnant, that is they do not decrease and increase respectively by some predefined amounts, for a number of rounds, we consider that the search gets in a blocking situation. Due to the monotonicity of the coverage and robustness evolution with respect to the number of runs, the detection of a blocking state is done by comparing the coverage and the robustness values of the current round and those of the previous round. This process is summarized by the function $DetectBlocking$ in Algorithm \ref{algoSolverCombination}.
 
 
 \section{Solver initialization}\label{sec:init}
-To find appropriate initial points for the solvers, we inspire from the algorithm configuration tuning methods.  These methods essentially determine the best configurations of an algorithm (designed to solve a given problem) based on the results of running the algorithm on a set of problem instances. The configurations with best performance (with respect to some criteria) will then be used for new problem instances (that arise in the future), since an underlying assumption this approach relies on is that the set of considered instances represent sufficiently well the set of all the possible instances.  
 
-In our falsification setting, we will use these concepts for slightly different meanings. Indeed, in our setting, we have only one problem (defined by a dynamical system and a property), but a number of available solvers; however we can still follow the spirit of the algorithm configuration tuning approach, by letting solver initialization play the role of algorithm configuration.
+We now describe how to pick initial parameter points for a solver, that is the function $InitialPointSelection$ in Algorithm \ref{algoSolverCombination}. An intuitive way is to select one of the best points from the previously explored ones, and repeat this process by picking a solver and sample an initial point, until achieving a satisfying result. It is however well-known that such a greedy method can lead to a blocking state. Another simple way is to uniformly sample it over the parameter space, which is essentially what the above-mentioned pseudorandom sampling method does. This clearly does not allow an iteration to exploit the results of the previous iterations. We propose an alternative heuristic to pick initial parameter points according to a distribution that is dynamically updated based on the previous results.
+
+%\subsubsection*{Iterated F-Race based algorithm for solver initialization}
+\subsubsection*{Iterately updated sampling distribution}
+We suppose that after each iteration, we keep a number of points explored in the previous iterations. In each iteration some of these points are used to bias the sampling of new candidates, in view of sampling around the most promising ones. The iterative sampling process can be summarized by three steps in the $k^{th}$ iteration: 
+\begin{itemize}
+\item sample $N^k$ candidates based on a probability model; 
+\item evaluate the sampled candidates; 
+\item update the probability model for the sampling process in the next round.
+\end{itemize}
+Let $\param \in \real^n$ be a parameter point such that each component $\param_i \in [\underline{\param}_i, \overline{\param}_i]$. In the $k^{th}$ iteration, the sampling distribution of $\param_i$ can be a normal distribution $\mathcal{N}(\overline{\param}^k_i, \sigma_i^k)$, where the mean $\overline{\param}^k_i$ is one of the most promising candidates from the previous iteration, selected using their robustness weights. The standard deviation $\sigma_i^k$ in the $k^{th}$ iteration can be determined by: 
+\begin{equation} \label{eq:sigma}
+\sigma_i^k = (\overline{\param}_i - \underline{\param}_i) (\frac{1}{N^k})^{k/n}
+\end{equation}
+which decreases iteration after iteration. The number $N^k$ of candidates can vary, being large at the beginning and decreases gradually. In the first iteration where no information is available, we can sample candidates (or parameter values) according to a uniform distribution. 
+
+\subsubsection*{Sampling from promising points}
+As mentioned earlier, some points visited by one solver can be stored to be explored later by other solvers. Note that we may run a solver again but only from the best points from the previous runs of this solvers because the solvers tend to produce the same results for the same initial points unless their settings are modified. Running a solver from the points explored by the other solvers can make the whole set of explored points quickly become large. It is thus of interest to keep only promising points. To this end, we will make use of a well-known method for tuning algorithm configurations, called F-Race \cite{FRace2010}, which was inspired from racing algorithms in machine learning. The essential idea of is to evaluate a given set of algorithm configurations iteratively on a sequence of problem instances. When there is sufficient statistical indication that a configuration performs poorly, it will be excluded from the future search process. To do so, the F-Race method employs Friedman test \cite{Conover1999}. 
+%In the following we show how this idea can be applied to our problem of solver initialization.
+
+%To find appropriate initial points for the solvers, we inspire from the algorithm configuration tuning methods.  These methods essentially determine the best configurations of an algorithm (designed to solve a given problem) based on the results of running the algorithm on a set of problem instances. The configurations with best performance (with respect to some criteria) will then be used for new problem instances (that arise in the future), since an underlying assumption this approach relies on is that the set of considered instances represent sufficiently well the set of all the possible instances.  
+
+In our falsification setting, we will use these concepts for slightly different meanings. Indeed, we have only one problem instance (defined by a dynamical system and a property), but a number of available solvers; however we can still follow the spirit of the algorithm configuration tuning approach, by letting solver initial points play the role of algorithm configurations.
 
 The solver initialization problem can be formally defined by the following elements
 \begin{itemize}
-\item $\Gamma$ is the set of parameter values.
-\item $\solverset$ is the set of solver indices.
+%\item $\Gamma$ is the set of parameter values.
+\item $\solversetall$ is the set of solvers.
 %\item $\pi_I$ is a probability measure over the set $I$.
-\item $\exectime : \solverset \to \real_+$ is a function associating to every solver of index $\solver$ an execution time.
-\item $c(\param, \solver, \exectime_{\solver})$ is a (random) variable representing the objective function value obtained by running the solver $\solver$ from the point $\param \in \paramset$ for $\exectime_{\solver}$ time. 
+\item $\exectime : \solversetall \to \real_+$ is a function associating to each solver of index $\solver$ an execution time.
+\item $c(\param, \solver)$ is a (random) variable representing the cost function value obtained by running the solver $\solver$ from the point $\param \in \paramset$. 
 %\item $C \subset \real$ is the set of possible cost values for all configurations $\theta \in \Theta$ and $\iota \in I$.
 %\item $\pi_C$ is a probability measure over the set $C$. Thus $\pi_C(c ~|~ \theta, \iota)$ is the probability that $c$ is the cost of running configuration $\theta$ on instance $\iota$.
 %\item $C(\theta) = C(\theta ~|~ \Theta, I, \pi_I, \pi_C, t)$ is the criterion that needs to be optimized with respect to $\theta$. In the most general case it measures in some sense the desirability of the configuration $\theta$.
 %\item $T$ is the total amount of time available for experimenting with the given candidate configurations on the available instances before delivering the selected configuration.
 \end{itemize}
-
-For a given STL specification $\spec$, let $c(\param, \solver, \exectime_{\solver})$ be the minimal robustness value (over the output traces and with respect to the property $\spec$) obtained by executing the solver $\solver$ under the parameter $\param$ for $\exectime_{\solver}$ generates. We specify a maximum computation time budget for the search from a parameter value because arriving at a global optimum may be infeasible for all possible parameter values. Note that $c(\param, \solver, \exectime_{\solver})$ can be a random variable because of the randomized elements in some solvers. 
+In other words, let $c(\param, \solver)$ be the minimal robustness value (over the output traces and with respect to the property $\spec$) obtained by executing the solver $\solver$ from the point $\param$. Note that $c(\param, \solver)$ can be thought of as a random variable because of the randomized elements in some solvers. 
 %\begin{equation}
 %min \{  \rho(\spec, \behaviorfunc(\param)) ~|~ \param \in \paramset \} 
 %\end{equation}
 %where $\rho(\spec, \behaviorfunc(\param))$ denotes the robustness of the output trajectory $\behaviorfunc(\param)$ with respect to the property $\spec$. The output signal $\behaviorfunc(\param)$ is obtained under the parameter $\param$. 
 
-Our solver initialization problem can thus be thought of as searching in the space $\paramset$ of all possible parameter values for the ones that minimize the objective function $c$. 
+%Our solver initialization problem can thus be thought of as searching for an initial parameter value that leads a solver to minimize the objective function $c$. 
 
 %Let $\mathcal{A}$ be the set of search algorithms (such as Simulated Annealing, CMAES, etc.) that are available to us. Mapping to the terminology of the algorithm tuning context, 
 % \begin{itemize}
@@ -97,69 +132,62 @@ Our solver initialization problem can thus be thought of as searching in the spa
 %\end{itemize}
 %The measures $\pi_I$ and $\pi_C$ in general are not known, the expected cost is estimated in a Monte Carlo fashion by running the falsification algorithm under a configuration on a training set of instances.
 
-As mentioned earlier, some points that are explored by one algorithm can be stored to be explored later by other algorithms. Note that we may run the same algorithm again but only from the best points. Running a different solver from the explored points results in a new set of explored parameter points together with their cost values, and the set of stored exploration states can quickly become large. It is thus of interest to keep only promising parameter points. To this end, we will make use of a well-known method for tuning algorithm configurations, called F-Race \cite{FRace2010}, which was inspired from racing algorithms in machine learning. The essential idea of these racing algorithms is to evaluate a given set of algorithm configurations iteratively on a sequence of instances. When there is sufficient statistical indication that a configuration performs poorly, it will be excluded from the future search process. To do so, the F-Race method employs Friedman test \cite{Conover1999}. 
-In the follwoing we show how this idea can be applied to the problem of solver initialization.
 
 
-\subsection{F-Race based algorithm for solver initialization}
 
-First, we describe how the F-Race is applied to our solver initialization problem. More concretely, its goal is to remove from consideration the explored points from which it is not promising to explore. The initial points are then selected from the remaining (more promising) explored points.
-
-Each iteration of the F-Race procedure corresponds to a number of solver runs. In the first iteration, we sample a set of parameter values $\paramset^0$ which serve as initial candidates. Then, to each candidate, we apply one available solver for some time and record the corresponding cost. The same candidate parameter value can be explored with different search algorithms. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. 
-
-Suppose now that the current iteration is $k$ and let $\Gamma^k$ be the set of the candidate parameter values that are still in the race. Let $m_k = | \Gamma^k | $ be the size of the set $\Gamma^k$. Let $m_s$ be the number of solvers, that is $m_s = | \solverset |$. The Friedman test assumes that the costs are $k$ mutually independent $m$-variate random variables. We construct a cost matrix $C^k$ of size $m_s \times m_k$ where the $\solver^{th}$ line is
+%\subsubsection*{F-Race based algorithm for solver initialization}
+Now we describe how the F-Race is applied to remove from consideration the explored points from which it is not promising to explore. The initial points are then selected from the remaining (more promising) explored points. In the first iteration, no previous results are available, we randomly sample a set of parameter points $\Gamma^0$ which serve as initial candidates. Then, to each candidate, we apply the available solvers for some time and record the corresponding costs. The statistical information from the recorded costs is used to decide if a parameter value is not promising at all and thus is dropped. Suppose now that the current iteration is $k$ and let $\Gamma^k$ be the set of the candidates that are still in the race. Let $m_k = | \Gamma^k | $ be the size of the set $\Gamma^k$. Let $m_s$ be the number of solvers, that is $m_s = | \solversetall|$. The Friedman test assumes that the costs are $m_k$ mutually independent $m_s$-variate random variables. For each solver $\solver$, we construct a cost vector $C^k_s$ which is of size at most $m_k$
 \begin{eqnarray}\label{eq:C}
-c_{\solver}(\param^{q_1})  \; c_{\solver}(\param^{q_2}) \; \ldots  \; c_{\solver}(\param^{q_{m_k})} 
+C^k_s = (c_{\solver}(\param^{q_1}), c_{\solver}(\param^{q_2}), \ldots, c_{\solver}(\param^{q_{m_k})})
 \end{eqnarray}
-Element $c_{\solver}(\param^{q_i}) = c(\param^{q_i}, \solver, \exectime_{\solver})$ corresponds to the cost obtained on the surviving parameter value $\param^{q_i}$ by executing the solver $\solver$ for some $\exectime_{\solver}$ time. For simplicity of presentation, we consider $\exectime_{\solver}$ is constant for all the solvers. If a parameter value has not been used with a solver $\solver$, it is not included in the matrix for the Friedman test but is kept for consideration. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter value $\param^i$, let $R_{\solver i}$ be the rank of $\param^i$ for the solver $\solver$. Let $$R_i =  \sum_{\solver=1}^{m_s} R_{{\solver} i}$$ 
-be the sum of ranks for $\param^i$ with $1 \leq i \leq m_k$. 
-%(average ranks are used in case of ties)
-
-To perform the Friedman test \cite{FRace2010}, we determine
+Each element of the vector is defined by $c_{\solver}(\param^{q_i}) = c(\param^{q_i}, \solver)$ and corresponds to the best cost obtained by executing the solver $\solver$ from the point $\param^{q_i}$ after a completed run. If a parameter point has not been used with a solver $\solver$, it is not included in the cost vector for the Friedman test but is kept for consideration. The costs $c_{\solver}(\param^{q_i})$ are ranked in non-decreasing order, that is $q_i \le q_{i'}$ if $c_{\solver}(\param^{q_i}) \le c_{\solver}(\param^{q_{i'}})$. For each parameter point $\param^{q_i}$, let $R^{\solver}_{i}$ be the rank of $\param^{q_i}$ with respect to the solver $\solver$. Let $R_{i} =  \sum_{\solver=1}^{m_s} R^{\solver}_{i}$ be the sum of ranks for $\param^i$ ($1 \leq i \leq m_k$) over all the solvers. To perform the Friedman test \cite{FRace2010}, we determine
 \begin{eqnarray*}
-\tau & = \displaystyle{ \frac{ (m_k-1) \sum_{j=1}^{m_k} (R_j - (\frac{m_s(m_k+1)}{2})^2 } {\sum_{i=1}^l \sum_{j=1}^{m_k}  R^2_{ij} -  \frac{m_s m_k (m_k+1)^2}{4} }} \nonumber \\ 
+\tau & = \displaystyle{ \frac{ (m_k-1) \sum_{i=1}^{m_k} (R_i - (\frac{m_s(m_k+1)}{2})^2 } {\sum_{s=1}^{m_s} \sum_{i=1}^{m_k}  (R^s_{i})^2 -  \frac{m_s m_k (m_k+1)^2}{4} }} \nonumber \\ 
 \end{eqnarray*}
-If the value of $\tau$ is larger than the $1 - \alpha$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom, the null hypothesis that all parameter values are equivalent is rejected \cite{Papoulis1991}. 
-
-If at iteration $k$ this hypothesis is not rejected, we keep the current set of parameter values. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove from the current set  the values with differences in cost beyond some given threshold.  
+If the value of $\tau$ is larger than the $1 - \alpha$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom, the null hypothesis that all parameter values are equivalent is rejected \cite{Papoulis1991}. If at iteration $k$ this hypothesis is not rejected, we keep the current set of parameter values. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove from the current set  the values with differences in cost beyond some given threshold.  
+ %(average ranks are used in case of ties)
  
- \subsection{Iterated F-Race based algorithm for solver initialization}
-The F-Race method can also be iterated as follows. Each iteration corresponds to a round, and in each round a number of candidate parameter values remaining from the previous round are used to bias the sampling of new candidates, in view of sampling around the most promising ones. The iterative F-Race can be summarized by three steps in the $r^{th}$ round: 
-\begin{itemize}
-\item (1) sample $N^r$ candidates based on a probability model; 
-\item (2) evaluate the sampled candidates; 
-\item (3) update the probability model for the sampling process in the next round.
-\end{itemize}
-Let $\param \in \real^n$ be a parameter value of our dynamical system such that each component $\param_i \in [\underline{\param}_i, \overline{\param}_i]$. In the $r^{th}$ round, the sampling distribution of $\param_i$ can be a normal distribution $\mathcal{N}(\overline{\param}^r_i, \sigma_i^r)$, where the mean $\overline{\param}^r_i$ is one of the most promising candidates from the previous iteration, selected using their robustness weights. The standard deviation $\sigma_i^r$ in the $r^{th}$ round can be determined by: 
-\begin{equation} \label{eq:sigma}
-\sigma_i^r = (\overline{\param}_i - \underline{\param}_i) (\frac{1}{N^r})^{r/n}
-\end{equation}
-which decreases iteration after iteration. The number $N^r$ of candidates can vary, being large at the beginning and decreases gradually. In the first iteration where no information is available, we can sample candidates (or parameter values) according to a uniform distribution. The $r^{th}$ round of the procedure is summarized in Algorithm~\ref{algoFals}, which contains the initialization and execution of explotation-driven solvers in the $r^{th} $ round and can replace the "for all solvers"-loop in Algorithm \ref{algoSolverCombination}. 
+The above developments lead to a new variant of exploitation procedure with iteratively updated sampling distributions, which can be used in the $k^{th}$ iteration of Algorithm \ref{algoSolverCombination} instead of Algorithm \ref{algoSolverExpl}. 
+
+ 
+% \subsubsection*{Iterated F-Race based algorithm for solver initialization}
+%The F-Race method can also be iterated as follows. Each iteration corresponds to a round, and in each round a number of candidate parameter values remaining from the previous round are used to bias the sampling of new candidates, in view of sampling around the most promising ones. The iterative F-Race can be summarized by three steps in the $r^{th}$ round: 
+%\begin{itemize}
+%\item (1) sample $N^r$ candidates based on a probability model; 
+%\item (2) evaluate the sampled candidates; 
+%\item (3) update the probability model for the sampling process in the next round.
+%\end{itemize}
+%Let $\param \in \real^n$ be a parameter value of our dynamical system such that each component $\param_i \in [\underline{\param}_i, \overline{\param}_i]$. In the $r^{th}$ round, the sampling distribution of $\param_i$ can be a normal distribution $\mathcal{N}(\overline{\param}^r_i, \sigma_i^r)$, where the mean $\overline{\param}^r_i$ is one of the most promising candidates from the previous iteration, selected using their robustness weights. The standard deviation $\sigma_i^r$ in the $r^{th}$ round can be determined by: 
+%\begin{equation} \label{eq:sigma}
+%\sigma_i^r = (\overline{\param}_i - \underline{\param}_i) (\frac{1}{N^r})^{r/n}
+%\end{equation}
+%which decreases iteration after iteration. The number $N^r$ of candidates can vary, being large at the beginning and decreases gradually. In the first iteration where no information is available, we can sample candidates (or parameter values) according to a uniform distribution. The $r^{th}$ round of the procedure is summarized in Algorithm~\ref{algoFals}, which contains the initialization and execution of explotation-driven solvers in the $r^{th} $ round and can replace the "for all solvers"-loop in Algorithm \ref{algoSolverCombination}. 
 
 \begin{algorithm}
-\caption{Solver Initialization and Execution - the $r^{th} $ round \label{algoFals}}
+\caption{Exploitation in the $k^{th}$ iteration of \ref{algoSolverCombination}}
+\caption{$\{ \bestobj, \explostateSet \}=Exploitation(\solversetall, \explostateSet, k)$ \label{algoFRace}}
 \begin{algorithmic}
 %\Require  
 %\Ensure  
 %\State $k = 1$
 %\State $\Gamma^{k-1}=\emptyset$
 %\While{$k \le k_{max}$} 
-  \State \Comment{{\em Sample new $N^r$ parameter values using distribution $\pi^r$}}
+  \State \Comment{{\em Sample new $N^k$ parameter values using distribution $\pi^k$}}
   \State $\Gamma  = \Gamma  \cup  Sample(N^{r}, \pi^r)$
    \State
-  \ForAll{$\solver \in \solverset$} 
-     \State \Comment{{\em Run solver $\solver$ from some parameter values in $\Gamma$, if it is not done, for $\exectime_{s}$ time}}    
+  \ForAll{$\solver \in \solversetall$} 
+     \State \Comment{{\em Run solver $\solver$ from some parameter points in $\Gamma$, if it is not done, for $\exectime_{s}$ time}}    
     % \State \Comment{{\em Some intermediate explored points are added in $\Gamma^k$ to produce the new set  $\Gamma^k$} }   
       \State $\{ \bestobj, \explostateSet[\solver] \} = Run(\solver, \Gamma, \exectime_{\solver})$    
-      \State  Update the cost table $C$ for parameter values and their costs in $\explostateSet[\solver]$ as in (\ref{eq:C})
+      \State  Update the cost vector $C_s^k$ for these parameter points and their costs in $\explostateSet[\solver]$ as in (\ref{eq:C})
      %\State $C^k =  C^k \cup c(\Theta^k, A_s, t_{s}^k)$  
      \EndFor
    \State
-   \State Run F-Race based algorithm on $C$ to exclude the least promising candidates from $\explostateSet$. 
-   \State Let $\Gamma$ be the updated parameter value set 
+   \State Run F-Race based algorithm on the cost vectors to exclude the least promising candidates from $\explostateSet$. 
+   \State Let $\Gamma$ be the updated parameter set 
    \State
-  \State $r++$  %\Comment{{\em Increment the iteration counter}} 
-  \State Update distribution $\pi_i^r$ for each parameter $\param_i$ (using the mean $\overline{\param}^r_i$ and the deviation $\sigma^r_i$ as in (\ref{eq:sigma}))
+  \State $k++$  %\Comment{{\em Increment the iteration counter}} 
+  \State Update distribution $\pi_i^k$ for each $i^{th}$ parameter component (using the mean $\overline{\param}^k_i$ and the deviation $\sigma^k_i$ as in (\ref{eq:sigma}))
 %\If{}
 %\ElsIf{ }
 %\EndIf

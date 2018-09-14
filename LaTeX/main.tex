@@ -1,14 +1,19 @@
-\documentclass[10pt,oneside,letterpaper]{article}
-\usepackage[a4paper, total={6in, 8in}]{geometry}
+%\documentclass[10pt,oneside,letterpaper,twocolumn]{article}
+\documentclass[10pt,oneside]{article}
+%\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{times}
 \usepackage{verbatim}
 \usepackage{outlines} % For outlines
+\usepackage{multirow}
 \usepackage{enumitem} 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{outlines,color,url}
+\usepackage{graphics,color,url}
 \usepackage[colorlinks=true, allcolors=blue]{hyperref}
 
 \usepackage{amsmath,amsthm, amssymb,eufrak}
+\usepackage{enumitem}
+\usepackage{float}
 
 % For outlines
 \setenumerate[1]{label=\Roman*.}
@@ -21,6 +26,9 @@
 \newcommand{\commentout}[1]{}
 
 \input{macros}
+\newcommand{\lt}{<}
+\newcommand{\rt}{>}
+
 
 \title{Metaheuristics to falsify properties of cyber-physical systems}
 \author{Thao Dang, James Kapinski, Hisahiro Ito}
@@ -68,6 +76,7 @@
 \input{prelims}
 
 \input{solverswitch}
+\input{expresults}
 
 \bibliographystyle{abbrv}
 \bibliography{bibliography} 
