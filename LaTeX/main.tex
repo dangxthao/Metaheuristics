@@ -1,5 +1,5 @@
 %\documentclass[10pt,oneside,letterpaper,twocolumn]{article}
-\documentclass[10pt,oneside]{article}
+\documentclass[sigconf]{acmart}
 %\usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{times}
 \usepackage{verbatim}
@@ -9,7 +9,8 @@
 \usepackage{algorithm}
 \usepackage{algpseudocode}
 \usepackage{graphics,color,url}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+%\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{array}
 
 \usepackage{amsmath,amsthm, amssymb,eufrak}
 \usepackage{enumitem}
@@ -31,16 +32,42 @@
 
 
 \title{Metaheuristics to falsify properties of cyber-physical systems}
-\author{Thao Dang, James Kapinski, Hisahiro Ito}
+
+\author{Thao Dang}
+\affiliation{%
+  \institution{Verimag, France}
+}
+\email{Thao.Dang@imag.fr}
+
+\author{Alexandre Donz{\'{e}}}
+\affiliation{%
+  \institution{Decyphir, France}
+}
+\email{alex@decyphir.com}
+
+\author{James Kapinski}
+\affiliation{%
+  \institution{Toyota Research Institute - North America}
+}
+\email{jim.kapinski@toyota.com}
+
+\author{Hisahiro Ito}
+\affiliation{%
+  \institution{Toyota Research Institute - North America}
+}
+\email{hisahiro.ito@toyota.com}
+
 \date{}
 
 \begin{document}
 
-\maketitle
 
 \begin{abstract}
 \input{abstract}
 \end{abstract}
+
+\maketitle
+
 
 \iffalse
 \begin{outline}[enumerate]
