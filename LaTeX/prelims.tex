@@ -11,7 +11,7 @@ Each $\inputs$ is a function $\timeinterval \mapsto \inputspace$, where $\timein
 Similarly, we assume that each output signal $\outsig \in \outsigset$ is a function $\timeinterval \mapsto \outspace$, where $\outspace$ is some metric space of finite dimension.
 
 Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but we restrict our investigation to the class of  input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
-can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions.
+can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions. We call elements of $\inputparamset$ parameter points. 
 
 We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$ and define $\paramset = \paramsorigset \times \inputparamset$.
 We define a function 
@@ -81,4 +81,4 @@ The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so 
 
 In Section \ref{Solvers}, we describe a method that iteratively selects from a collection of different existing optimization solvers, each time using information about the progress of the search to initialize the solvers and to decide which of the solvers to use in the next iteration.
 
-\paragraph{Coverage} TODO
+  

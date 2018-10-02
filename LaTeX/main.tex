@@ -1,5 +1,6 @@
 %\documentclass[10pt,oneside,letterpaper,twocolumn]{article}
-\documentclass[sigconf]{acmart}
+\documentclass[twocolumn,9pt,sigconf]{acmart}
+
 %\usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{times}
 \usepackage{verbatim}
@@ -15,6 +16,11 @@
 \usepackage{amsmath,amsthm, amssymb,eufrak}
 \usepackage{enumitem}
 \usepackage{float}
+
+
+\acmConference[]{}{}{}            
+\acmYear{2018}
+\copyrightyear{2018}
 
 % For outlines
 \setenumerate[1]{label=\Roman*.}
@@ -35,9 +41,9 @@
 
 \author{Thao Dang}
 \affiliation{%
-  \institution{Verimag, France}
+  \institution{CNRS/Verimag, France}
 }
-\email{Thao.Dang@imag.fr}
+\email{Thao.Dang@univ-grenoble-alpes.fr}
 
 \author{Alexandre Donz{\'{e}}}
 \affiliation{%
@@ -101,10 +107,11 @@
 \input{intro}
 
 \input{prelims}
-
 \input{solverswitch}
 \input{expresults}
+\input{related}
+\input{conclusion}
 
-\bibliographystyle{abbrv}
+\bibliographystyle{plain}
 \bibliography{bibliography} 
 \end{document}

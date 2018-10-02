@@ -12,18 +12,16 @@
 %% an air path controller for an automotive fuel cell (FC) application.
 
 In our experiments, we compare the performance of a MATLAB
-implementation\footnote{We use the robustness evaluation function from
-the Breach toolbox \cite{}}
-with the following standard approaches: CMA-ES, Simulated Annealing, Global
-Nelder-Mead algorithm implementations (integrated in
-Breach~\cite{BreachCAV10}). Our experiments were performed on a computer with 1.4GHz processor with
-4GB RAM, running MATLAB R2015 64-bit version.  Also, we compare with a
-random sampling method, where in each iteration a pseudo-randomly
-selected point is tested only if it falls in a grid cell wherein no
-other point has been previously tested.  The grid used in this method
-is the same as the grid chosen to define the coverage.  We will
-call this method as grid based random sampling, for the sake of
-reference during comparison.
+implementation of the combined metaheuristics algorithm. The implementation uses
+the robustness evaluation function together with the following solvers CMA-ES, Simulated Annealing, Global
+Nelder-Mead algorithm implementations integrated in
+Breach~\cite{DBLP:conf/cav/Donze10}. 
+Our experiments were performed on a computer with 1.4GHz processor with 4GB RAM, running 
+MATLAB R2015 64-bit version.  Also, we compare with a method combining
+the CMA-ES and classification \cite{CAV2017}, where in each iteration the visited points are classified in order to identify promising regions.
+%The grid used in this method is the same as the grid chosen to define the coverage.  %We will
+%call this method as grid based random sampling, for the sake of
+%reference during comparison.
 
 
 \subsection{Automative Powertrain Control} \label{sec:PTC}
@@ -36,10 +34,11 @@ internal model as a blackbox. The model has three input signals,
 Pedal Angle Engine Speed and Sensor Offset.
 The air-to-fuel (A/F) ratio, denoted by $\eta$, is an
 output signal for which the following safety requirement was stated
-in~\cite{Dreossi2015}: $\phi = \G_{[5,10]}\lt(\eta<0.5\rt)$.
+in~\cite{Dreossi2015}: %$\phi = \G_{[5,10]}\lt(\eta<0.5\rt)$.
+$\G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$.
 %We allow $\theta$ to take any value in $[0,40]$, while we fix $w=1000$ and $h=1$. 
 
-\emph{\textbf{Input signal settings.}}
+\paragraph{Input signal settings.}
 We consider an input range for
 the Pedal Angle as $[0,40]$ and fix the Engine Speed and
 Sensor Offset as $1000$ and $1$, respectively. The time horizon is $50$s.  We use piecewise constant
@@ -47,7 +46,7 @@ signal for testing, where the Pedal Angle is parameterized by $10$
 uniformly spaced control points in the time horizon.  Thus, we
 have a $10$ dimensional search space $\cpset$.% to search for a counterexample of $\phi$.  
 
-\emph{\textbf {Algorithm setting.}}  For our algorithm, {\bf TODO}
+%\emph{\textbf {Algorithm setting.}}  For our algorithm, {\bf TODO}
 
 %The global search time is $\Tglobalmax= $ seconds.  
 
@@ -57,14 +56,10 @@ consists of hypercubes of side length $\epsilon=4$.
 %% Nelder-Mead in Breach and S-TaLiRo and run for a
 %% maximum time of $5000$s.
 
- \emph{\textbf {Results.}} Our algorithm successfully found a counterexample in less
-than ??? seconds for all seeds. 
-
-
 
 \subsection{Automatic transmission} \label{sec:autotrans}
 We consider the benchmark model of an Automatic Transmission control
-system, which appeared in~\cite{FainekosARCH1415}\footnote{The model
+system, which appeared in~\cite{DBLP:conf/cpsweek/HoxhaAF14}\footnote{The model
 and property description of this benchmark is available at the site of
 the workshop Applied Verification for Continuous and Hybrid Systems,
 ARCH 2014-2015, \url{http://cps-vo.org/node/12116}}.  The system has
@@ -74,18 +69,17 @@ speed, denoted $v$ (mph).%% The specified range
 %% in~\cite{FainekosARCH1415} for both the throttle and break inputs was
 %% $[0,100]$.
 
-%The property states that if the engine speed stays below a value
-%$\ov{w}$, then the vehicle speed $v$ does not exceed a threshold
-%$\ov{v}$ within $10$ seconds.  We specify the values of $\ov{w}$ and
-%$\ov{v}$ to be $2520$ and $50$, respectively, which gives the
-%following STL property: $\phi
-%=\neg\lt((\F_{[0,10]}v>50)\wedge(\G w\leq
-%2520)\rt)$ \cite{FainekosARCH1415}.
+The property states that if the engine speed stays below a value
+$\overline{w}$, then the vehicle speed $v$ does not exceed a threshold
+$\overline{v}$ within $10$ seconds.  We specify the values of $\overline{w}$ and
+$\overline{v}$ to be $2520$ and $50$, respectively, which gives the
+following STL property: $\phi=\neg ((\F_{[0,10]}v>50)\wedge(\G w\leq
+2520) )$ \cite{DBLP:conf/cpsweek/HoxhaAF14}.
 
-\emph{\textbf{Input signal and parameter settings.}}
+\paragraph{Input signal and parameter settings.}
 Initially, the vehicle is at rest, when $v=0$ and $w=0$.  For the
 input signals, we consider smaller ranges than specified
-in~\cite{FainekosARCH1415}, which makes the property $\phi$ more
+in~\cite{DBLP:conf/cpsweek/HoxhaAF14}, which makes the property $\phi$ more
 robust.  Henceforth, the throttle signal is allowed to vary between
 $[35,100]$ and the break is allowed to vary between $[0,40]$.  The
 time horizon is set to $30$ seconds.  We use piecewise constant input
@@ -93,11 +87,11 @@ signals for testing, where the throttle signal is parametrized by $7$
 control points and the break has $3$ control points. Thus, we have a
 $10$ dimensional search space.
 
-\emph{\textbf{Algorithm setting}}.  {\bf TODO}
+%\emph{\textbf{Algorithm setting}}.  {\bf TODO}
 
 
 
-\emph{\textbf{Results.}}  {\bf TODO}
+%\emph{\textbf{Results.}}  {\bf To describe}
 %Our algorithm (classification guided
 %global search with local search) successfully found a counterexample in
 %less than $2000$ seconds for all randomly chosen seeds. As an indication of the 
@@ -112,16 +106,25 @@ $10$ dimensional search space.
 %any fixed seed for random sampling, these results are reproducible.
 
 
-\subsection{Diesel model} \label{sec:diesel} {\bf TODO}
+\subsection{Diesel model} \label{sec:diesel} {\bf To describe}
+
+\subsection{Results} 
+The results are presented in Table~\ref{tab:results} and Table~\ref{tab:SeedResults}.  We note that for
+any fixed seed, that is the index for a sequence of random numbers in MATLAB for random sampling, these results are reproducible. 
+As one can see from the tables, our combined metaheuristics algorithm successfully found a counterexample in
+less than time-out limit for all the considered benchmarks and almost for all the seeds. 
+The other methods either were not successful in finding a falsifier within the time-out limit or 
+took more computation time. Indeed the metaheuristics used alone, in particular Simulated Annealing 
+and Global Nelder-Mead got stuck around local optima for these examples.
+
 
 \begin{table}[ht]
-\caption{Experimental results}
+\caption{Experimental results on the benchmarks with seed 5000}
 %\vspace{-0.5em}
 %\vspace{-1.5em}
 \label{tab:results}
 \begin{center}
-\begin{tabular}{|c|c|c|c||}
-\hline
+\begin{tabular}{|c|c|c|c|}
 \hline
 \multirow{1}{*}{Search method} & \multicolumn{3}{|c|}{Computation time (s)} \\
 \hline
@@ -132,26 +135,29 @@ $10$ dimensional search space.
  CMA-ES & T.O (5000)  & T.O. (2000)  &  413.252  \\
 \hline
 \cline{2-4}
- Simulated Annealing &   & T.O. (2000)  & TO (2000)     \\
+ Simulated Annealing &  T.O. (2000) & T.O. (2000)  & TO (2000)     \\
 \hline
 \cline{2-4}
-Global Nelder-Mead &   &  TO (2000)  &  TO (2000)    \\
+Global Nelder-Mead &  T.O. (2000) &  TO (2000)  &  TO (2000)    \\
 \hline
 \cline{2-4}
-Pseudo-random sampling &  TO (5000)  &  T.O. (2000) & TO (2000)    \\
+Pseudo-random & & & \\ 
+sampling &  TO (5000)  &  T.O. (2000) & TO (2000)    \\
 \hline
 \cline{2-4}
-Classification + CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996    \\
+Classification + & & & \\ 
+CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996    \\
 \hline
 \cline{2-4}
- Combined Metaheuristics & 1276.80 &  899.15 & 299.501   \\
-\hline
+ Combined + & & & \\ 
+ Metaheuristics & 1276.80 &  899.15 & 299.501   \\
 \hline
 \end{tabular}
 \end{center}
-{\small \emph{T.O.}: Exceeded indicated time out limit which is 2000 seconds in this experiment.\\
-
-Property for the PTC model $\G_{[5,50]}( (verificaton_measurement[t] < 0.05) \land ( verificaton_measurement[t] > - 0.05 ))$. Property for the Automatic Transmission model $\phi =  \G(RPM[t] < 2520) \land  \F_{[0,10]}(speed[t] > 50)$. Property for the Diesel Engine model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
+{\small T.O.(T): Exceeded indicated time out limit which is $T$ seconds.\\
+Property for the PTC model $\phi = \G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$. \\
+Property for the Automatic Transmission model $\phi =  \G(w[t] < 2520) \land  \F_{[0,10]}(v[t] > 50)$. \\
+Property for the Diesel Engine model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
 %\emph{Seed}: Index for a sequence of random numbers in MATLAB. \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.
 }
 \end{table}
@@ -165,24 +171,23 @@ Property for the PTC model $\G_{[5,50]}( (verificaton_measurement[t] < 0.05) \la
 \begin{center}
 \begin{tabular}{|c|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{1.5cm}|>{\centering\arraybackslash}p{2cm}|>{\centering\arraybackslash}p{1.5cm}|}
 \hline
-Seed &  \multicolumn{2}{|c|}{Computation time (s)} & \multicolumn{2}{|c|}{Falsification}\\
+Seed &  \multicolumn{2}{|c|}{Computation time (s)} \\
 \hline
-\cline{2-4}
- &  Classification + CMA-ES \cite{Adimoolam2017}  & Meta- heuristics & Classification + CMA-ES \cite{Adimoolam2017}  & Meta- heuristics \\
+\cline{1-1}
+ &  Classification + CMA-ES \cite{CAV2017}  & Meta- heuristics  \\
 \hline
-\cline{2-4}
- 0 &   996  & \checkmark &   991.41  & \checkmark \\
+\cline{1-2}
+ 0 &   996   &   991.41   \\
 \hline
- 5000 & 1382  & \checkmark &  899.15  & \checkmark \\
+ 5000 & 1382   &  899.15   \\
  \hline
-10000 &  1720  & \checkmark &  966.87  & \checkmark \\
+10000 &  1720  &  966.87  \\
 \hline
-15000 &  1355  & \checkmark & 911.55 & \checkmark \\
+15000 &  1355  & 911.55  \\
 \hline
 \end{tabular}
 \end{center}
 Property $\phi =  \G(RPM[t] < 2520) \land  \F_{[0,10]}(speed[t] > 50)$. 
-\emph{Seed}: Index for a sequence of random numbers in MATLAB.
 % \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.}
 \end{table}
 
@@ -319,6 +324,6 @@ Property $\phi =  \G(RPM[t] < 2520) \land  \F_{[0,10]}(speed[t] > 50)$.
 %% also could not falsify within $5000$s.
 
 
-\vspace{-1em}
+%\vspace{-1em}
 %\subsection{Industrial example} 
 %\input{FCexample.tex}
