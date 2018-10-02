@@ -23,7 +23,7 @@ Because falsification techniques are \emph{best effort} methods, they are not gu
 In other words, the absence of a falsifying case does not indicate that the system is incapable of exhibiting bad behaviors.
 So the question is, if no falsifying trace is found by the optimizer, what can be concluded? In these cases, one useful piece of information that can be reported back to the designers is the degree to which the search space was covered in the attempt to falsify the property.
 %This leads us to consider the notion of \emph{coverage} of the possible test cases.
-Previous work considered falsification methods that attempt to maximize the amount of coverage of the search space when performing the falsification \cite{Dreossi2015,Adimoolam2017}, and these methods were capable of reporting the coverage back to the user.
+Previous work considered falsification methods that attempt to maximize the amount of coverage of the search space when performing the falsification \cite{Dreossi2015,CAV2017}, and these methods were capable of reporting the coverage back to the user.
 In the present work, we utilize these notions of coverage, together with the robustness values, to make heuristic decisions about how to guide the falsification search.
 The core idea is that, given a collection of traditional search algorithms, we can judiciously switch between algorithms online, if we consider 
 the evolution of both the robustness values and the coverage of the search space.

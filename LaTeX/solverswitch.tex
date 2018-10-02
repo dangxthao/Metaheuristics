@@ -3,7 +3,7 @@ In abstract terms, our falsification procedure is based on state space search. E
 
 
 \subsection{Exploitation-driven versus exploration-driven}
-Borrowing the terminology from \cite{}, we {\em roughly} classify the search algorithms or solvers used in this work into two categories: 
+Borrowing the terminology from \cite{dreo:hal-01341683}, we {\em roughly} classify the search algorithms or solvers used in this work into two categories: 
 \begin{itemize}
 \item {\em Exploitation-driven} : The search algorithms of this category try to make greedy changes (often small) around the current point. Among the existing solvers of this category, we make use of a number of well-known heuristics, namely Simulated Annealing \cite{Kirkpatrick83optimizationby}, Global Nelder-Mead \cite{NelderMead65}, CMA-ES \cite{hansen2006eda}. The solvers of this category are used to explore locally around some potential points. They are efficient when starting at initial points that are chosen appropriately. They can be used as long as they make progresses, that is the objective values keep getting improved. 
 \item {\em Exploration-driven}: The solvers of this category make random changes, which could be both large and small, and thus quickly enlarge the exploration space. Such solvers are particularly useful to help the exploration escape local optima where the objective value does not get improved after a long exploration. The pseudo-random sampling method used in this work belongs to this category. Note also that the pseudo-random search method does not need an initial point, as shown in Algorithm \ref{algoSolverCombination}. 
@@ -77,7 +77,7 @@ We are now ready to describe our abstract algorithm for guided combination of me
 
 
 \begin{algorithm}
-\caption{Abstract Algorithm for Sequential Solver Execution \label{algoSolverCombination}}
+\caption{Abstract Algorithm for Combining Metaheuristics \label{algoSolverCombination}}
 \begin{algorithmic}
 %\Require  
 %\Ensure  
@@ -144,6 +144,10 @@ Let us proceed to describe a situation where an exploitation-driven solver is st
 
 To detect a blocking situation, we monitor the coverage and robustness evolution. More concretely, when both the robustness and coverage values remain stagnant, that is they do not decrease and increase respectively by some predefined amounts, for a predefined number of iterations, we consider that the search gets in a blocking situation. Due to the monotonicity of the coverage and robustness evolution with respect to the number of visited parameter points, the detection of a blocking state can be done by comparing the coverage and the robustness values of the current iteration and those of the previous iteration. This process is summarized by the function $DetectBlocking$ in Algorithm \ref{algoSolverCombination}.
 
+\begin{figure}
+\includegraphics[scale=0.3]{LocalOptimum.png}
+\caption{Illustration of a situation where the search gets stuck around a local minimum. The black dots represent the result of using Simulated Annealing, and the red stars represent the result of using the Nelder-Mead algorithm. It can be seen that even switching between these two solvers, it is not possible to escape the ``valley'' around this local minimum, and an exploration-driven search is needed.} 
+\end{figure}
 
 \section{Solver Initialization}\label{sec:init}
 
