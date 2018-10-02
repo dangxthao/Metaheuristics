@@ -79,6 +79,7 @@ This optimization problem is challenging for a number of reasons. First, this op
 
 The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby}, CMA-ES \cite{hansen2006eda}, {\em etc}. Instead, we seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
 
-In Section \ref{Solvers}, we describe a method that iteratively selects from a collection of different existing optimization solvers, each time using information about the progress of the search to initialize the solvers and to decide which of the solvers to use in the next iteration.
+The paper is organized as follows. In Section \ref{Solvers}, we describe a method that iteratively selects from a collection of different existing optimization solvers, each time using information about the progress of the search to initialize the solvers and to decide which of the solvers to use in the next iteration. In Section \ref{sec:expres}} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system.
+
 
   
