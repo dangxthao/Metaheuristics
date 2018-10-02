@@ -20,7 +20,8 @@ max_sim = inf; %maximal number of simulations
 % fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')
 % r = input('0, 5000, 10000 or 15000\n');
 r = abs(round(rand*100)+1)
-rng(r,'twister');  
+% rng(r,'twister');  
+rng(r); 
 tic
 
 %fprintf('\n Choose one of the following seeds for cmaes:\n')

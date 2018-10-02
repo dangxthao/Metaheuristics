@@ -34,7 +34,7 @@ switch user_reset
 
         addpath('../../supp_code')
         addpath('../../src')
-        addpath('../../../breach')
+        addpath('../../../breach-dev')
         addpath('../DieselEngineExampleForThao/')
         
         InitBreach
@@ -53,8 +53,8 @@ user_reset=1;
 
 %% Input system and STL formula
 if (user_reset==1)
-    disp('Choose an example or manual input to run the algorithm')
-    disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
+%     disp('Choose an example or manual input to run the algorithm')
+%     disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
     %setup = input('');
     setup = 5;
     switch setup
@@ -73,6 +73,7 @@ if (user_reset==1)
             phi = input('Enter the STL-formula to be falsified: '); 
     end
 end
+phi = BreachRequirement(phi);
 
 disp('The system specification is in an object file named CBS')
 CBS=Sys.copy();
@@ -86,7 +87,7 @@ disp(phi)
 %% limit on nb of solver calls
 %nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
 %fprintf('\n Computation Time Limit is %d seconds\n',nb_solver_calls)
-nb_solver_calls = 30
+nb_solver_calls = 1 %30 %1 %30
 
 % %% Setting falsification method and parameters
 % msg1 = sprintf('\nChoose a falsification method\n');
@@ -107,11 +108,11 @@ nb_solver_calls = 30
 %% limit on computation time for each solver call
 %cov_epsilon = input('Specify coverage increase threshold : '); 
 %fprintf('\n Coverage increase threshold is %d \n',cov_epsilon)
-cov_epsilon = 5e-2
+cov_epsilon = 1e-3
 rob_epsilon_percent = 0.05
-rob_stagnant_win = 2
+rob_stagnant_win = 1
 
-strategy_id = 1; %1 xlog, 2 from xbest
+strategy_id = 2; %1 xlog, 2 from xbest
 winlen = 1;
 
 % Nb_Optimizers=nb of optimizers other than pseudorandom sampling
@@ -175,7 +176,7 @@ for call_count = 1:nb_solver_calls
              fprintf(1,'\n *** Running PseudoRandom');
              fprintf(fileID,'\n *** Running PseudoRandom');
             
-             time_lim = 400
+             time_lim = 30
              
              CallPseudo(CBS, phi, time_lim); %this call updates Out
              
@@ -327,9 +328,9 @@ for call_count = 1:nb_solver_calls
             fprintf(fileID,'\n **** Running CMAES');
             
             if (call_count==1) 
-                time_lim = 800
+                time_lim = 2000 %2000 %800
             else
-                time_lim = 400
+                time_lim = 500 %2000 %400
             end
     
             %delete('var*','outcm*')
@@ -367,7 +368,7 @@ for call_count = 1:nb_solver_calls
             
             %strategy_id=2; 
             if (call_count>1) 
-                nbsamples=100;
+                nbsamples=200;
                 if (strategy_id==2)
                     nbsamples=1; %taken from the last xbest point(s)
                 end
@@ -378,7 +379,7 @@ for call_count = 1:nb_solver_calls
                 %x0_qrandom = CBS.GetParam(falsif_pb.params);
                 %x0 = [ x0, x0_qrandom ];
                 %input('') 
-                if (strategy_id==0)
+                %if (strategy_id==0)
                     nbsamplesPR=100;
                     CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                     x0_more = CBS.GetParam(falsif_pb.params);
@@ -386,7 +387,7 @@ for call_count = 1:nb_solver_calls
                     if (~isempty(x0))
                         falsif_pb.x0 = x0';
                     end
-                end 
+                %end 
             else
                 CBS.QuasiRandomSample(200, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
@@ -448,7 +449,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('Specify time limit on computation: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
             
-            time_lim = 400
+            time_lim = 1000
             %if strcmp(user_reset,1)
             %if user_reset==1
             
@@ -552,7 +553,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_lim = 100; %computation time limit
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            time_lim = 200
+            time_lim = 1000
 
 %             nb_local_iter = input('\n Specify nb of local iterations for each solver call\n');
 %             fprintf('\n Specify nb of local iterations for each solver call %d \n',max_sim)
@@ -765,11 +766,15 @@ for call_count = 1:nb_solver_calls
     if (~local_optimum_stuck)
         cov_monitoring_length=cov_monitoring_win;
         PR_duration=0;
-        solver_index = prev_solver_index + 1;
         
-%             if (solver_index==3) 
-%                 solver_index=1; %skip GNM
-%             end    
+%             if (prev_solver_index==0) 
+%                 strategy_id = 1 %pick from xlog, if previously pseudorandon 
+%             end 
+            solver_index = prev_solver_index + 1;
+        
+            if (solver_index==2) 
+                solver_index=3; %skip SA, %GNM
+            end    
         if (solver_index>(Nb_Optimizers-1)) 
             fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
             fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);

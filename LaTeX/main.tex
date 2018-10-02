@@ -1,14 +1,26 @@
-\documentclass[10pt,oneside,letterpaper]{article}
-\usepackage[a4paper, total={6in, 8in}]{geometry}
+%\documentclass[10pt,oneside,letterpaper,twocolumn]{article}
+\documentclass[twocolumn,9pt,sigconf]{acmart}
+
+%\usepackage[a4paper, total={6in, 8in}]{geometry}
+\usepackage{times}
 \usepackage{verbatim}
 \usepackage{outlines} % For outlines
+\usepackage{multirow}
 \usepackage{enumitem} 
 \usepackage{algorithm}
 \usepackage{algpseudocode}
-\usepackage{outlines,color,url}
-\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{graphics,color,url}
+%\usepackage[colorlinks=true, allcolors=blue]{hyperref}
+\usepackage{array}
 
 \usepackage{amsmath,amsthm, amssymb,eufrak}
+\usepackage{enumitem}
+\usepackage{float}
+
+
+\acmConference[]{}{}{}            
+\acmYear{2018}
+\copyrightyear{2018}
 
 % For outlines
 \setenumerate[1]{label=\Roman*.}
@@ -21,29 +33,49 @@
 \newcommand{\commentout}[1]{}
 
 \input{macros}
+\newcommand{\lt}{<}
+\newcommand{\rt}{>}
 
-\title{Metaheuristics to falsify properties of cyber-physical systems}
-\author{Thao Dang, James Kapinski, Hisahiro Ito}
+
+\title{Combining Metaheuristics to Falsify Properties of Cyber-Physical Systems}
+
+\author{Thao Dang}
+\affiliation{%
+  \institution{CNRS/Verimag, France}
+}
+\email{Thao.Dang@univ-grenoble-alpes.fr}
+
+\author{Alexandre Donz{\'{e}}}
+\affiliation{%
+  \institution{Decyphir, France}
+}
+\email{alex@decyphir.com}
+
+\author{James Kapinski}
+\affiliation{%
+  \institution{Toyota Research Institute - North America}
+}
+\email{jim.kapinski@toyota.com}
+
+\author{Hisahiro Ito}
+\affiliation{%
+  \institution{Toyota Research Institute - North America}
+}
+\email{hisahiro.ito@toyota.com}
+
 \date{}
 
 \begin{document}
 
-\maketitle
 
 \begin{abstract}
-Cyber-physical systems (CPSs) are used in many mission-critical applications, and the scale and complexity of these systems is growing rapidly.
-New approaches are needed to increase the confidence in the correctness of complex CPS designs.
-Falsification techniques offer a practical solution. 
-A falsification method takes a system model, along with a specification that defines the correct behavior of the system, and performs a best-effort search over inputs and system parameters for behaviors that violate the specification; essentially performing automated bug finding.
-Falsification methods rely on a global optimizer to guide the search; one challenge with falsification is that it can be difficult to select the most effective optimizer and optimization parameters.
-To address this, we introduce a new metaheuristic that automatically focuses computing resources on the most effective optimizer for a given falsification task.
-Given a collection optimizers, our approach makes heuristic decisions to switch optimizers based on
-evolving measures of both cost and the coverage of the decision space.
-The technique is able to automatically falsify properties for complex CPS design models more efficiently than existing techniques.
-We demonstrate the efficacy of the approach using several examples, including an automotive hydrogen fuel cell control system.
-
+\input{abstract}
 \end{abstract}
 
+\maketitle
+
+
+\iffalse
 \begin{outline}[enumerate]
 \1 Introduction
 	\2 The challenge of falsification
@@ -66,19 +98,20 @@ We demonstrate the efficacy of the approach using several examples, including an
 \1 Method
 	\2 Monitoring robustness and coverage across iterations
 	\2 Changing solver based on heuristic rules, informed by robustness and coverage
-	
-	
-	
 	\2 F-Race for tuning parameters
 \1 Experiments
 \1 Conclusions
 \end{outline}
+\fi
 
+\input{intro}
 
 \input{prelims}
-
 \input{solverswitch}
+\input{expresults}
+\input{related}
+\input{conclusion}
 
-\bibliographystyle{abbrv}
+\bibliographystyle{plain}
 \bibliography{bibliography} 
 \end{document}

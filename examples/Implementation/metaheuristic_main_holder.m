@@ -32,10 +32,10 @@ switch user_reset
         global start
         start = true;
 
-        addpath('../supp_code')
-        addpath('../src')         
-        addpath('../../breach')
-        addpath('../FctOpt')
+        addpath('../../supp_code')
+        addpath('../../src')         
+        addpath('../../../breach')
+        addpath('../../FctOpt')
         
         InitBreach
         
@@ -557,7 +557,7 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_lim = 100; %computation time limit
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            time_lim = 50
+            time_lim = 1000
 
 %             nb_local_iter = input('\n Specify nb of local iterations for each solver call\n');
 %             fprintf('\n Specify nb of local iterations for each solver call %d \n',max_sim)

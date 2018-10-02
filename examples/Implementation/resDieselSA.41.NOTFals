@@ -1,0 +1,15 @@
+
+ *** Running Simulated Annealing
+ Simulated Annealing time = 618.421919 seconds
+ Best Robustness Value of this call = 3.649911
+ Best Robustness Value so far = 3.649911
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    3.64991118    0.05751885
+ Solver call 1 done
+ Exit! TOTAL Computation time = 618.630629 seconds
+
+NOT FALSIFY 

@@ -14,7 +14,7 @@ fprintf('\n Creating breach interface with simulink model %s\n',model_name)
 simTime = 50; 
 fprintf('\n Simulation time horizon is %d seconds\n',simTime)
 
-BrSys = CoverageBreachSet(model_name,{},[], {'In1', 'In2','Out1'}); % do we need signals other than those? If yes, add them there explicitly
+BrSys = CoverageBreachSet(model_name,{},[], {'In1','In2', 'Out1'});
 BrSys.SetTime([0 simTime]);
 
 
@@ -101,7 +101,7 @@ Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 % Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 
 %% Specifying STL formula
-phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 5)')
+phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 41.1)')
 % phi = STL_Formula('phi','alw_[15,30](Out1[t]<5)');
 % phi = set_params(phi, {'sim_time'}, [simTime]);
 % phitest1 = STL_Formula('phitest1','ev(RPM[t]>2520)');
