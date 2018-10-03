@@ -17,10 +17,10 @@
 \usepackage{enumitem}
 \usepackage{float}
 
-
-\acmConference[]{}{}{}            
-\acmYear{2018}
-\copyrightyear{2018}
+\acmConference[HSCC]{Hybrid Systems: Computation and Control}            
+{April 2019}{Montreal, Canada}
+\acmYear{2019}
+\copyrightyear{2019}
 
 % For outlines
 \setenumerate[1]{label=\Roman*.}
@@ -37,7 +37,7 @@
 \newcommand{\rt}{>}
 
 
-\title{Combining Metaheuristics to Falsify Properties of Cyber-Physical Systems}
+\title{Coverage-based Metaheuristics to Falsify Properties of Cyber-Physical Systems}
 
 \author{Thao Dang}
 \affiliation{%
@@ -74,38 +74,7 @@
 
 \maketitle
 
-
-\iffalse
-\begin{outline}[enumerate]
-\1 Introduction
-	\2 The challenge of falsification
-	\2 Falsification generally and via STL for CPS
-	\2 Coverage
-	\2 Metaheuristics in optimization
-	\2 Overview of our approach
-\1 Preliminaries: \emph{For much of the notation, we can reuse the notation from the CAV paper with Arvind, as it provides a way to introduce STL, robustness, and falsification but then quickly move to a general global optimization setting.}
-	\2 General notation
-		\3 $\Pi$ is a set of global optimization solvers
-		\3 For a given solver $\pi\in \Pi$, $\Theta$ is a set of solver \emph{configurations}
-		\3 $J$ is a cost evaluation
-		\3 $x(t)$ is a trace of the system
-	\2 Falsification
-	\2 STL
-		\3 $\varphi$ is an STL property 
-		\3 $\rho$ maps a trace and an STL formula to a real number
-	\2 Coverage
-		\3 $H$ takes a collection of points and maps it to a real number representing the \emph{coverage} of the space points.
-\1 Method
-	\2 Monitoring robustness and coverage across iterations
-	\2 Changing solver based on heuristic rules, informed by robustness and coverage
-	\2 F-Race for tuning parameters
-\1 Experiments
-\1 Conclusions
-\end{outline}
-\fi
-
 \input{intro}
-
 \input{prelims}
 \input{solverswitch}
 \input{expresults}
