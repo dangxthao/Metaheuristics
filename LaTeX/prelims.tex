@@ -13,7 +13,7 @@ Similarly, we assume that each output signal $\outsig \in \outsigset$ is a funct
 Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but we restrict our investigation to the class of  input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
 can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions. We call elements of $\inputparamset$ parameter points. 
 
-We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$ and define $\paramset = \paramsorigset \times \inputparamset$.
+We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$, where $p\in \paramset = \paramsorigset \times \inputparamset$.
 We define a function 
 \begin{eqnarray} \label{eq:behaviorfunc}
 y &=& \behaviorfunc(\param),
@@ -31,7 +31,7 @@ Below we present an overview of STL and refer the reader to \cite{MalerN04} for 
 An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
 Atomic predicates are defined over signal values and have the form $\spec$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
 Temporal operators ``always'' ($\G$), ``eventually'' ($\F$), and ``until'' ($\U$) have the usual meaning and are scoped using intervals of the form $(a,b)$, $(a,b]$, $[a,b)$, $[a,b]$, or $(a,\infty)$, where 
-$a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language:
+$a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language.
 \begin{equation}~\label{eqn:stl-gen}
 \spec ~ := ~ \true \; | \; f(\outsig(t))\sim 0 \; | \; \neg \spec \; | \;
 \spec_1 \wedge \spec_2 \; | \; \spec_1 \U_I \spec_2:~~\sim \in \{ <,\leq,>,\geq,=,\neq \}
@@ -61,7 +61,7 @@ the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
 
 Property falsification is a means of performing automatic bug-finding in system designs.
 Given a system model such as (\ref{eq:behaviorfunc}) and a system property $\spec$ provided in the form of an STL formula, 
-falsification is a process by which a parameter value $\param \in \paramset$
+falsification is a process for finding a parameter value $\param \in \paramset$
 such that $y=\behaviorfunc(\param)$ does not satisfy $\spec$, which is denoted $\outsig
 \not\models \spec$. Such a behavior $y$ is called a counterxample. 
 Note that a counterexample is identified when 
@@ -75,11 +75,44 @@ We formulate the property falsification task as an optimization problem as follo
 \min_{\param \in \paramset} && \rho(\spec,y) \\ \nonumber
 s.t. && y=\behaviorfunc(\param)
 \end{eqnarray}
-This optimization problem is challenging for a number of reasons. First, this optimization problem is mixed in the sense that it contains both discrete and continuous variables. Note that the above constraints defined by $\behaviorfunc$ are not explicitly specified but implicitly as the feasible runs of a highly nonlinear hybrid systems each of which for a given parameter can only be determined approximately using numerical simulation. For such constraints, in general there are no algorithms that can guarantee to find a global optimum \cite{FloudasPardalos2009}. In case the dynamics are continuous, well-known methods for global optimization are only efficient if the cost functions are convex or have some structural properties. Similarly, existing discrete optimization techniques, often faced with the combinatorial explosion issue, are designed to efficiently address specific classes of problems. Another particularity of the systems we want to handle is that formal mathematical models are often entirely unavailable for such systems. However, the systems can be queried through simulations or test executions that measure or observe some output signals for given input signals. This gives rise to a hard problem of determining the gradients of the cost function, which are often required by traditional continuous optimization techniques. 
+This optimization problem is challenging for a number of reasons. First, this optimization problem is mixed in the sense that it contains both discrete and continuous variables. Also, note that the above constraints defined by $\behaviorfunc$ 
+are not specified explicitly; rather, the constraint enforces that $y$ is the output signal of model $\transfunc$, given parameters $\param$.
+As $\transfunc$ can be a nonlinear hybrid system, for any given $\param$, $y$ can only be determined approximately using numerical simulation. 
+Lastly, the cost function $\rho$ is complex and contains discontinuities.
+This gives rise to a hard problem of determining the gradients of the cost function, which are often required by traditional continuous optimization techniques. 
+For such problems, in general there are no algorithms that can guarantee to find a global optimum \cite{FloudasPardalos2009}, and so we rely on a best effort global optimization techniques. 
+%In case the dynamics are continuous, well-known methods for global optimization are only efficient if the cost functions are convex or have some structural properties. Similarly, existing discrete optimization techniques, often faced with the combinatorial explosion issue, are designed to efficiently address specific classes of problems. 
 
-The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby}, CMA-ES \cite{hansen2006eda}, {\em etc}. Instead, we seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
-
-The paper is organized as follows. In Section \ref{Solvers}, we describe a method that iteratively selects from a collection of different existing optimization solvers, each time using information about the progress of the search to initialize the solvers and to decide which of the solvers to use in the next iteration. In Section \ref{sec:expres} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system. Before concluding, we position our approach in relation with existing work using the idea of combining heuristics. 
+The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby} and CMA-ES \cite{hansen2006eda}. Also, we note that for most problems, we do not need to identify a true optimum; we merely seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
 
 
-  
+\paragraph{Coverage as Exploration Performance Measure}	
+
+In addition to the cost valuations, based on $\rho$ in (\ref{eq:optim1}),
+the metaheuristic procedure we describe in the sequel utilizes notions of coverage of the parameter space to guide the search.
+To capture the amount of coverage that we achieve, we use a metric called {\em cell occupancy}. 
+
+Note that our set of signals corresponds to a set $\inputparamset$ of parameter vectors defining input signals.
+Let $\omega=\{ \omega_i | i=1,\ldots,
+\numpartition \}$ be a partition of $\inputparamset$. For now, we assume that each partition element,
+which we call a \emph{cell}, is rectangular, with each side of equal
+length, $\Delta$, called \emph{grid cell size}. A
+vector that indicates how many points are in each cell is called a
+\emph{distribution}, $\distribution=(n_1,\ldots,n_\numpartition)$,
+where each $n_i$ indicates how many points are located in cell $i$.
+Cell occupancy is based on the relative number of cells occupied by
+points, compared to the total number of cells. Consider the total
+number of occupied cells, that is, the number of cells that contain
+at least one point, i.e., $\occupiedcellcount =  \sum_{i=1}^{\numpartition} g_i$  
+where $g_i = 1$ if  $n_i\geq 1$, and $g_i = 0$ otherwise. Then, the proposed cell occupancy measure is given as
+\begin{eqnarray*}
+\celloccupancy(\distribution) & = & \frac{\log \occupiedcellcount}{\log \numpartition}.
+\end{eqnarray*}
+Logarithm functions are used due to the fact that the total number of cells could be very large as compared to the number of occupied cells. The logarithms provide two key features for the cell occupancy measure: (1) they maintain the monotonicity of the measure, and (2) they result in reasonable measure values even for cases where the dimension $\cpdim$ is  large. 
+
+
+The paper is organized as follows. 
+In Sec. \ref{Solvers} we provide an overview of existing metaheuristic methods that we utilize to implement our approach. 
+In Section \ref{sec:combination}, we describe our approach, which for iteratively selecting from a collection of different existing optimization solvers.
+Section \ref{sec:init} describes how we use information about the progress of the search to initialize the solvers at the start of each iteration. 
+In Section \ref{sec:expres} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system \textcolor{red}{(?)}. Before concluding, we position our approach in relation with existing work using the idea of combining heuristics. 
