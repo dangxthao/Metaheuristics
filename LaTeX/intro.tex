@@ -4,7 +4,7 @@ Development of hybrid and cyber-physical systems (CPS) is becoming increasingly 
 As these systems are found in many safety-critical applications, like aircraft, medical devices, and automobiles, it is vital that these systems behave in a manner consistent with their design expectations. Despite this, it is difficult to verify that CPS designs meet their requirements for complex applications.
 We address this challenge by presenting a new method to automatically identify incorrect system behaviors.
 Our method searches for faulty system behaviors using a metaheuristic falsification approach, which leverages a combination of existing search techniques.
-The technique leverages notions of behavior robustness, with respect to requirements, in combination with notions of coverage of the search space, to improve the overall search performance.
+The technique uses notions of behavior robustness, with respect to requirements, in combination with notions of coverage of the search space, to improve the overall search performance.
 
 Property \emph{falsification} has garnered much interest recently as a way to perform automatic bug-finding for complex CPS design models.
 Falsification is a family of techniques that use global optimizers to automatically find critical system behaviors.
@@ -39,7 +39,9 @@ By contrast, exploitation methods are designed to efficiently identify promising
 
 The technique we present leverages the strengths of both exploration and exploitation methods of search and reduces the impact of their weaknesses.
 We introduce a new metaheuristic approach to the search problem, which uses measures of both robustness and coverage to make decisions about how best to guide the search.
-Our method is an iterative procedure that utilizes several metaheuristic, that is the search methods that can be applied to different problems, in contrast with heuristics which are often designed for specific problems. Some of these metaheuristics are characterized as exploration-driven methods and some are characterized as exploitation-driven methods.  
+Our method is an iterative procedure that utilizes several traditional optimization methods.
+%, that is, the search methods that can be applied to different problems, in contrast with heuristics which are often designed for specific problems. 
+Some of these optimization methods are characterized as exploration-driven methods and some are characterized as exploitation-driven methods.  
 In each iteration, our search procedure considers the evolution of both the best-case robustness value (the optimization cost) as well as the evolution of a coverage measure.
 We use the information to make online decisions about when and how to switch from one optimization strategy to another. 
 For example, if we are using an exploitation-driven method, and we decide that the decrease in robustness has ``stalled" (is not decreasing quickly) and the coverage is ``low", we will switch from the exploitation-driven method to an alternative exploration-driven method.
