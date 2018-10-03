@@ -16,14 +16,14 @@ Borrowing the terminology from \cite{dreo:hal-01341683}, we {\em roughly} classi
 \item {\em Exploration-driven}: The solvers of this category explore the parameter space widely, and thus quickly enlarge the exploration space. Such solvers are particularly useful to help the exploration escape local optima, where the objective value has stagnated. The exploration-driven solver we use in this work is a pseudo-random sampling method. Note that the pseudo-random search method does not need an initial point, as shown in Algorithm \ref{algoSolverCombination}. 
 \end{itemize}
 The above classification refers only to behaviors of the solvers seen on a global level, since the above-mentioned metaheuristics can contain both exploitation-driven and exploration-driven aspects. Consider the basic idea behind each of the solvers that we classify as exploitation-driven. 
-The Simulated Annealing metaheuristic \cite{Kirkpatrick83optimizationby} was inspired by the annealing technique in metallurgy to attain solid state with low energy. The algorithm makes a modification to the current point and if this modification decreases the objective function $E$ (which is energy in the annealing process), it is accepted; otherwise it is accepted with a probability $1-e^{\frac{-\delta E}{T}}$ \textcolor{red}{(<---Thao, please check that you agree with this change.)}, where $\delta E$ is the increase in the objective function value. The temperature $T$, used to control the process, is first set at a high value for a number of iterations, which facilitates exploration, since new points are often accepted.
+The Simulated Annealing metaheuristic \cite{Kirkpatrick83optimizationby} was inspired by the annealing technique in metallurgy to attain solid state with low energy. The algorithm makes a modification to the current point and if this modification decreases the objective function $E$ (which is energy in the annealing process), it is accepted; otherwise it is accepted with a probability $e^{\frac{-\delta E}{T}}$, where $\delta E$ is the increase in the objective function value. The temperature $T$, used to control the process, is first set at a high value for a number of iterations, which facilitates exploration, since new points are often accepted.
 %a good chance of reaching a region with potential of containing a global optimum. 
-Then the temperature in lowered to facilitate exploitation within this region. For the Nelder-Mead algorithm \cite{NelderMead65}, a simplex is iteratively transformed over an extrapolation of the objective function. It replaces the worst vertex of a simplex by a point symmetric to it with respect to its opposing face. If the vertex point is better, then the simplex is stretched along this line; otherwise it is contracted toward the best vertex. This algorithm is exploitation-driven, though a globalized version includes probabilistic restarts \cite{CHANG2012684}. Regarding the CMA-ES algorithm \cite{hansen2006eda}, a population of new candidate points is generated according to a multi-variate normal distribution. For each generation, the mean value of the distribution is updated using recombination and selection mechanisms of the Evolution Strategy. The update of the covariance matrix is similar to a descent in the direction of a sampled natural gradient of the expected objective function value. In the CMA-ES algorithm, the exploration feature lies in the recombination; however, in general this algorithm is more exploitation-driven. A variant of the algorithm with restarts dynamically increases the population size \cite{hansen2006eda}. Each of Simulated Annealing, Global Nelder-Mead, and CMA-ES posses qualities of exploration and exploitation, but we consider them here as exploitation methods, since the core search strategy for each involves remaining within a region near the current best solution.
+Then the temperature in lowered to facilitate exploitation within this region. For the Nelder-Mead algorithm \cite{NelderMead65}, a simplex is iteratively transformed over which the objective function is extrapolated. It replaces the worst vertex of a simplex by a point symmetric to it with respect to its opposing face. If the vertex point is better, then the simplex is stretched along this line; otherwise it is contracted toward the best vertex. This algorithm is exploitation-driven, though a globalized version includes probabilistic restarts \cite{CHANG2012684}. Regarding the CMA-ES algorithm \cite{hansen2006eda}, a population of new candidate points is generated according to a multi-variate normal distribution. For each generation, the mean value of the distribution is updated using recombination and selection mechanisms of the Evolution Strategy. The update of the covariance matrix is similar to a descent in the direction of a sampled natural gradient of the expected objective function value. In the CMA-ES algorithm, the exploration feature lies in the recombination; however, in general this algorithm is more exploitation-driven. A variant of the algorithm with restarts dynamically increases the population size \cite{hansen2006eda}. Each of Simulated Annealing, Global Nelder-Mead, and CMA-ES posses qualities of exploration and exploitation, but we consider them here as exploitation methods, since the core search strategy for each involves remaining within a region near the current best solution.
 
 To achieve an effective method that combines exploitation and exploration techniques, it is important to have appropriate measures for exploitation and exploration performance. Exploitation performance can be measured by the reduction of the robustness value. Exploration performance can be measured using the notion of coverage. In the next section, we describe how we use these measures to guide our metaheuristic approach.
 
 \section{Guided Combination of Metaheuristics} \label{sec:combination}
-In this section, we describe our abstract algorithm, which is a guided combination of metaheuristics that we call solvers. Before continuing, we remark that a solver is often configurable, that is its configuration parameters can be modified. For example, consider the Simulated Annealing solver: the configuration parameters include the initial temperature, the number of iterations on one temperature stage and the temperature cooling rate. Indeed, a number of approaches to learning these configuration parameters have been proposed in the literature (see for example \cite{HutHooLey11-smac} and references therein). For simplicity of presentation, we omit the internal configurations of the solvers. \textcolor{red}{However, a method for selecting promising initial points for the next explorations can be applied to automatically tune solver configurations. <- What is the point? Are we doing this or do we have a reference? If no, then maybe omit?}
+In this section, we describe our abstract algorithm, which is a guided combination of metaheuristics that we call solvers. Before continuing, we remark that a solver is often configurable, that is its configuration parameters can be modified. For example, consider the Simulated Annealing solver: the configuration parameters include the initial temperature, the number of iterations on one temperature stage and the temperature cooling rate. Indeed, a number of approaches to learning these configuration parameters have been proposed in the literature (see for example \cite{HutHooLey11-smac} and references therein). %For simplicity of presentation, we omit the internal configurations of the solvers. \textcolor{red}{However, a method for selecting promising initial points for the next explorations can be applied to automatically tune solver configurations. <- What is the point? Are we doing this or do we have a reference? If no, then maybe omit?}
 Our abstract algorithm for sequential solver execution is organized in iterations, as shown in Algorithm \ref{algoSolverCombination}. 
 
 %\begin{algorithm}
@@ -126,10 +126,10 @@ To detect a blocking situation, we monitor the coverage and robustness evolution
 \begin{figure}
 %\includegraphics[scale=0.3]{LocalOptima.pdf_t}
 \input{LocalOptima.pdf_t}
-\caption{Illustration of a situation where the search gets stuck around a local minimum at the bottom of a valley surface representing the cost $\rho$ as function of two-dimensional parameter. The sequence of little circles ($p_1, p_2, p_3, p_4$) represent the sequence of test points generated using Simulated Annealing. Then the Nelder-Mead algorithm is used from $p_3$ and it produces first the triangle (the vertices of which are drawn with little rectangles)  $\{p_4, p_5, p_6 \}$ and then creates a new vertex $p_7$ by reflection. It can be seen that even switching between these two solvers, it is not possible to escape the ``valley'' around this local minimum, and an exploration-driven search is needed.} 
+\caption{Illustration of a situation where the search gets stuck around a local minimum at the bottom of a ``valley'' surface representing the cost $\rho$ as function of a two-dimensional parameter. The sequence of little circles ($p_1, p_2, p_3, p_4$) represents the sequence of points generated using Simulated Annealing. Then the Nelder-Mead algorithm is used from $p_4$ and it produces first the triangle (the vertices of which are drawn with little rectangles)  $\{p_4, p_5, p_6 \}$ and then creates a new vertex $p_7$ by reflection of $p_5$ with hisghest cost value. It can be seen that even by switching between these two solvers, it is not possible to escape the ``valley'' around this local minimum, and an exploration-driven search is needed.} 
 \end{figure}
 
-\section{Solver Initialization}\label{sec:init}
+\subsection{Solver Initialization}\label{sec:init}
 
 In this section, we describe the $InitialPointSelection$ function in Algorithm \ref{algoSolverExpl}, which selects initial parameter points for a solver. We propose three heuristics to do so:
 \begin{itemize}
@@ -153,46 +153,10 @@ which decreases iteration after iteration. The number $N^k$ of candidates can va
 
 
 \subsection{Keeping promising points}
-A point visited by one solver can be a starting point for solvers used in subsequent iterations. \textcolor{red}{Note that we may run a solver multiple again but only from the best points from the previous runs of this solvers because the solvers tend to produce the same results for the same initial points unless their settings are modified. <-- I don't understand; can we just kill this sentence?} Running a solver from the points visited by the other solvers can make the set of visited states quickly become large. Thus, we keep only {\em promising} points. Note that a promising point is not necessarily among the best points. It is simply a point that is still worth being kept. To this end, we will make use of a well-known method for tuning algorithm configurations, called F-Race \cite{Birattari2010}, which was inspired from racing algorithms in machine learning. F-Race is used to evaluate a given set of algorithm configurations iteratively on a sequence of problem instances. When there is sufficient statistical indication that a configuration performs poorly, it is excluded from the future search process. %To do so, the F-Race method employs Friedman test \cite{GVK24551600X}. 
-%In the following we show how this idea can be applied to our problem of solver initialization.
-%To find appropriate initial points for the solvers, we inspire from the algorithm configuration tuning methods.  These methods essentially determine the best configurations of an algorithm (designed to solve a given problem) based on the results of running the algorithm on a set of problem instances. The configurations with best performance (with respect to some criteria) will then be used for new problem instances (that arise in the future), since an underlying assumption this approach relies on is that the set of considered instances represent sufficiently well the set of all the possible instances.  
-In our falsification setting, we will use these concepts with slightly different meanings. Indeed, we have only one problem instance (defined by a dynamical system and a property), but a number of available solvers; however, we follow the spirit of the algorithm configuration tuning approach, by letting solver initial points play the role of algorithm configurations.
-
-%The solver initialization problem can be formally defined by the following elements
-%\begin{itemize}
-%%\item $\Gamma$ is the set of parameter values.
-%\item $\solversetall$ is the set of solvers.
-%%\item $\pi_I$ is a probability measure over the set $I$.
-%\item $\exectime : \solversetall \to \real_+$ is a function associating to each solver of index $\solver$ an execution time.
-%\item $c(\param, \solver)$ is a variable representing the cost function value obtained by running the solver $\solver$ from the point $\param \in \paramset$. 
-%\item $C \subset \real$ is the set of possible cost values for all configurations $\theta \in \Theta$ and $\iota \in I$.
-%\item $\pi_C$ is a probability measure over the set $C$. Thus $\pi_C(c ~|~ \theta, \iota)$ is the probability that $c$ is the cost of running configuration $\theta$ on instance $\iota$.
-%\item $C(\theta) = C(\theta ~|~ \Theta, I, \pi_I, \pi_C, t)$ is the criterion that needs to be optimized with respect to $\theta$. In the most general case it measures in some sense the desirability of the configuration $\theta$.
-%\item $T$ is the total amount of time available for experimenting with the given candidate configurations on the available instances before delivering the selected configuration.
-%\end{itemize}
-%In other words, let $c(\param, \solver)$ be the minimal robustness value (over the output traces and with respect to the property $\spec$) obtained by executing the solver $\solver$ from the point $\param$. 
+A point visited by one solver can be a starting point for solvers used in subsequent iterations. \textcolor{red}{Note that we may run a solver multiple again but only from the best points from the previous runs of this solvers because the solvers tend to produce the same results for the same initial points unless their settings are modified. <-- I don't understand; can we just kill this sentence?} Running a solver from the points visited by the other solvers can make the set of visited states quickly become large. Thus, we keep only {\em promising} points. Note that a promising point is not necessarily among the best points. It is simply a point that is still worth being kept. To this end, we will make use of a well-known method for tuning algorithm configurations, called F-Race \cite{Birattari2010}, which was inspired from racing algorithms in machine learning. F-Race is used to evaluate a given set of algorithm configurations iteratively on a sequence of problem instances. When there is sufficient statistical indication that a configuration performs poorly, it is excluded from the future search process. In our falsification setting, we will use these concepts with slightly different meanings. Indeed, we have only one problem instance (defined by a dynamical system and a property), but a number of available solvers; however, we follow the spirit of the algorithm configuration tuning approach, by letting solver initial points play the role of algorithm configurations.
 
 Let $c(\param, \solver)$ be a variable representing the cost function value obtained by running the solver $\solver$ from the point $\param \in \paramset$. Note that $c(\param, \solver)$ can be thought of as a random variable because of the randomized elements in some solvers. 
-%\begin{equation}
-%min \{  \rho(\spec, \behaviorfunc(\param)) ~|~ \param \in \paramset \} 
-%\end{equation}
-%where $\rho(\spec, \behaviorfunc(\param))$ denotes the robustness of the output trajectory $\behaviorfunc(\param)$ with respect to the property $\spec$. The output signal $\behaviorfunc(\param)$ is obtained under the parameter $\param$. 
 
-%Our solver initialization problem can thus be thought of as searching for an initial parameter value that leads a solver to minimize the objective function $c$. 
-
-%Let $\mathcal{A}$ be the set of search algorithms (such as Simulated Annealing, CMAES, etc.) that are available to us. Mapping to the terminology of the algorithm tuning context, 
-% \begin{itemize}
-% \item a search algorithm $A \in \mathcal{A}$ (together with one of its internal settings) is an instance in the algorithm tuning terminology. As an example of internal settings of a search algorithm, if the search method is Simulated Annealing, a setting is defined by the initial temperature, the number of iterations on one temperature stage and the temperature cooling rate.  
-%\item a {\em configuration} (in the algorithm tuning terminology) is a parameter value $\theta \in \Theta$ at which a search algorithm starts. 
-%\item If the specifications of interest are expressed by STL \cite{STL} formulas, $c(\theta, A, t)$ is the minimal robustness value over the simulation traces that the configuration (parameter) $\theta$ generates after running for $t$ time using the algorithm instances (algorithm and one of its setting).
-%\end{itemize}
-%The measures $\pi_I$ and $\pi_C$ in general are not known, the expected cost is estimated in a Monte Carlo fashion by running the falsification algorithm under a configuration on a training set of instances.
-
-
-
-
-%\subsubsection*{F-Race based algorithm for solver initialization}
-%The initial points are then selected from the remaining (more promising) visited points. 
 We describe how the F-Race algorithm is integrated into the exploitation procedure to remove from consideration the visited points that are not promising. In the first iteration, no visited points are available, we randomly sample a set of parameter points $\Gamma^0$, which serve as initial candidates. Then, to each candidate, we apply the available solvers for some time and record the corresponding costs. The statistical information from the recorded costs is used to decide if a parameter point is not promising at all and thus is dropped. Suppose again that the current iteration is $k$ and let $\Gamma^k$ be the set of the candidates that are still in the race. Let $m_k = | \Gamma^k | $ be the size of the set $\Gamma^k$. Let $m_s$ be the number of solvers, that is $m_s = | \solversetall|$. The Friedman test assumes that the costs are $m_k$ mutually independent $m_s$-variate random variables. For each solver $\solver$, we construct a cost vector $C^k_s$ which is of size at most $m_k$
 \begin{eqnarray}\label{eq:C}
 C^k_s = (c_{\solver}(\param^{q_1}), c_{\solver}(\param^{q_2}), \ldots, c_{\solver}(\param^{q_{m_k})})
@@ -204,200 +168,40 @@ Each element of the vector is defined by $c_{\solver}(\param^{q_i}) = c(\param^{
 If the value of $\tau$ is larger than the $(1 - \alpha)$ quantile of the distribution $\chi^2$  with $(m_k - 1)$ degrees of freedom ($\alpha$ is a predefined value), the null hypothesis that all parameter values are equivalent is rejected \cite{AP91}. If at the $k^{th}$ iteration this hypothesis is not rejected, we keep the current set of parameter points. If the null hypothesis is rejected, the candidates with the lowest expected rank are considered the most promising parameter values. We then remove, from the current set, the points with differences in cost beyond some given threshold.  
  %(average ranks are used in case of ties)
  
-All the above-described developments lead to a new variant of the falsification algorithm, which uses the heuristic using updated initial point sampling distributions and the F-Race method to retain promising points. This represents one heuristic, though we note that the two first heuristics for initial point selection can also be used in place of this method.%. , which can be used in the $k^{th}$ iteration of Algorithm \ref{algoSolverCombination} instead of Algorithm \ref{algoSolverExpl}. 
-
- 
-% \subsubsection*{Iterated F-Race based algorithm for solver initialization}
-%The F-Race method can also be iterated as follows. Each iteration corresponds to a round, and in each round a number of candidate parameter values remaining from the previous round are used to bias the sampling of new candidates, in view of sampling around the most promising ones. The iterative F-Race can be summarized by three steps in the $r^{th}$ round: 
-%\begin{itemize}
-%\item (1) sample $N^r$ candidates based on a probability model; 
-%\item (2) evaluate the sampled candidates; 
-%\item (3) update the probability model for the sampling process in the next round.
-%\end{itemize}
-%Let $\param \in \real^n$ be a parameter value of our dynamical system such that each component $\param_i \in [\underline{\param}_i, \overline{\param}_i]$. In the $r^{th}$ round, the sampling distribution of $\param_i$ can be a normal distribution $\mathcal{N}(\overline{\param}^r_i, \sigma_i^r)$, where the mean $\overline{\param}^r_i$ is one of the most promising candidates from the previous iteration, selected using their robustness weights. The standard deviation $\sigma_i^r$ in the $r^{th}$ round can be determined by: 
-%\begin{equation} \label{eq:sigma}
-%\sigma_i^r = (\overline{\param}_i - \underline{\param}_i) (\frac{1}{N^r})^{r/n}
-%\end{equation}
-%which decreases iteration after iteration. The number $N^r$ of candidates can vary, being large at the beginning and decreases gradually. In the first iteration where no information is available, we can sample candidates (or parameter values) according to a uniform distribution. The $r^{th}$ round of the procedure is summarized in Algorithm~\ref{algoFals}, which contains the initialization and execution of explotation-driven solvers in the $r^{th} $ round and can replace the "for all solvers"-loop in Algorithm \ref{algoSolverCombination}. 
-
-\begin{algorithm}
-\caption{Exploitation in the $k^{th}$ iteration of \ref{algoSolverCombination}}
-\caption{$\{ \bestobj, \explostateSet \}=Exploitation(\solversetall, \explostateSet, k)$ \label{algoFRace}}
-\begin{algorithmic}
-%\Require  
-%\Ensure  
-%\State $k = 1$
-%\State $\Gamma^{k-1}=\emptyset$
-%\While{$k \le k_{max}$} 
-  \State \Comment{{\em Sample new $N^k$ parameter values using distribution $\pi^k$}}
-  \State
-  \State $\Gamma  = Sample(\explostateSet, N^{r}, \pi^r)$
-   \State
-  \ForAll{$\solver \in \solversetRho$} 
-   % \State $\Gamma = InitialPointSelection(\explostateSet)$
-    \State
-     \State \Comment{{\em Run solver $\solver$ from some parameter points in $\Gamma$, if it is not done, for $\exectime_{s}$ time}}    
-    % \State \Comment{{\em Some intermediate explored points are added in $\Gamma^k$ to produce the new set  $\Gamma^k$} }   
-      \State $\{ \bestobj, \explostateSet \} = Run(\solver, \Gamma, \exectime_{\solver})$   
-      \State 
-      \State  Update the cost vector $C_s^k$ for these parameter points and their costs in $\explostateSet$ as in (\ref{eq:C})
-     %\State $C^k =  C^k \cup c(\Theta^k, A_s, t_{s}^k)$  
-     \EndFor
-   \State
-   \State Run F-Race based algorithm on the cost vectors to exclude the least promising candidates from $\explostateSet$   
-   \State
-  %\State $k++$  %\Comment{{\em Increment the iteration counter}} 
-  \State Update distribution $\pi_i^k=\mathcal{N}(\overline{\param}^k_i, \sigma_i^k)$ for each $i^{th}$ parameter coordinate, using the mean $\overline{\param}^k_i$ and the deviation $\sigma^k_i$ as in (\ref{eq:sigma})
-%\If{}
-%\ElsIf{ }
-%\EndIf
-%\EndWhile
-\end{algorithmic}
-\end{algorithm}
-
-
-
-%\begin{verbatim}
-%     fprintf(1,'\n Best Robustness Value of this call = %f', new_obj_best);    
-%     fprintf(fileID,'\n Best Robustness Value of this call = %f', new_obj_best);
-%     
-%     if (new_obj_best<=0)
-%        fprintf(fileID,'\n Falsifier Found!');
-%        
-%        comptime = toc(TotCompTime);
-%        fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-%        error('Falisifier found! Exit normally');
-%     end
-%     
-%     
-%     if (call_count==1)  
-%         min_robustness=new_obj_best;
-%         rob_stagnant = false;
-%         rob_improved = true;
-%         rob_stagnant_count=0; 
-%     else    
-%         rob_improved = false;
-%         if min_robustness > new_obj_best
-%            rob_stagnant = false; 
-%            rob_change=(min_robustness - new_obj_best)/min_robustness;
-%            if (rob_change > rob_epsilon_percent)
-%                rob_improved = true;
-%            end   
-%            min_robustness=new_obj_best;
-%         else 
-%             if (~(solver_index==0) && ~(solver_index==4))
-%                 rob_stagnant_count=rob_stagnant_count+1; 
-%             end
-%         end
-%         
-%         if rob_stagnant_count>rob_stagnant_win
-%             rob_stagnant = true;
-%         end
-%         
-%     end 
-%     
-%     fprintf(1,'\n Best Robustness Value so far = %f', min_robustness);   
-%     fprintf(fileID,'\n Best Robustness Value so far = %f', min_robustness);
-%     
-%     
-%    robustness_graph_data=...
-%        [robustness_graph_data; [total_nb_sim min_robustness]]; 
-%  
-%    
-%    % the coverage graph is monotonic, we check the evolution of coverage
-%    % for non-increase by cov_epsilon
-%    % recompute current coverage
-%    current_coverage_value = Sys.ComputeLogCellOccupancyCoverage; 
-%    % update coverage graph data
-%    coverage_graph_data= ...
-%       [coverage_graph_data; [total_nb_sim current_coverage_value]]; 
-%    
-%    solver_index_data=[solver_index_data; solver_index]; 
-%   
-%   
-%    fprintf(1,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
-%    fprintf(fileID,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
-%    fprintf(1,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
-%    fprintf(fileID,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
-%    for iii  = 1:call_count
-%      fprintf(1,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
-%          robustness_graph_data(iii,2),coverage_graph_data(iii,2));
-%      fprintf(fileID,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
-%          robustness_graph_data(iii,2),coverage_graph_data(iii,2));     
-%    end 
-%    
-%    
-%    l = size(coverage_graph_data,1);
-%    
-%    if (l>cov_monitoring_length)
-%        cov_diff = current_coverage_value - ...
-%            coverage_graph_data(l-cov_monitoring_length,2);
-%        
-%        if (cov_diff<cov_epsilon)
-%           stagnant_count = stagnant_count + 1; 
-%           %coverage does not increases sufficiently
-%        else
-%           %coverage increases sufficiently
-%           stagnant_count=0;
-%        end 
-%    
-%        if (stagnant_count>cov_monitoring_length) 
-%            cov_stagnant=true;
-%            fprintf(fileID,'\n Coverage stagnant');
-%        else
-%            stagnant_count=stagnant_count+1;
-%        end
-%    end
-%    
-%    % memorizing the previous optimizer
-%    if (~(solver_index==0)) 
-%        prev_solver_index = solver_index;
-%    end  
-%    
-%    stagnant_count
-%    rob_stagnant
-%    cov_monitoring_length
-%    local_optimum_stuck=(stagnant_count>=cov_monitoring_length) && rob_stagnant
-%    
-%    
-%    if (~local_optimum_stuck)
-%        cov_monitoring_length=cov_monitoring_win;
-%        PR_duration=0;
-%        solver_index = prev_solver_index + 1;
-%        
-%%             if (solver_index==3) 
-%%                 solver_index=1; %skip GNM
-%%             end    
-%        if (solver_index>(Nb_Optimizers-1)) 
-%            fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
-%            fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
-%            solver_index = 1;
-%            round_count = round_count + 1;
-%            
-%            rob_stagnant
-%            
-%            if rob_stagnant
-%                %strategy_id = 2 %Thao
-%                %solver_index=0
-%                strategy_id = 0
-%            else
-%                if rob_improved
-%                    strategy_id = 2
-%                else 
-%                    strategy_id = 1
-%                end    
-%            end    
-%        end
-%        
-%    else %if local optima stuck
-%        solver_index=0; %use pseudorandom sampling to increase coverage
-%        PR_duration=PR_duration+1;
+%All the above-described developments are summarized in Algorithm \lref{algoFRace}), which uses the heuristic using updated initial point sampling distributions and the F-Race method to retain promising points. This represents one heuristic, though we note that the two first heuristics for initial point selection can also be used in place of this method.
 %
-%        cov_monitoring_length=PR_duration;
-%    end 
-%    
-%    fprintf(1,'\n Solver call %d done', call_count);
-%    fprintf(fileID,'\n Solver call %d done', call_count);
-%
-%end % end of for-loop call_count
-%\end{verbatim}
+% 
+%\begin{algorithm}
+%\caption{Exploitation in the $k^{th}$ iteration of \ref{algoSolverCombination}}
+%\caption{$\{ \bestobj, \explostateSet \}=Exploitation(\solversetall, \explostateSet, k)$ \label{algoFRace}}
+%\begin{algorithmic}
+%%\Require  
+%%\Ensure  
+%%\State $k = 1$
+%%\State $\Gamma^{k-1}=\emptyset$
+%%\While{$k \le k_{max}$} 
+%  \State \Comment{{\em Sample new $N^k$ parameter values using distribution $\pi^k$}}
+%  \State
+%  \State $\Gamma  = Sample(\explostateSet, N^{r}, \pi^r)$
+%   \State
+%  \ForAll{$\solver \in \solversetRho$} 
+%   % \State $\Gamma = InitialPointSelection(\explostateSet)$
+%    \State
+%     \State \Comment{{\em Run solver $\solver$ from some parameter points in $\Gamma$, if it is not done, for $\exectime_{s}$ time}}    
+%    % \State \Comment{{\em Some intermediate explored points are added in $\Gamma^k$ to produce the new set  $\Gamma^k$} }   
+%      \State $\{ \bestobj, \explostateSet \} = Run(\solver, \Gamma, \exectime_{\solver})$   
+%      \State 
+%      \State  Update the cost vector $C_s^k$ for these parameter points and their costs in $\explostateSet$ as in (\ref{eq:C})
+%     %\State $C^k =  C^k \cup c(\Theta^k, A_s, t_{s}^k)$  
+%     \EndFor
+%   \State
+%   \State Run F-Race based algorithm on the cost vectors to exclude the least promising candidates from $\explostateSet$   
+%   \State
+%  %\State $k++$  %\Comment{{\em Increment the iteration counter}} 
+%  \State Update distribution $\pi_i^k=\mathcal{N}(\overline{\param}^k_i, \sigma_i^k)$ for each $i^{th}$ parameter coordinate, using the mean $\overline{\param}^k_i$ and the deviation $\sigma^k_i$ as in (\ref{eq:sigma})
+%%\If{}
+%%\ElsIf{ }
+%%\EndIf
+%%\EndWhile
+%\end{algorithmic}
+%\end{algorithm}
