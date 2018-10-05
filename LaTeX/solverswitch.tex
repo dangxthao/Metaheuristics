@@ -126,7 +126,7 @@ To detect a blocking situation, we monitor the coverage and robustness evolution
 \begin{figure}
 %\includegraphics[scale=0.3]{LocalOptima.pdf_t}
 \input{LocalOptima.pdf_t}
-\caption{Illustration of a situation where the search gets stuck around a local minimum at the bottom of a ``valley'' surface representing the cost $\rho$ as function of a two-dimensional parameter. The sequence of little circles ($p_1, p_2, p_3, p_4$) represents the sequence of points generated using Simulated Annealing. Then the Nelder-Mead algorithm is used from $p_4$ and it produces first the triangle (the vertices of which are drawn with little rectangles)  $\{p_4, p_5, p_6 \}$ and then creates a new vertex $p_7$ by reflection of $p_5$ with hisghest cost value. It can be seen that even by switching between these two solvers, it is not possible to escape the ``valley'' around this local minimum, and an exploration-driven search is needed.} 
+\caption{Illustration of a situation where the search gets stuck around a local minimum at the bottom of a ``valley'' surface representing the cost $\rho$ as function of a two-dimensional parameter. The sequence of circles ($p_1, p_2, p_3, p_4$) represents the sequence of points generated using Simulated Annealing. Then the Nelder-Mead algorithm is used from $p_4$ and it produces first the triangle (the vertices of which are drawn with squares)  $\{p_4, p_5, p_6 \}$ and then creates a new vertex $p_7$ by reflection of $p_5$ with highest cost value. It can be seen that even by switching between these two solvers, it is not possible to escape the ``valley'' around this local minimum, and an exploration-driven search is needed.} 
 \end{figure}
 
 \subsection{Solver Initialization}\label{sec:init}
