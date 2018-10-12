@@ -3,7 +3,7 @@ New approaches are needed to increase the confidence in the correctness of compl
 Falsification techniques offer a practical solution. 
 A falsification method takes a system model, along with a specification that defines the correct behavior of the system, and performs a best-effort search over inputs and system parameters for behaviors that violate the specification; essentially performing automated bug finding.
 Falsification methods rely on a global optimizer to guide the search; one challenge with falsification is that it can be difficult to select the most effective optimizer and optimization parameters.
-To address this, we introduce a new metaheuristic that automatically focuses computing resources on the most effective optimizer for a given falsification task.
+To address this, we introduce a new adaptive search strategy that automatically focuses computing resources on the most effective optimizer for a given falsification task.
 Given a collection of optimizers, our approach makes heuristic decisions to switch optimizers based on
 evolving measures of both cost and the coverage of the decision space.
 The technique is able to automatically falsify properties for complex CPS design models more efficiently than existing techniques.
