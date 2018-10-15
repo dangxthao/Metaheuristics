@@ -1,3 +1,0 @@
-#ifndef CF_KD_cl_harness_forthao_breach_H__
-#define CF_KD_cl_harness_forthao_breach_H__
-#endif
