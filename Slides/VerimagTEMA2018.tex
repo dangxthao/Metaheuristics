@@ -1,0 +1,60 @@
+%!TEX program = xelatex
+%\input{preamble.tex}
+\input{beamer_preamble.tex}
+\input{general_preamble.tex}
+
+
+
+
+
+\title{Verimag - TEMA Toyota}
+\subtitle{ 2017- 2018}
+\date{October 23, 2018}
+\author{}
+\institute{}
+
+\begin{document}
+
+\maketitle
+
+%    \begin{frame}<beamer>
+%    \frametitle{Overview} %
+%    \tableofcontents[hidesubsections]
+%    \end{frame}
+    
+
+
+\begin{frame}
+\frametitle{Falsification of Cyber-Physical Systems (CPS) }
+\alert{Problem}: Finding behaviors that do not satisfy a specification\\ 
+\alert{Approach}: Falsification formulated as black-box optimization  
+
+{\em Black-box optimization}
+\begin{itemize} 
+\item Existing search methods (Genetic Algorithms, Evolutionary Strategies, Simulated Annealing, {\em etc.})
+\item Pros: no gradient information required, large classes of problems (continuous/discrete), practical efficiency
+\item Cons: local optimum traps, no guarantee of global optimality
+\end{itemize}
+{\em Our goal}: exploit the advantages (CPS as black boxes) and propose a method to detect and escape local optima 
+\end{frame}
+
+
+\begin{frame}
+\frametitle{Coverage-based Combination of Search Methods}
+\fontsize{13pt}{13pt}\selectfont
+Two (orthogonal) measures defined on the search space
+\begin{itemize}
+\item {\em Coverage} to quantify search "exploration" progress (diversity of tested behaviors)  
+\item {\em Robustness} to quantify "exploitation" progress (improvement of objective values)
+\end{itemize} 
+\alert{Results}
+\begin{itemize}
+\item {\em Detection of local optima} by monitoring evolution of these measures
+\item Strategies to {\em combine search methods}, based on their exploration/exploitation features
+\item {\em Experiments}:  on vehicle control benchmarks, the combination is more efficient (than search algorithms used individually)
+\end{itemize}
+
+\end{frame}
+
+
+\end{document}

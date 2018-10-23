@@ -1,0 +1,150 @@
+%!TEX program = xelatex
+\documentclass[12pt, compress]{beamer}
+%\usepackage{fira}
+%\usetheme[titleprogressbar]{m}
+\usetheme[progressbar=frametitle]{metropolis}
+
+\setsansfont{Helvetica Neue Thin}
+%\usefonttheme[onlymath]{serif}
+\usefonttheme{professionalfonts}
+
+  \setbeamercolor{normal text}{%
+    fg=black,
+    bg=white
+  }
+\setbeamercolor{palette primary}{%
+  use=normal text,
+  fg=normal text.fg,
+  bg=normal text.bg
+}
+\setbeamercolor{frametitle}{%
+  use=palette primary,
+  parent=palette primary,
+ % fg=normal text.fg!85!normal text.bg
+  fg=normal text.fg!50!normal text.bg
+}
+\setbeamercolor{progress bar}{%
+  use=alerted text,
+  fg=alerted text.fg,
+  bg=normal text.bg!50!normal text.fg
+}
+
+%%%%
+% alert in equations
+\usepackage{bm}
+\newcommand{\mathalert}[1]{\color{darkorange}\bm{#1}}
+
+% fix spacing in toc
+\usepackage{etoolbox}
+
+% include pdf pages
+% not compatible with beamer: \usepackage{pdfpages}
+
+% the following doesn't seam to work
+%\makeatletter
+%\patchcmd{\beamer@sectionintoc}
+%  {\vfill}
+%  {\vskip\itemsep}
+%  {}
+%  {}
+%\makeatother 
+\makeatletter
+\patchcmd{\beamer@sectionintoc}{\vskip1.5em}{\vskip0.5em}{}{}
+\makeatother
+
+\newif\iflattersubsect
+
+\AtBeginSection[] {
+    \begin{frame}<beamer>
+    \frametitle{Overview} %
+    \tableofcontents[currentsection,hideothersubsections]  
+    \end{frame}
+    \lattersubsectfalse
+}
+
+\AtBeginSubsection[] {
+    \iflattersubsect
+    \begin{frame}<beamer>
+    \frametitle{Overview} %
+    \tableofcontents[currentsubsection,sectionstyle=show/shaded,subsectionstyle=show/shaded/hide]  
+    \end{frame}
+    \fi
+    \lattersubsecttrue
+}
+
+%\printbibliography
+%\usepackage{biblatex} 
+\usepackage[backend=bibtex,
+%firstinits=false,uniquename=false,uniquelist=false,
+	bibstyle=ieee,
+	%citestyle=authoryear-comp,
+	%citestyle=alphabetic,
+	%autocite = superscript, %not sure what this is doung
+	sorting=none]{biblatex} % for citations on same slide
+\defbibheading{bibliography}[\bibname]{} % to avoid starting a new section before bibliography slide
+\renewcommand*{\bibfont}{\scriptsize}
+\addbibresource{biblio.bib}
+\setbeamertemplate{bibliography item}[text] % text instead of silly icons
+\let\autocite=\supercite
+\let\cite=\supercite
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareCiteCommand{\supercite}[\mkbibsuperscript]
+  {\iffieldundef{prenote}
+     {}
+     {\BibliographyWarning{Ignoring prenote argument}}%
+   \iffieldundef{postnote}
+     {}
+     {\BibliographyWarning{Ignoring postnote argument}}}
+  {\usebibmacro{citeindex}%
+   \bibopenbracket\usebibmacro{cite}\bibclosebracket}
+  {\supercitedelim}
+  {}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% exclude footnotecite from bibliography
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\DeclareBibliographyCategory{skipbib}
+\DeclareCiteCommand{\footonlycite}[\mkbibfootnote]
+  {\usebibmacro{prenote}}
+  {\addtocategory{skipbib}{\thefield{entrykey}}%
+   \usedriver
+     {\DeclareNameAlias{sortname}{default}}
+     {\thefield{entrytype}}}
+  {\multicitedelim}
+  {\usebibmacro{postnote}}
+%\let\footfullcite=\myfootcite
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+% include slide from presentation in Verimag style (pdf with large borders)
+\newcommand{\includeVerimagSlide}[2]{
+\frame{\hspace*{-1cm}\includegraphics[page=#2,trim=2.1cm 2.3cm 2.3cm 1cm, clip, width=\paperwidth]{#1}}
+}
+% include inner part of slide from presentation in Verimag style (pdf with large borders)
+\newcommand{\includeVerimagSlideContent}[3]{
+\begin{frame}{#3}
+% trim left lower right upper
+      \hspace*{-0.05\textwidth}\includegraphics[page=#2,trim=3cm 2.2cm 3cm 4cm, clip,width=1.1\textwidth]{#1}
+\end{frame}
+}
+% include inner part of slide from presentation in Verimag style (pdf with large borders)
+\newcommand{\includeVerimagSlideContentWide}[3]{
+\begin{frame}{#3}
+% trim left lower right upper
+      \hspace*{-0.05\textwidth}\includegraphics[page=#2,trim=1.5cm 2.2cm 1.5cm 4cm, clip,width=1.1\textwidth]{#1}
+\end{frame}
+}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+\setbeamerfont{alerted text}{series=\bfseries}
+%\setbeamerfont{alerted text}{family=\Medium}
+\setbeamerfont{footnote}{size=\scriptsize} % smaller footnotes
+%\setbeamerfont{lemma}{family=\Light} % doesn't seem to have any effect
+%\let\alert=\alert
+%\renewcommand{\alert}[1]{\alert{#1}}
+
