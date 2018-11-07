@@ -23,19 +23,17 @@ user_reset=1;
 
 switch user_reset
     case 1
-        %bdclose all
+        bdclose all
         close all
         clear all
         clear vars
-        %warning('OFF', 'ALL')
         clear global
         global start
         start = true;
 
         addpath('../../supp_code')
         addpath('../../src')
-%         addpath('../../../breach')
-        addpath('../MRS')
+        addpath('../../../breach')
         
         InitBreach
         
@@ -43,7 +41,7 @@ switch user_reset
         % fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')
         % r = input('0, 5000, 10000 or 15000\n');
         % r = abs(round(rand*100)+1);
-        rng(15000,'twister');
+        rng(0,'twister');
         
     otherwise 
         start = true;
@@ -62,10 +60,6 @@ if (user_reset==1)
             PTC_setup
         case 2
             Autotrans_setup
-        case 3
-            MRS_setup
-        case 4
-            RD_setup
         otherwise
             Sys = input('Enter the name of the Coverage-Breach-Set object: ');
             phi = input('Enter the STL-formula to be falsified: '); 
@@ -84,7 +78,9 @@ disp(phi)
 %% limit on nb of solver calls
 %nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
 %fprintf('\n Computation Time Limit is %d seconds\n',nb_solver_calls)
-nb_solver_calls = 1
+% nb_solver_calls = 30
+nb_solver_calls = 1 % (Nisha Mishra)
+
 
 % %% Setting falsification method and parameters
 % msg1 = sprintf('\nChoose a falsification method\n');
@@ -105,9 +101,9 @@ nb_solver_calls = 1
 %% limit on computation time for each solver call
 %cov_epsilon = input('Specify coverage increase threshold : '); 
 %fprintf('\n Coverage increase threshold is %d \n',cov_epsilon)
-cov_epsilon = 2e-1
+cov_epsilon = 8e-2
 rob_epsilon_percent = 0.05
-rob_stagnant_win = 2
+rob_stagnant_win = 3
 
 strategy_id = 2; %1 xlog, 2 from xbest
 winlen = 1;
@@ -116,7 +112,7 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
-solver_index = 1; %cmaes 1, SA 2, GNM 3
+solver_index = 0; %cmaes 1, SA 2, GNM 3
 round_count=1;
 
 global Out
@@ -158,7 +154,8 @@ for call_count = 1:nb_solver_calls
     switch solver_index % run the chosen solver
 
         case 0 % pseudo-random sampling
-        
+             r = abs(round(rand*100)+1);
+             rng(0,'twister');
              %if strcmp(user_reset,1)
              if call_count==1 
                 falsif_pb = FalsificationProblem(CBS, phi); 
@@ -173,7 +170,8 @@ for call_count = 1:nb_solver_calls
              fprintf(1,'\n *** Running PseudoRandom');
              fprintf(fileID,'\n *** Running PseudoRandom');
             
-             time_lim = 400
+%           time_lim = 400
+            time_lim = 1000 %Nisha Mishra
              
              CallPseudo(CBS, phi, time_lim); %this call updates Out
              
@@ -207,6 +205,9 @@ for call_count = 1:nb_solver_calls
         %%%%%%%%%%%%%%%
         %%%%%%%%%%%%%%%
         case 4 %classification-based
+             r = abs(round(rand*100)+1);
+             rng(0,'twister');
+            
             time_lim = inf;
             snap_grid = 'y';
             switch snap_grid
@@ -319,15 +320,22 @@ for call_count = 1:nb_solver_calls
         %%%%%%%%%
         case 1 % CMAES
             %%
+            
+             r = abs(round(rand*100)+1);
+             rng(0,'twister');
+
+            
             %time_lim = input('Specify time limit on computation in seconds: '); 
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
+            
             fprintf(1,'\n **** Running CMAES');
             fprintf(fileID,'\n **** Running CMAES');
             
-            if (call_count==1) 
-                time_lim = 8000
+            if (call_count==1)  
+                time_lim = 500  % Changing time limit here (Nisha)
+                
             else
-                time_lim = 400
+                time_lim = 300
             end
     
             %delete('var*','outcm*')
@@ -358,6 +366,7 @@ for call_count = 1:nb_solver_calls
             
             %falsif_pb.solver_options.Restarts = 3;
             falsif_pb.max_time = time_lim;
+            %falsif_pb.max_time 
             
             % strategy_id=0 to pick randomly from the whole space
             % strategy_id=1 to pick randomly from xlog
@@ -386,7 +395,8 @@ for call_count = 1:nb_solver_calls
                     end
                 end 
             else
-                CBS.QuasiRandomSample(200, 2^10);
+                %CBS.QuasiRandomSample(200, 2^10);
+                CBS.QuasiRandomSample(5000, 2^10) % changing the values of samples here (Nisha)
                 x0 = CBS.GetParam(falsif_pb.params);
                 
 %                 size(x0,2)
@@ -434,12 +444,15 @@ for call_count = 1:nb_solver_calls
                 fprintf(fileID,'\n Exit from CMAES')
                 comptime = toc(TotCompTime);
                 fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                error('Falisifier found! Exit normally');
+%                 error('Falisifier found! Exit normally'); Nisha Mishra
             end
         
         %%%%%%%%%%    
-        %%%%%%%%%%
+        %%%%%%%%%% Commented by Nisha Mishra
 %         case 2 %Simulated Annealing 
+%              r = abs(round(rand*100)+1);
+%              rng(0,'twister');
+
 %             fprintf(1,'\n *** Running Simulated Annealing');
 %             fprintf(fileID,'\n *** Running Simulated Annealing');
 %             %%
@@ -505,12 +518,9 @@ for call_count = 1:nb_solver_calls
 %             timervar_sa = tic;
 %             falsif_pb.solve();
 %             
-%             new_pts = falsif_pb.X_log; % column vectors of newly simulated points
+%             new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
 %             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
 %             Xlog.xlogSA = [Xlog.xlogSA, new_pts];
-%             
-%             new_obj_val = falsif_pb.obj_log;
-%             Vlog.objlogSA = [Vlog.objlogSA, new_obj_val];
 %             
 %             new_obj_best = falsif_pb.obj_best;
 %             
@@ -540,21 +550,26 @@ for call_count = 1:nb_solver_calls
 %             end
 %         
 %             
-%             
+            
         case 3 %global_nelder_mead
             %%
-            
+             r = abs(round(rand*100)+1);
+             rng(0,'twister');
+
             fprintf(1,'\n *** Running Global Nelder Mead');
             fprintf(fileID,'\n *** Running Global Nelder Mead');
              
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_lim = 100; %computation time limit
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            time_lim = 200
-
+%           time_lim = 200
+            time_lim = 500 % Nisha Mishra 
+            
+            
 %             nb_local_iter = input('\n Specify nb of local iterations for each solver call\n');
 %             fprintf('\n Specify nb of local iterations for each solver call %d \n',max_sim)
             nb_local_iter = 100;
+%              nb_local_iter = 1000;
             
             % reset falsif_pb if user_reset = 'yes'
             %if strcmp(user_reset,1)
@@ -577,7 +592,7 @@ for call_count = 1:nb_solver_calls
             if (call_count>1) 
                 nbsamples=100;
                 if (strategy_id==2)
-                  nbsamples=call_count; %taken from the last xbest point(s)
+                    nbsamples=call_count; %taken from the last xbest point(s)
                 end
                 
                 x0 = initSolver(CBS,nbsamples,solver_index,Xlog,Xbest,strategy_id,winlen);
@@ -587,16 +602,16 @@ for call_count = 1:nb_solver_calls
                 %x0 = [ x0, x0_qrandom ];
                 %input('') 
                 
-%                 nbsamplesPR=0;
-%                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
-%                 x0_more = CBS.GetParam(falsif_pb.params);
-%                 x0 = [ x0, x0_more ];
-                
+                nbsamplesPR=0;
+                CBS.QuasiRandomSample(nbsamplesPR, 2^10);
+                x0_more = CBS.GetParam(falsif_pb.params);
+                x0 = [ x0, x0_more ];
                 if (~isempty(x0))
                     falsif_pb.x0 = x0;
                 end
             else
-                nbsamplesPR=200;
+%               nbsamplesPR=200;
+                nbsamplesPR=100; % Edited by Nisha Mishra
                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
                 falsif_pb.x0 = x0;
@@ -666,7 +681,8 @@ for call_count = 1:nb_solver_calls
         
         comptime = toc(TotCompTime);
         fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-        error('Falisifier found! Exit normally');
+%         error('Falisifier found! Exit normally'); Commented by Nisha
+%         Mishra
      end
      
      
@@ -754,19 +770,21 @@ for call_count = 1:nb_solver_calls
         prev_solver_index = solver_index;
     end  
     
-    stagnant_count
-    rob_stagnant
-    cov_monitoring_length
-    local_optimum_stuck=(stagnant_count>=cov_monitoring_length) && rob_stagnant
+    local_optimum_stuck=(stagnant_count>cov_monitoring_length) && rob_stagnant;
     
     
     if (~local_optimum_stuck)
         cov_monitoring_length=cov_monitoring_win;
         PR_duration=0;
         solver_index = prev_solver_index + 1;
-             if (solver_index==2) 
-                 solver_index=3; %skip GNM
-             end    
+        
+        if(solver_index==2)
+            solver_index=3; 
+        end % skip SA (Nisha Mishra)
+        
+%             if (solver_index==3) 
+%                 solver_index=1; %skip GNM
+%             end    
         if (solver_index>(Nb_Optimizers-1)) 
             fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
             fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);

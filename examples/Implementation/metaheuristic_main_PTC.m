@@ -34,7 +34,7 @@ switch user_reset
 
         addpath('../../supp_code')
         addpath('../../src')
-%         addpath('../../../breach')
+        addpath('../../../breach')
         addpath('../MRS')
         
         InitBreach
@@ -56,7 +56,7 @@ if (user_reset==1)
     disp('Choose an example or manual input to run the algorithm')
     disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
     %setup = input('');
-    setup = 1;
+    setup = 3;
     switch setup
         case 1
             PTC_setup
@@ -116,7 +116,7 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
-solver_index = 1; %cmaes 1, SA 2, GNM 3
+solver_index = 0; %cmaes 1, SA 2, GNM 3
 round_count=1;
 
 global Out
@@ -173,7 +173,7 @@ for call_count = 1:nb_solver_calls
              fprintf(1,'\n *** Running PseudoRandom');
              fprintf(fileID,'\n *** Running PseudoRandom');
             
-             time_lim = 400
+             time_lim = 5000 % edited by nisha mishra// originally 400
              
              CallPseudo(CBS, phi, time_lim); %this call updates Out
              
@@ -325,7 +325,8 @@ for call_count = 1:nb_solver_calls
             fprintf(fileID,'\n **** Running CMAES');
             
             if (call_count==1) 
-                time_lim = 8000
+                 time_lim = 5000
+                 
             else
                 time_lim = 400
             end
@@ -386,7 +387,7 @@ for call_count = 1:nb_solver_calls
                     end
                 end 
             else
-                CBS.QuasiRandomSample(200, 2^10);
+                CBS.QuasiRandomSample(5000, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
                 
 %                 size(x0,2)
@@ -550,8 +551,8 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_lim = 100; %computation time limit
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            time_lim = 200
-
+%             time_lim = 200
+                time_lim = 500
 %             nb_local_iter = input('\n Specify nb of local iterations for each solver call\n');
 %             fprintf('\n Specify nb of local iterations for each solver call %d \n',max_sim)
             nb_local_iter = 100;
@@ -596,7 +597,7 @@ for call_count = 1:nb_solver_calls
                     falsif_pb.x0 = x0;
                 end
             else
-                nbsamplesPR=200;
+                nbsamplesPR=1000;
                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
                 falsif_pb.x0 = x0;
@@ -764,9 +765,10 @@ for call_count = 1:nb_solver_calls
         cov_monitoring_length=cov_monitoring_win;
         PR_duration=0;
         solver_index = prev_solver_index + 1;
-             if (solver_index==2) 
-                 solver_index=3; %skip GNM
-             end    
+        %commented by Nisha Mishra
+%              if (solver_index==2) 
+%                  solver_index=3; %skip SA and goto CMAES
+%              end    
         if (solver_index>(Nb_Optimizers-1)) 
             fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
             fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
@@ -793,7 +795,12 @@ for call_count = 1:nb_solver_calls
         PR_duration=PR_duration+1;
 
         cov_monitoring_length=PR_duration;
+    end
+    %% Nisha Mishra
+    if (solver_index==2) 
+                 solver_index=3; %skip SA and goto CMAES
     end 
+    %%
     
     fprintf(1,'\n Solver call %d done', call_count);
     fprintf(fileID,'\n Solver call %d done', call_count);
