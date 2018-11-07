@@ -54,7 +54,11 @@ if (user_reset==1)
     disp('Choose an example or manual input to run the algorithm')
     disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
     %setup = input('');
+<<<<<<< HEAD
     setup = 2;
+=======
+    setup = 1;
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
     switch setup
         case 1
             PTC_setup
@@ -112,7 +116,11 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
+<<<<<<< HEAD
 solver_index = 0; %cmaes 1, SA 2, GNM 3
+=======
+solver_index = 3; %cmaes 1, SA 2, GNM 3
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
 round_count=1;
 
 global Out
@@ -171,7 +179,11 @@ for call_count = 1:nb_solver_calls
              fprintf(fileID,'\n *** Running PseudoRandom');
             
 %           time_lim = 400
+<<<<<<< HEAD
             time_lim = 1000 %Nisha Mishra
+=======
+            time_lim = 500 %Nisha Mishra
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
              
              CallPseudo(CBS, phi, time_lim); %this call updates Out
              

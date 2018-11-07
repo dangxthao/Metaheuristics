@@ -112,7 +112,11 @@ winlen = 1;
 Nb_Optimizers=4;
 
 prev_solver_index=0;
+<<<<<<< HEAD
 solver_index = 3; %cmaes 1, SA 2, GNM 3
+=======
+solver_index = 1; %cmaes 1, SA 2, GNM 3
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
 round_count=1;
 
 global Out
@@ -331,6 +335,7 @@ for call_count = 1:nb_solver_calls
             fprintf(1,'\n **** Running CMAES');
             fprintf(fileID,'\n **** Running CMAES');
             
+<<<<<<< HEAD
 %             if (call_count==1)  
 %                 time_lim = 500  % Changing time limit here (Nisha)
 %                 
@@ -338,6 +343,15 @@ for call_count = 1:nb_solver_calls
 %                 time_lim = 300
 %             end
 %     
+=======
+            if (call_count==1)  
+                time_lim = 500  % Changing time limit here (Nisha)
+                
+            else
+                time_lim = 300
+            end
+    
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
             %delete('var*','outcm*')
             
             %if user_reset==1
@@ -365,7 +379,11 @@ for call_count = 1:nb_solver_calls
             
             
             %falsif_pb.solver_options.Restarts = 3;
+<<<<<<< HEAD
 %             falsif_pb.max_time = time_lim;
+=======
+            falsif_pb.max_time = time_lim;
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
             %falsif_pb.max_time 
             
             % strategy_id=0 to pick randomly from the whole space
@@ -444,7 +462,11 @@ for call_count = 1:nb_solver_calls
                 fprintf(fileID,'\n Exit from CMAES')
                 comptime = toc(TotCompTime);
                 fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+<<<<<<< HEAD
                  error('Falisifier found! Exit normally'); 
+=======
+%                 error('Falisifier found! Exit normally'); Nisha Mishra
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
             end
         
         %%%%%%%%%%    
@@ -562,10 +584,15 @@ for call_count = 1:nb_solver_calls
             %time_lim = input('\n Specify time limit of computation in seconds\n');
             %time_lim = 100; %computation time limit
             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
+<<<<<<< HEAD
 %           time_lim = 200
             %time_lim = 50000 % Nisha Mishra 
             
             
+=======
+            time_lim = 200
+
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
 %             nb_local_iter = input('\n Specify nb of local iterations for each solver call\n');
 %             fprintf('\n Specify nb of local iterations for each solver call %d \n',max_sim)
             nb_local_iter = 100;
@@ -582,7 +609,11 @@ for call_count = 1:nb_solver_calls
             end  
             
             falsif_pb.setup_solver('global_nelder_mead');
+<<<<<<< HEAD
             %falsif_pb.max_time = time_lim;
+=======
+            falsif_pb.max_time = time_lim;
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
             falsif_pb.solver_options.nb_local_iter = nb_local_iter;
             %search_space_dim
             falsif_pb.solver_options.start_at_trial=2^search_space_dim;
@@ -610,8 +641,12 @@ for call_count = 1:nb_solver_calls
                     falsif_pb.x0 = x0;
                 end
             else
+<<<<<<< HEAD
 %               nbsamplesPR=200;
                 nbsamplesPR=100; % Edited by Nisha Mishra
+=======
+                nbsamplesPR=200;
+>>>>>>> 3a8d6810182aa7f70ea7aae782a66153e8ff396e
                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
                 falsif_pb.x0 = x0;
