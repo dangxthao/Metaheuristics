@@ -1,0 +1,411 @@
+\usepackage{booktabs}
+\usepackage[scale=2]{ccicons}
+%\usepackage{minted}
+
+\usepackage{pgfplots}
+\usepgfplotslibrary{dateplot}
+%\usemintedstyle{trac}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% \usepackage{sansmath} % doesn't seem to make a difference
+%\usepackage{mathptmx}
+%\usepackage{newtxsf}
+% Using standard mathcal letters
+%\DeclareMathAlphabet{\mathcal}{OMS}{cmsy}{m}{n}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+\usepackage{graphicx}        % standard LaTeX graphics tool
+                             % when including figure files
+%\usepackage{multicol}        % used for the two-column index
+%\usepackage[bottom]{footmisc}% places footnotes at page bottom
+\usepackage{url}
+
+%\usepackage{mchchapters}
+
+\usepackage{amssymb,amsmath}
+
+% smaller underbrace
+\makeatletter
+\def\smallunderbrace#1{\mathop{\vtop{\m@th\ialign{##\crcr
+   $\hfil\displaystyle{#1}\hfil$\crcr
+   \noalign{\kern3\p@\nointerlineskip}%
+   \tiny\upbracefill\crcr\noalign{\kern3\p@}}}}\limits}
+\makeatother
+\newcommand{\clap}[1]{\makebox[0pt]{#1}}
+
+\usepackage{stmaryrd,latexsym}
+\usepackage{units} % for nicefrac
+
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usetikzlibrary{calc}
+\usetikzlibrary{arrows,automata}
+\usetikzlibrary{decorations.pathreplacing,shapes.misc}
+\usetikzlibrary{decorations.markings}
+
+\usepackage[ruled, vlined]{algorithm2e}
+%\usepackage{gastex}
+%\usepackage{epic,eepic}      % macros for latex-figures exported from Xfig
+%\usepackage{comment}
+
+% GF 2014-12-15 >>>>
+\usepackage{xfrac}
+\usepackage{mathtools} % for column vector
+% note: not allowed \usepackage{subcaption}
+\usepackage{subfigure}
+%\usepackage[svgnames]{xcolor} % for tikz
+\usepackage{framed} % for to do, commments etc.
+\usepackage{xcolor}  % for comments
+%\definecolor{darkgreen}{rgb}{0,0.3,0}
+\definecolor{darkorange}{rgb}{0.9,0.5,0.1}
+\definecolor{darkgreen}{rgb}{0.25,0.5,0.25}
+\definecolor{lightgreen}{rgb}{0.925,1,0.875}
+\definecolor{gray}{rgb}{0.8,0.8,0.8} % use lighter gray for presentation
+%\usepackage{etex} % required for using pgfplots
+\usepackage{pgfplots}
+\usepackage{pgfplotstable} % used for ODE plots
+\pgfplotsset{compat=1.14}
+\usetikzlibrary{fpu} % for higher accuracy
+\usepackage{pgfplotstable} % for plotting functions
+
+\pgfplotsset{major grid style={dotted,gray}}
+
+% <<<< GF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+%\let\emptyset\varnothing
+%\def\break{\penalty-1000}
+%
+%
+%\def\frp#1{\ensuremath{\langle #1\rangle}}
+%
+%\makeatletter
+%\let\c@lemm\c@theo
+%\let\c@coro\c@theo
+%\let\c@defi\c@theo
+%\let\c@assu\c@theo
+%\makeatother
+%
+%\usepackage{prettyref}
+%\let\rref\prettyref
+%\newrefformat{part}{Part\,\ref{#1}}
+%\newrefformat{ch}{Chap.\,\ref{#1}}
+%\newrefformat{sec}{Sect.\,\ref{#1}}
+%\newrefformat{app}{App.\,\ref{#1}}
+%\newrefformat{def}{Definition\,\ref{#1}}
+%\newrefformat{thm}{Theorem\,\ref{#1}}
+%\newrefformat{prop}{Proposition\,\ref{#1}}
+%\newrefformat{lem}{Lemma\,\ref{#1}}
+%\newrefformat{cor}{Corollary\,\ref{#1}}
+%\newrefformat{ex}{Example\,\ref{#1}}
+%\newrefformat{cex}{Counterexample\,\ref{#1}}
+%\newrefformat{tab}{Table\,\ref{#1}}
+%\newrefformat{fig}{Fig.\,\ref{#1}}
+%\newrefformat{calculus}{Fig.\,\ref{#1}}
+%\newrefformat{case}{Case\,\ref{#1}}
+%\newrefformat{line}{line\,\ref{#1}}
+%%
+%%
+%\def\sectionname{Section}
+%\def\definitionname{Definition}
+%\def\propositionname{Proposition}
+%\def\equationname{Equation}
+%\def\algorithmname{Algorithm}
+%\def\theoremname{Theorem}
+
+%\newcommand{\code}[1]{\texttt{#1}}
+\newcommand{\code}[1]{{#1}}
+
+\newcommand{\dfn}[2][]{\alert{#2}}
+\providecommand{\m}[1]{\mbox{$#1$}}
+\newcommand{\inv}{F}
+\newcommand{\ivr}{\Inv}
+\newcommand{\precond}{\Init}
+\newcommand{\postcond}{\Safe}
+\newcommand{\der}[2][]{\nabla_{#1}#2}
+\newcommand{\D}[2][]{\dot{#2}}
+\newcommand{\Dp}[2][]{\frac{\partial #2}{\partial #1}}
+\newcommand{\Dt}[2][]{\frac{d #2}{d #1}}
+\newcommand{\dL}{\text{\upshape\textsf{d{\kern-0.1em}$\mathcal{L}$}}\xspace}
+\newcommand{\KeYmaera}{KeYmaera\xspace}%{Ke\kern-0.1emYmaera\xspace}
+
+    \newcommand{\ltrue}{\mathit{true}}
+    \newcommand{\lfalse}{\mathit{false}}
+    \let\limply\rightarrow
+    \let\lreverseimply\leftarrow
+    \let\lylpmi\lreverseImply
+    \let\lbisubjunct\leftrightarrow
+\let\landfold\bigwedge
+\let\lorfold\bigvee
+\newcommand{\lforall}[3][]{\lquantifier{\forall}{#1}{#2}{#3}}
+\newcommand{\lexists}[3][]{\lquantifier{\exists}{#1}{#2}{#3}}
+\newcommand{\lquantifier}[4]
+           {#1%
+           #3{\,}
+           #4}
+
+\newcommand{\dbox}[2]{[#1]#2}
+\newcommand{\ddiamond}[2]{\langle#1\rangle#2}
+\newcommand{\prepeat}[1]{#1^*}
+\newcommand{\hevolve}[1]{#1}
+\newcommand{\hevolvein}[2]{#1\&#2}
+\newcommand{\syssep}{,}
+\newcommand{\bigo}{\mathcal{O}}
+
+
+% ------------------------------------------    Automata     ----------------------------------------------------
+
+\newcommand{\HAvars}[1]{(\Loc, \Lab,\break \Edg,\break #1,\break \Init, \Inv, \Flow, \Jump)}
+\newcommand{\HA}{\HAvars{X}}
+\newcommand{\CS}{\tuple{X,\break \Init, \Inv, \Flow}}
+\newcommand{\PCDA}{PCDA\xspace}
+\newcommand{\PADA}{PWA\xspace}
+
+\newcommand{\Loc}{{\sf Loc}} 
+\newcommand{\loc}{{loc}} 
+%\newcommand{\Var}{{\sf Var}}
+%\newcommand{\Clock}{{\sf C}} 
+%\newcommand{\Param}{{\sf P}}
+\newcommand{\Lab}{{\sf Lab}} 
+\newcommand{\Edg}{{\sf Edg}} 
+
+\newcommand{\Init}{{\sf Init}} 
+\newcommand{\Inv}{{\sf Inv}} 
+\newcommand{\Flow}{{\sf Flow}}
+\newcommand{\Jump}{{\sf Jump}}
+\newcommand{\Final}{{\sf Final}} 
+
+\newcommand{\silent}{\tau} 
+
+\newcommand{\location}[1]{\ensuremath{\mathit{#1}}}
+
+% ------------------------------------------    Clock constraints     ----------------------------------------------------
+
+\newcommand{\Rect}{{\sf Rect}}
+\newcommand{\Rectc}{{\sf Rect_c}}
+\newcommand{\Recto}{{\sf Rect_o}}
+\newcommand{\Lin}{{\sf LConstr}}
+\newcommand{\Term}{{\sf LTerm}}
+\newcommand{\PTerm}{{\sf PTerm}}
+\newcommand{\Poly}{{\sf PConstr}}
+\newcommand{\Affine}{{\sf Affine}}
+
+\newcommand{\MultRect}{{\sf MultRect}}
+\newcommand{\PRect}{{\sf PRect}}
+\newcommand{\PRectc}{{\sf PRect_c}}
+\newcommand{\MultPRect}{{\sf MultPRect}}
+
+% ------------------------------------------    Infix operators     -------------------------------------------------
+
+
+
+\def\sg{\llbracket}
+\def\sd{\rrbracket}
+
+\newcommand{\sem}[1]{\sg #1 \sd} 
+\newcommand{\tuple}[1]{\langle #1 \rangle}
+
+\def\abs#1{\ensuremath{\lvert #1\rvert}}
+\def\bigabs#1{\ensuremath{\big\lvert #1 \big\rvert}}
+\def\norm#1{\ensuremath{\lVert #1\rVert}}
+\def\inftynorm#1{\ensuremath{\lVert #1\rVert_\infty}}
+
+%\newcommand{\timeSucc}[2]{#1\!\rotatebox{15}{$\nearrow$}\!#2}
+\newcommand{\timeSucc}[2]{#1\!\nearrow\!#2}
+% Time successor for strictly positive time
+\newcommand{\timeSuccSPos}[2]{\timeSucc{#1}{\!\!\!\!_{>0}\;#2}}
+\newcommand{\timeSuccCl}[2]{\timeSucc{#1}{\!\!\!\!_{\geq 0 }\;#2}}
+
+% --- Matrix ---
+
+\newcommand{\mx}[1]{#1}%{\mathbf{#1}}
+
+
+% ------------------------------------------    Number Sets     ----------------------------------------------------
+
+\newcommand{\Bool}{\mathbb B} 
+\newcommand{\rat}{{\mathbb Q}}
+\newcommand{\ratl}{{\mathbb L}}
+\newcommand{\nat}{\mathbb N} 
+\let\naturals\nat
+\newcommand{\sposrat}{{\mathbb Q}^{> 0}}
+\newcommand{\posrat}{{\mathbb Q}^{\geq 0}}
+\newcommand{\posreal}{{\mathbb R}^{\geq 0}}
+\newcommand{\sposreal}{{\mathbb R}^{> 0}}
+\newcommand{\real}{{\mathbb R}}
+\let\reals\real
+\newcommand{\realsnneg}{{\mathbb R}^{\geq 0}}
+\newcommand{\zed}{{\mathbb Z}}
+
+
+% ------------------------------------------    Font commands     ----------------------------------------------------
+
+\newcommand{\ceil}[1]{\left \lceil #1 \right \rceil }
+\newcommand{\floor}[1]{\left \lfloor #1 \right \rfloor }
+
+\renewcommand{\l}{{\ell}}
+
+\newcommand{\I}{\mathcal{I}}
+\newcommand{\conv}{{\sf conv}}
+
+
+\newcommand{\bad}{\mathsf{bad}}
+\newcommand{\post}{{\sf post}}
+\newcommand{\Post}{{\sf Post}}
+\newcommand{\Pre}{{\sf Pre}}
+\newcommand{\pre}{{\sf pre}}
+\newcommand{\Reach}{{\sf Reach}}
+\newcommand{\Unsafe}{{\sf Unsafe}} 
+\newcommand{\Safe}{\mathsf{Safe}}
+\newcommand{\update}{{\sf update}}
+\newcommand{\Verify}{{\sc Verify}}
+
+
+\renewcommand{\time}{{\sf time}}
+\newcommand{\EN}{{\sf EN}}
+
+
+\newcommand{\true}{{\sf true}}
+\newcommand{\false}{{\sf false}}
+
+
+%\newcommand{\TTS}{{\sf TTS}} 
+
+\newcommand{\hytech}{{\sc HyTech}}
+\newcommand{\uppaal}{{\sc Uppaal}}
+\newcommand{\kronos}{{\sc Kronos}}
+\newcommand{\phaver}{{\sc PHAVer}}
+\newcommand{\ddt}{{\sc d}/{\sc dt}} % GF: 2014-03-04 changed typesetting to be consistent with other tools
+\newcommand{\Giotto}{{\sc Giotto}}
+\newcommand{\Charon}{{\sc Charon}}
+\newcommand{\Esterel}{{\sc Esterel}}
+\newcommand{\Lustre}{{\sc Lustre}}
+\newcommand{\Times}{{\sc Times}}
+\newcommand{\rabbit}{{\sc Rabbit}}
+
+
+%\def\mynote#1{{\sf $\clubsuit$ #1 $\clubsuit$}}
+\def\mynote#1{}
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% GF 2013-12-15 >>>>
+\newcounter{todocounter}
+\newcommand{\todo}[2][Author]{
+\par\noindent\parbox{\linewidth}{
+\color{blue}
+\begin{framed} 
+\noindent{\sffamily{\bfseries To do 
+\stepcounter{questioncounter}\thequestioncounter
+} (#1):  
+#2
+} 
+\end{framed} 
+\color{black} %\bigskip 
+}
+}
+\newcounter{questioncounter}
+\newcommand{\myquestion}[2][Author]{
+\par\noindent\parbox{\linewidth}{
+\color{red}
+\begin{framed} 
+\noindent{\sffamily{\bfseries Question 
+\stepcounter{questioncounter}\thequestioncounter
+} (#1):  
+#2
+} 
+\end{framed} 
+\color{black} %\bigskip 
+}
+}
+\newcounter{commentcounter}
+\newcommand{\mycomment}[2][Author]{\protect\color{blue}
+% GF: somehow framed causes odd errors (TeX capacity exceeded)
+%\begin{framed} 
+%\bigskip
+\par
+\noindent \parbox{\linewidth}{
+\noindent{\sffamily{\bfseries Comment \stepcounter{commentcounter}\thecommentcounter} (#1):  #2}
+}
+ %\end{framed} 
+%\bigskip
+\par
+ \protect\color{black} %\bigskip 
+}
+\renewcommand{\myquestion}[2][Author]{}
+\renewcommand{\mycomment}[2][Author]{}
+
+\newcommand{\myparagraph}[1]{\bigskip\par\noindent{\bfseries #1.}}
+
+
+%%%%%%
+% Compute angles in Tikz
+\newcommand{\tikzAngleOfLine}{\tikz@AngleOfLine}
+\def\tikz@AngleOfLine(#1)(#2)#3{%
+  \pgfmathanglebetweenpoints{%
+    \pgfpointanchor{#1}{center}}{%
+    \pgfpointanchor{#2}{center}}
+  \pgfmathsetmacro{#3}{\pgfmathresult}%
+}
+%%%%%
+
+\def \transp {^{\mathsf{T}}\!}
+\newcommand{\linconjunctive}{conjunctive\xspace}
+%\newcommand{\colvec}[1]{\left\[\begin{pmatrix}#1\end{pmatrix}\right\]}
+\newcommand{\colvec}[1]{\begin{pmatrix}#1\end{pmatrix}}
+\newcommand{\smallcolvec}[1]{\begin{psmallmatrix}#1\end{psmallmatrix}}
+\newcommand{\Pos}[1]{\mathrm{pos}(#1)}
+\def \Chull {\mathrm{chull}}
+%\def \supfun {\varrho}
+\newcommand{\supfun}[2]{\ensuremath{\rho_{#1}({#2})}} % support function{set,direction}
+\newcommand{\outerappr}[1]{\left\lceil#1\right\rceil}
+
+% use bold vectors
+\renewcommand{\vec}[1]{\mathbf{#1}}
+\def \x {\ensuremath{\vec{x}}\xspace}
+\def \y {\ensuremath{\vec{y}}\xspace}
+\def \z {\ensuremath{\vec{z}}\xspace}
+\def \q {\ensuremath{\vec{q}}\xspace}
+\def \p {\ensuremath{\vec{p}}\xspace}
+\def \b {\ensuremath{\vec{b}}\xspace}
+\def \d {\ensuremath{\vec{d}}\xspace}
+\def \u {\ensuremath{\vec{u}}\xspace}
+\def \v {\ensuremath{\vec{v}}\xspace}
+\def \w {\ensuremath{\vec{w}}\xspace}
+\def \U {\ensuremath{\mathcal{U}}\xspace}
+\def \W {\ensuremath{\mathcal{W}}\xspace}
+\def \X {\ensuremath{\mathcal{X}}\xspace}
+\def \Y {\ensuremath{\mathcal{Y}}\xspace}
+\def \Z {\ensuremath{\mathcal{Z}}\xspace}
+\def \U {\ensuremath{\mathcal{U}}\xspace}
+\def \V {\ensuremath{\mathcal{V}}\xspace}
+\def \W {\ensuremath{\mathcal{W}}\xspace}
+\def \B {\ensuremath{\mathcal{B}}\xspace}
+\def \C {\ensuremath{\mathcal{C}}\xspace}
+\def \D {\ensuremath{\mathcal{D}}\xspace}
+\def \E {\ensuremath{\mathcal{E}}\xspace}
+\def \F {\ensuremath{\mathcal{F}}\xspace}
+\def \G {\ensuremath{\mathcal{G}}\xspace}
+\def \H {\ensuremath{\mathcal{H}}\xspace}
+\def \I {\ensuremath{\mathcal{I}}\xspace}
+\def \N {\ensuremath{\mathcal{N}}\xspace}
+\def \R {\ensuremath{\mathcal{R}}\xspace}
+\def \P {\ensuremath{\mathcal{P}}\xspace}
+\def \Q {\ensuremath{\mathcal{Q}}\xspace}
+\def \Sset {\ensuremath{\mathcal{S}}\xspace} % note that \S is already defined
+\def \Approx {\ensuremath{\mathrm{Appr}}}
+\def \unitvec{\ensuremath{\hat{\vec{e}}}}
+% <<<< GF
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+% Hyphenations
+\hyphenation{PCDA}
+\hyphenation{PADA}
+%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

@@ -56,7 +56,7 @@ if (user_reset==1)
     disp('Choose an example or manual input to run the algorithm')
     disp('Press 1: PTC benchmark; Press 2: Auto Transmission; Any other key: Manual input')
     %setup = input('');
-    setup = 3;
+    setup = 1;
     switch setup
         case 1
             PTC_setup
@@ -84,7 +84,7 @@ disp(phi)
 %% limit on nb of solver calls
 %nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
 %fprintf('\n Computation Time Limit is %d seconds\n',nb_solver_calls)
-nb_solver_calls = 30
+nb_solver_calls = 1
 
 % %% Setting falsification method and parameters
 % msg1 = sprintf('\nChoose a falsification method\n');
@@ -439,108 +439,108 @@ for call_count = 1:nb_solver_calls
         
         %%%%%%%%%%    
         %%%%%%%%%%
-        case 2 %Simulated Annealing 
-            fprintf(1,'\n *** Running Simulated Annealing');
-            fprintf(fileID,'\n *** Running Simulated Annealing');
-            %%
-            %time_lim = input('Specify time limit on computation: '); 
-            %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
-            
-            time_lim = 400
-            %if strcmp(user_reset,1)
-            %if user_reset==1
-            
-            if call_count==1
-                falsif_pb = FalsificationProblem(CBS, phi); 
-            else
-                clear CBS;
-                CBS = Sys.copy();
-                falsif_pb = FalsificationProblem(CBS, phi); 
-            end  
-            
-            falsif_pb.setup_solver('simulannealbnd');
-            falsif_pb.max_time = time_lim;
-            
-            % strategy_id=0 to pick randomly from the whole space
-            % strategy_id=1 to pick randomly from xlog
-            % strategy_id=2 to pick randomly from xbest
-            
-            %strategy_id=1; 
-            if (call_count>1) 
-                nbsamples=100;
-                if (strategy_id==2)
-                    nbsamples=1; %taken from the last xbest point(s)
-                end
-                
-                x0 = initSolver(CBS,nbsamples,solver_index,Xlog,Xbest,strategy_id,winlen);
-                                
-                nbsamplesPR=0;
-                CBS.QuasiRandomSample(nbsamplesPR, 2^10);
-                x0_more = CBS.GetParam(falsif_pb.params);
-                x0 = [ x0, x0_more ];
-                
-                if (~isempty(x0))
-                    falsif_pb.x0 = x0;
-                end
-                
-%                 size(x0,2)
-%                 x0
-            else
-                CBS.QuasiRandomSample(100, 2^10);
-                x0 = CBS.GetParam(falsif_pb.params);
-                
-%                 size(x0,2)
-%                 size(x0,1)
-                
-                falsif_pb.x0 = x0;
-                %size(x0,2)
-            end
-            
-            falsif_pb.verbose=0;
-            falsif_pb.solver_options.FunctionTolerance = 1e-3;
-            falsif_pb.solver_options.OptimalityTolerance = 1e-3;
-            falsif_pb.solver_options.MaxFunEvals = 1000;
-            falsif_pb.solver_options.InitialTemperature = 100;
-            
-            timervar_sa = tic;
-            falsif_pb.solve();
-            
-            new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-            Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
-            Xlog.xlogSA = [Xlog.xlogSA, new_pts];
-            
-            new_obj_val = falsif_pb.obj_log;
-            Vlog.objlogSA = [Vlog.objlogSA, new_obj_val];
-            
-            new_obj_best = falsif_pb.obj_best;
-            
-            if (~isempty(Valbest.SA))
-                 valbest_last = Valbest.SA(size(Valbest.SA,2));
-                 if (valbest_last > new_obj_best) 
-                   Valbest.SA = [Valbest.SA,new_obj_best];
-                   new_xbest = falsif_pb.x_best;
-                   Xbest.xbestSA = [Xbest.xbestSA, new_xbest];
-                 end
-             else
-                 Valbest.SA = [Valbest.SA,new_obj_best];
-                 new_xbest = falsif_pb.x_best;
-                 Xbest.xbestSA = [Xbest.xbestSA, new_xbest];
-            end
-            
-            time_sa = toc(timervar_sa);
-            fprintf(fileID,'\n Simulated Annealing time = %f seconds',time_sa);
-            
-            trace = falsif_pb.GetBrSet_False();
-            if ~isempty(trace)
-                trace.PlotSignals
-                fprintf(fileID,'\n Exit from Simulated Annealing')
-                comptime = toc(TotCompTime);
-                fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                error('Falisifier found! Exit normally');
-            end
-        
-            
-            
+%         case 2 %Simulated Annealing 
+%             fprintf(1,'\n *** Running Simulated Annealing');
+%             fprintf(fileID,'\n *** Running Simulated Annealing');
+%             %%
+%             %time_lim = input('Specify time limit on computation: '); 
+%             %fprintf('\n Time limit of computation is %d seconds\n',time_lim)
+%             
+%             time_lim = 400
+%             %if strcmp(user_reset,1)
+%             %if user_reset==1
+%             
+%             if call_count==1
+%                 falsif_pb = FalsificationProblem(CBS, phi); 
+%             else
+%                 clear CBS;
+%                 CBS = Sys.copy();
+%                 falsif_pb = FalsificationProblem(CBS, phi); 
+%             end  
+%             
+%             falsif_pb.setup_solver('simulannealbnd');
+%             falsif_pb.max_time = time_lim;
+%             
+%             % strategy_id=0 to pick randomly from the whole space
+%             % strategy_id=1 to pick randomly from xlog
+%             % strategy_id=2 to pick randomly from xbest
+%             
+%             %strategy_id=1; 
+%             if (call_count>1) 
+%                 nbsamples=100;
+%                 if (strategy_id==2)
+%                     nbsamples=1; %taken from the last xbest point(s)
+%                 end
+%                 
+%                 x0 = initSolver(CBS,nbsamples,solver_index,Xlog,Xbest,strategy_id,winlen);
+%                                 
+%                 nbsamplesPR=0;
+%                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
+%                 x0_more = CBS.GetParam(falsif_pb.params);
+%                 x0 = [ x0, x0_more ];
+%                 
+%                 if (~isempty(x0))
+%                     falsif_pb.x0 = x0;
+%                 end
+%                 
+% %                 size(x0,2)
+% %                 x0
+%             else
+%                 CBS.QuasiRandomSample(100, 2^10);
+%                 x0 = CBS.GetParam(falsif_pb.params);
+%                 
+% %                 size(x0,2)
+% %                 size(x0,1)
+%                 
+%                 falsif_pb.x0 = x0;
+%                 %size(x0,2)
+%             end
+%             
+%             falsif_pb.verbose=0;
+%             falsif_pb.solver_options.FunctionTolerance = 1e-3;
+%             falsif_pb.solver_options.OptimalityTolerance = 1e-3;
+%             falsif_pb.solver_options.MaxFunEvals = 1000;
+%             falsif_pb.solver_options.InitialTemperature = 100;
+%             
+%             timervar_sa = tic;
+%             falsif_pb.solve();
+%             
+%             new_pts = falsif_pb.X_log; % column vectors of newly simulated points
+%             Sys = CoverageBreachSet_Add_Pts(Sys, new_pts);
+%             Xlog.xlogSA = [Xlog.xlogSA, new_pts];
+%             
+%             new_obj_val = falsif_pb.obj_log;
+%             Vlog.objlogSA = [Vlog.objlogSA, new_obj_val];
+%             
+%             new_obj_best = falsif_pb.obj_best;
+%             
+%             if (~isempty(Valbest.SA))
+%                  valbest_last = Valbest.SA(size(Valbest.SA,2));
+%                  if (valbest_last > new_obj_best) 
+%                    Valbest.SA = [Valbest.SA,new_obj_best];
+%                    new_xbest = falsif_pb.x_best;
+%                    Xbest.xbestSA = [Xbest.xbestSA, new_xbest];
+%                  end
+%              else
+%                  Valbest.SA = [Valbest.SA,new_obj_best];
+%                  new_xbest = falsif_pb.x_best;
+%                  Xbest.xbestSA = [Xbest.xbestSA, new_xbest];
+%             end
+%             
+%             time_sa = toc(timervar_sa);
+%             fprintf(fileID,'\n Simulated Annealing time = %f seconds',time_sa);
+%             
+%             trace = falsif_pb.GetBrSet_False();
+%             if ~isempty(trace)
+%                 trace.PlotSignals
+%                 fprintf(fileID,'\n Exit from Simulated Annealing')
+%                 comptime = toc(TotCompTime);
+%                 fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+%                 error('Falisifier found! Exit normally');
+%             end
+%         
+%             
+%             
         case 3 %global_nelder_mead
             %%
             
@@ -597,7 +597,7 @@ for call_count = 1:nb_solver_calls
                 end
             else
                 nbsamplesPR=200;
-                CBS.QuasiRandomSample(nbsamplesPR, 2^37);
+                CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                 x0 = CBS.GetParam(falsif_pb.params);
                 falsif_pb.x0 = x0;
                 %size(x0,2)
@@ -764,10 +764,9 @@ for call_count = 1:nb_solver_calls
         cov_monitoring_length=cov_monitoring_win;
         PR_duration=0;
         solver_index = prev_solver_index + 1;
-        
-%             if (solver_index==3) 
-%                 solver_index=1; %skip GNM
-%             end    
+             if (solver_index==2) 
+                 solver_index=3; %skip GNM
+             end    
         if (solver_index>(Nb_Optimizers-1)) 
             fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
             fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
