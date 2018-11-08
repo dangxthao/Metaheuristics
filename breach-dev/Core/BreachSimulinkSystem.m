@@ -462,22 +462,22 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             assignin('base','tspan',[0 eps]);
             assignin('base','t__',0);
             assignin('base','u__',zeros(1, numel(this.Sys.InputList)));
-            assignin('base','tspan',tspan);
-            if this.SimInModelsDataFolder;
+            if this.SimInModelsDataFolder
                 crd = pwd;
                 cd(breach_data_dir);
             end
             try
                 simout = sim(mdl_breach, this.SimCmdArgs{:});
             catch MException
-                if this.SimInModelsDataFolder;
+                if this.SimInModelsDataFolder
                     cd(crd);
                 end
                 rethrow(MException);
             end
-            if this.SimInModelsDataFolder;
+            if this.SimInModelsDataFolder
                 cd(crd);
             end
+            assignin('base','tspan',tspan);
             
             %% find logged signals (including inputs and outputs)
             this.Sys.mdl= mdl_breach;
@@ -621,7 +621,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             %   Ex: [vars vals] = filter_vars( 'model', '[A-Z]') will exclude all
             %   variable with capitalized letters in them
             %
-            %
+            
             
             load_system(mdl);
             

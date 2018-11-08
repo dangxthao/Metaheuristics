@@ -5,6 +5,7 @@ classdef BreachOptionGui < handle
         dlg
         dlg_pos
         dlg_sz
+        room_increment = 50
         button_pos
         button_sz
         gui_components
@@ -17,6 +18,10 @@ classdef BreachOptionGui < handle
         tips
         title
      
+    end
+    
+    properties
+       error_msg 
     end
     
     methods
@@ -283,9 +288,10 @@ classdef BreachOptionGui < handle
         
         
          function make_room(this)
+            d = this.room_increment;
             n = size(this.gui_components, 1)+1;
-            this.dlg_sz = this.dlg_sz+ [0 60];
-            this.dlg_pos = this.dlg_pos - [0 30];
+            this.dlg_sz = this.dlg_sz+ [0 d];
+            this.dlg_pos = this.dlg_pos - [0 d/2];
             set(this.dlg, 'Position', [this.dlg_pos this.dlg_sz])
             if n>1
                 new_inter = 0.1/(n-1);

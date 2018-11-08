@@ -187,7 +187,9 @@ sig_name = get_current_signal(handles);
 idx = get(hObject,'Value');
 classes = get(hObject,'String');
 class_name = classes{idx};
-handles.signal_gen_map(sig_name) = eval([class_name '({ sig_name });']);
+try 
+    handles.signal_gen_map(sig_name) = eval([class_name '({ sig_name });']);
+end
 
 % update config and params
 update_config(handles);

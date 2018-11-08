@@ -360,7 +360,6 @@ classdef BreachSet < BreachStatus
                        ip_out = FindParam(this.P, pg.params_out);
                        this.P.pts(ip_out,:) = p_out; 
                     end
-                
                 end
             end
         end
@@ -517,13 +516,17 @@ classdef BreachSet < BreachStatus
                             error('SetSignalMap:wrong_arg', arg_err_msg);
                         end
                         for is = 1:numel(varargin{2})
-                            this.sigMap(varargin{1}{is}) = varargin{2}{is};
-                            this.sigMapInv( varargin{2}{is} ) = varargin{1}{is}; 
+                            if ~strcmp(varargin{1}{is},varargin{2}{is})
+                                this.sigMap(varargin{1}{is}) = varargin{2}{is};
+                                this.sigMapInv( varargin{2}{is} ) = varargin{1}{is};
+                            end
                         end
                     else
                         if ischar(varargin{1})&&ischar(varargin{2})
-                            this.sigMap(varargin{1}) = varargin{2};
-                            this.sigMapInv(varargin{2}) = varargin{1};
+                            if ~strcmp(varargin{1},varargin{2})
+                                this.sigMap(varargin{1}) = varargin{2};
+                                this.sigMapInv(varargin{2}) = varargin{1};
+                            end
                         else
                             error('SetSignalMap:wrong_arg', arg_err_msg);
                         end
@@ -531,8 +534,10 @@ classdef BreachSet < BreachStatus
                 otherwise
                     for is = 1:numel(varargin)/2
                         try
-                            this.sigMap(varargin{2*is-1}) = varargin{2*is};
-                            this.sigMapInv(varargin{2*is}) = varargin{2*is-1};
+                            if ~strcmp(varargin{2*is-1},varargin{2*is})
+                                this.sigMap(varargin{2*is-1}) = varargin{2*is};
+                                this.sigMapInv(varargin{2*is}) = varargin{2*is-1};
+                            end
                         catch
                             error('SetSignalMap:wrong_arg', arg_err_msg);
                         end
@@ -669,6 +674,11 @@ classdef BreachSet < BreachStatus
             idx = 1:this.P.DimX;
         end
         
+        function SigNames = GetAllSignalsList(this)
+        % GetAllSignalsList returns all signals names including aliases    
+            SigNames = this.expand_signal_name('.*');
+        end
+            
         function X = GetSignalValues(this, signals, itrajs, t)
             % BreachSet.GetSignalValues(signals, idx_traces, time) - in case of several trajectories, return cell array
             if (~isfield(this.P,'traj'))

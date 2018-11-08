@@ -187,6 +187,12 @@ classdef BreachSystem < BreachSet
         
         %% Simulation
         function SetTime(this,tspan)
+            if isscalar(tspan)
+                tspan = [0 tspan];
+            end
+            if tspan(end)<0
+                error('BreachSystem:SetTime:neg_time', 'Cannot set negative time.')
+            end
             this.Sys.tspan = tspan;
         end
         
@@ -217,33 +223,37 @@ classdef BreachSystem < BreachSet
             global BreachGlobOpt
             if isa(varargin{1},'STL_Formula')
                 phi = varargin{1};
+                phi_id = get_id(phi);            
             elseif ischar(varargin{1})
                 phi_id = MakeUniqueID([this.Sys.name '_spec'],  BreachGlobOpt.STLDB.keys);
                 phi = STL_Formula(phi_id, varargin{1});
             elseif isa(varargin{1}, 'BreachRequirement')
-                phi = STL_Formula(varargin{1}.req_monitors{1}.formula_id); % some imperfect attempt backward compatibility
+                phi_id = varargin{1}.req_monitors{1}.name;
+                phi = varargin{1}; 
             else
                 error('Argument not a formula.');
             end
             
             % checks signal compatibility
-            [~,sig]= STL_ExtractPredicates(phi);
-            i_sig = FindParam(this.Sys, sig);
-            sig_not_found = find(i_sig>this.Sys.DimP, 1);
-            if ~isempty(sig_not_found)
-                error('Some signals in specification are not part of the system.')
+            if isa(phi,'STL_Formula')
+                [~,sig]= STL_ExtractPredicates(phi);
+                i_sig = FindParam(this.Sys, sig);
+                sig_not_found = find(i_sig>this.Sys.DimP, 1);
+                if ~isempty(sig_not_found)
+                    error('Some signals in specification are not part of the system.')
+                end
+                % Add property params
+                params_prop = get_params(phi);
+                params_names =  fieldnames(params_prop);
+                if ~isempty(params_names)
+                    [~, stat] = FindParam(this.P, params_names);
+                    p_not_found = params_names( stat==0 )';
+                    this.SetParamSpec(p_not_found, cellfun(@(c) (params_prop.(c)), p_not_found),1);
+                end                
             end
             
-            this.Specs(get_id(phi)) = phi;
+            this.Specs(phi_id) = phi;
             
-            % Add property params
-            params_prop = get_params(phi);
-            params_names =  fieldnames(params_prop);
-            if ~isempty(params_names)
-                [~, stat] = FindParam(this.P, params_names);
-                p_not_found = params_names( stat==0 )';
-                this.SetParamSpec(p_not_found, cellfun(@(c) (params_prop.(c)), p_not_found),1);
-            end
         end
         
         function SetSpec(this,varargin)
@@ -263,10 +273,6 @@ classdef BreachSystem < BreachSet
                 else
                     spec = this.AddSpec(spec);
                 end
-            end
-            
-            if isa(spec, 'BreachRequirement')
-                spec = STL_Formula(spec.formulas{1}.formula_id); % backward compatibility
             end
             
             if ~exist('t_spec', 'var')
@@ -291,10 +297,14 @@ classdef BreachSystem < BreachSet
                 this.P.props_names = this.P.props_names(  idx_wo_iprop );
                 this.P.props  = this.P.props(  idx_wo_iprop );
             end
-            [this.P, val] = SEvalProp(this.Sys,this.P,spec,  t_spec);
-            this.addStatus(0, 'spec_evaluated', 'A specification has been evaluated.')
             
-            % TODO? option somewhere to  sort satisfaction values?
+            if isa(spec, 'BreachRequirement')
+                spec.Eval(this);
+                val = spec.traces_vals';
+            elseif isa(spec, 'STL_Formula')
+                [this.P, val] = SEvalProp(this.Sys,this.P,spec,  t_spec);
+            end
+            
         end
         
         function [Bpos, Bneg] = FilterSpec(this, phi)

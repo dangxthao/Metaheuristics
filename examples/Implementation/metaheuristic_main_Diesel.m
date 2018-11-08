@@ -31,13 +31,14 @@ switch user_reset
         clear global
         global start
         start = true;
+        
 
         addpath('../../supp_code')
         addpath('../../src')
-        addpath('../../../breach-dev')
+        addpath('../../breach-dev')
         addpath('../DieselEngineExampleForThao/')
         
-        InitBreach
+        InitBreach('../../breach-dev',true); % forces initialization from folder in Metaheuristics
         
         %% Thao uncommented this to allow automatic calls 
         % fprintf('\n Choose one of the following seeds for pseudorandom sampling:\n')

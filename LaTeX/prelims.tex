@@ -63,7 +63,7 @@ Property falsification is a means of performing automatic bug-finding in system 
 Given a system model such as (\ref{eq:behaviorfunc}) and a system property $\spec$ provided in the form of an STL formula, 
 falsification is a process for finding a parameter value $\param \in \paramset$
 such that $y=\behaviorfunc(\param)$ does not satisfy $\spec$, which is denoted $\outsig
-\not\models \spec$. Such a behavior $y$ is called a counterxample. 
+\not\models \spec$. Such a behavior $y$ is called a counterexample. 
 Note that a counterexample is identified when 
 $\rho(\spec,\param)<0$. We call the task of finding a counterexample 
 a {\em falsification problem}. 
@@ -116,3 +116,8 @@ In Sec. \ref{Solvers} we provide an overview of existing metaheuristic methods t
 In Section \ref{sec:combination}, we describe our approach, which for iteratively selecting from a collection of different existing optimization solvers.
 Section \ref{sec:init} describes how we use information about the progress of the search to initialize the solvers at the start of each iteration. 
 In Section \ref{sec:expres} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system \textcolor{red}{(?)}. Before concluding, we position our approach in relation with existing work using the idea of combining heuristics. 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

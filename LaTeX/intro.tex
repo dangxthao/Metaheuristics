@@ -39,7 +39,7 @@ By contrast, exploitation methods are designed to efficiently identify promising
 
 The technique we present leverages the strengths of both exploration and exploitation methods of search and reduces the impact of their weaknesses.
 We introduce a new metaheuristic approach to the search problem, which uses measures of both robustness and coverage to make decisions about how best to guide the search.
-Our method is an iterative procedure that utilizes several metaheuristic, that is the search methods that can be applied to different problems, in contrast with heuristics which are often designed for specific problems. Some of these metaheuristics are characterized as exploration-driven methods because of their capability of generating diverse candidate solutions. In an opposing direction, some are characterized as exploitation-driven methods because of their capability of quicky find better solutions in the neighborhood of initial candidate solutions. 
+Our method is an iterative procedure that utilizes several metaheuristics, that is the search methods that can be applied to different problems, in contrast with heuristics which are often designed for specific problems. Some of these metaheuristics are characterized as exploration-driven methods because of their capability of generating diverse candidate solutions. In an opposing direction, some are characterized as exploitation-driven methods because of their capability of quicky find better solutions in the neighborhood of initial candidate solutions. 
 In each iteration, our search procedure considers the evolution of both the best-case robustness value (the optimization cost) as well as the evolution of a coverage measure.
 We use the information to make online decisions about when and how to switch from one optimization strategy to another. 
 For example, if we are using an exploitation-driven method, and we decide that the decrease in robustness has ``stalled" (is not decreasing quickly) and the coverage is ``low", we will switch from the exploitation-driven method to an alternative exploration-driven method.
@@ -48,3 +48,8 @@ If, alternatively, we are using an exploration-driven method, and we decide that
 %We demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model, and a model of a hydrogen fuel cell air control system.
 
 
+
+%%% Local Variables:
+%%% mode: latex
+%%% TeX-master: "main"
+%%% End:

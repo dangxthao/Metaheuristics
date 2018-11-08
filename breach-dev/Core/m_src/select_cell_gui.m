@@ -95,7 +95,6 @@ set(hObject, 'Name', ['Choose from list']);
   % Init configurable edit boxes
   set(handles.edit1, 'UserData', containers.Map());
   set(handles.edit2, 'UserData', containers.Map());
-  set(handles.edit3, 'UserData', containers.Map());
   
   % focus on listbox with all 
   uicontrol(handles.listbox_all_variables);
@@ -408,7 +407,10 @@ var = handles.selected_var;
  
 if ~isempty(var)
     m = get(hObject, 'UserData');
-    m(var)= get(hObject, 'String');
+    st=  get(hObject, 'String');
+    if ~isempty(st)
+        m(var)= strtrim(st);
+    end
 else
     set(hObject, 'String', '');
 end
@@ -435,7 +437,10 @@ function edit2_Callback(hObject, eventdata, handles)
 var = handles.selected_var;
 if ~isempty(var)
     m = get(hObject, 'UserData');
-    m(var)= get(hObject, 'String');
+    st=  get(hObject, 'String');
+    if ~isempty(st)
+        m(var)= strtrim(st);
+    end
 else
     set(hObject, 'String', '');
 end
@@ -452,37 +457,11 @@ if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgr
     set(hObject,'BackgroundColor','white');
 end
 
-function edit3_Callback(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    structure with handles and user data (see GUIDATA)
-
-var = handles.selected_var;
-if ~isempty(var)
-    m = get(hObject, 'UserData');
-    m(var)= get(hObject, 'String');
-else
-    set(hObject, 'String', '');
-end
-
-
-% --- Executes during object creation, after setting all properties.
-function edit3_CreateFcn(hObject, eventdata, handles)
-% hObject    handle to edit3 (see GCBO)
-% eventdata  reserved - to be defined in a future version of MATLAB
-% handles    empty - handles not created until after all CreateFcns called
-
-% Hint: edit controls usually have a white background on Windows.
-%       See ISPC and COMPUTER.
-if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
-    set(hObject,'BackgroundColor','white');
-end
 
 function handles =update_custom_edits(handles)
 v= handles.selected_var;
 set(handles.edit1, 'String','');
 set(handles.edit2, 'String', '');
-set(handles.edit3, 'String', '');
 if ~isempty(v)
     m1 = get(handles.edit1,'UserData');
     if m1.isKey(v)
@@ -493,12 +472,7 @@ if ~isempty(v)
     if m2.isKey(v)
         set(handles.edit2, 'String', m2(v));
     end
-    
-    m3 = get(handles.edit3,'UserData');
-    if m3.isKey(v)
-        set(handles.edit3, 'String', m3(v));
-    end
-    
+        
 end
 
 function handles = update_selected(handles)

@@ -502,7 +502,7 @@ classdef BreachRequirement < BreachTraceSystem
             if ~isempty(this.postprocess_signal_gens)
                 for iog = 1:numel(this.postprocess_signal_gens)
                     if iog==1
-                        st = [st '--- POSTPROCESSING ---\n']; 
+                        st = sprintf([st '--- POSTPROCESSING ---\n']); 
                     end
                     signals_in_st = cell2mat(cellfun(@(c) (['''' c ''', ']), this.postprocess_signal_gens{iog}.signals_in, 'UniformOutput', false));
                     signals_in_st = ['{' signals_in_st(1:end-2) '}'];
@@ -510,7 +510,7 @@ classdef BreachRequirement < BreachTraceSystem
                     signals_out_st = ['{' signals_out_st(1:end-2) '}'];
                     st =  [st sprintf('%s --> %s\n',signals_in_st, signals_out_st)];
                 end
-                st = [ st '\n'];
+                st = sprintf([ st '\n']);
             end
             if ~isempty(this.sigMap)
                 st = [st this.PrintAliases() '\n'];
@@ -523,8 +523,8 @@ classdef BreachRequirement < BreachTraceSystem
         
         function st = PrintAll(this)
             st =this.PrintFormula();
-            st = [st this.PrintSignals()];
-            st = [st this.PrintParams()];
+            st = sprintf([st this.PrintSignals()]);
+            st = sprintf([st this.PrintParams()]);
             if nargout==0
                 fprintf(st);
             end
@@ -731,7 +731,7 @@ classdef BreachRequirement < BreachTraceSystem
         
         function st = PrintAliases(this)
             if ~isempty(this.sigMap)
-                st = '---- ALIASES ----\n';
+                st = sprintf('---- ALIASES ----\n');
                 keys = union(this.sigMap.keys(), this.sigMapInv.keys());
                 printed ={};
                 for ik = 1:numel(keys)
@@ -758,11 +758,11 @@ classdef BreachRequirement < BreachTraceSystem
                         al_st = [al_st(1:end-2) ' (not linked to data)' ];
                     end
                     if ~ismember(sig, printed)
-                        st = [st sprintf('%s <--> %s\n', sig, al_st )];
+                        st =sprintf( [st sprintf('%s <--> %s\n', sig, al_st )]);
                         printed = [printed {sig} aliases];
                     end
                 end
-                fprintf('\n')
+                st = sprintf([st '\n']);
             end
             
             if nargout==0
@@ -892,13 +892,14 @@ classdef BreachRequirement < BreachTraceSystem
             end  
             
             % We got B, checks whether it contains necessary signals
-            absent_signals_in = setdiff(this.signals_in, B.GetSignalList());
-            if ~isempty(absent_signals_in)
-                error('BreachRequirement:Eval', 'Signal %s is not provided by data or model',absent_signals_in{1});
+            this.BrSet = B; 
+            [ifound, ~, ifoundB, ~ ] = this.FindSignalsIdx(this.signals_in);
+            if ~all(ifound|ifoundB)
+               idx_not_found = find((~ifound)&(~ifoundB),1) ;
+               error('BreachRequirement:Eval', 'Signal %s is not provided by data or model',this.signals_in{idx_not_found});
             end
             
-            
-            % checksi parameters in B and in Req
+            % checks parameters in B and in Req
             this.BrSet = B;
             paramB = this.BrSet.GetParamList();
             idxR_paramR = this.P.DimX+2:this.P.DimP;

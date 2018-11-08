@@ -125,8 +125,8 @@ end
 BreachGlobOpt.breach_dir = br_dir;
 BreachGlobOpt.list_path = list_path;
 
-%% Force refreshing sl_customization menu
-sl_refresh_customizations;
+%% Force refreshing sl_customization menu % disabled fixed/proven useful
+%sl_refresh_customizations;
 
 warning('on',id);
 
