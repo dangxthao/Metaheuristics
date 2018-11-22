@@ -221,6 +221,14 @@ classdef CoverageBreachSet < BreachSimulinkSystem
                 lower_left_corner = [lower_left_corner; this.Domains(ip).domain(1)];
             end
         end
+        function upper_right_corner = UpperRightCorner(this)
+            % Identify the "upper, right" corner of the parameter set
+            varying_parameter_indices = this.VaryingParamList;
+            upper_right_corner = [];
+            for ip = varying_parameter_indices
+                upper_right_corner = [upper_right_corner; this.Domains(ip).domain(2)];
+            end
+        end
         
         function [varargout] = AddPoints(this,new_points)
             
