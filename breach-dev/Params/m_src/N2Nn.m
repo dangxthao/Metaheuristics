@@ -35,7 +35,9 @@ else
     if num_new == max_num_new
         Nn = N2NnIter(n,p,nb);
     else % this is where we need some smarts, let's do simple first
-        s = rng; rng(1);  % seed random generator to get deterministic results
+        %%Thao uncommented s = rng; rng(1);  % seed random generator to get deterministic results
+        s = rng; rng(1, 'twister'); %%Thao added
+        
         if max_num_new < 1e7 %  if max_num_new is still reasonable, just truncate full grid
             FullNn =  N2NnIter(n,p,nb);
             idx= randperm(max_num_new);
