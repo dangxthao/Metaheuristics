@@ -962,7 +962,7 @@ classdef BreachSet < BreachStatus
             else
                 this.SampleDomain(bnd_params,2, 'corners', 'replace', max_num_samples);
             end
-          end
+        end
         
         function QuasiRandomSample(this, nb_sample, step)
             % Quasi-Random Sampling

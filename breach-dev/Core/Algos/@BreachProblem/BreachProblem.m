@@ -60,7 +60,7 @@ classdef BreachProblem < BreachStatus
         x0
         solver= 'global_nelder_mead'   % default solver name
         solver_options    % solver options
-        Spec
+        Spec              % BreachRequirement object reset to R0 for each objective evaluation
         T_Spec=0
         
         constraints_fn    % constraints function
@@ -70,9 +70,12 @@ classdef BreachProblem < BreachStatus
     % properties related to the function to minimize
     properties
         BrSet
-        BrSys
-        BrSet_Best
+        BrSys         % BreachSystem reset for each objective evaluation
+        BrSet_Best   
         BrSet_Logged
+        R0            % BreachRequirement object initial 
+        R_log    % BreachRequirement object logging requirement evaluations during solving 
+        
         params
         domains
         lb
@@ -156,6 +159,7 @@ classdef BreachProblem < BreachStatus
                 phi = BreachRequirement(phi);
             end
             
+            this.R0 = phi.copy(); 
             this.Spec = phi;
             this.BrSet = BrSet.copy();
             this.BrSet.Sys.Verbose=0;
@@ -190,8 +194,21 @@ classdef BreachProblem < BreachStatus
             this.Reset_x0();
             
             % robustness
-            this.BrSys = this.BrSet.copy(); 
-            this.robust_fn = @(x) (phi.Eval(this.BrSys, this.params, x));
+            this.BrSys = this.BrSet.copy();
+
+            % if one evaluation of variable x corresponds to several traces,
+            % we need to make sure BrSys is used for only one x
+            % this is necessary for 'init' solver in particular, where
+            % BrSet contains multiple x0 values. 
+          
+            this.BrSys.SetParam(this.params, this.x0(:,1), 'spec');
+            [~, ia] = unique( this.BrSys.P.pts','rows');
+            if numel(ia)<size(this.BrSys.P.pts,2)
+                this.BrSys = this.BrSys.ExtractSubset(ia);
+            end
+            
+            
+            this.robust_fn = @(x) (this.Spec.Eval(this.BrSys, this.params, x));
             
             this.BrSys.Sys.Verbose=0;
              
@@ -221,7 +238,7 @@ classdef BreachProblem < BreachStatus
             end
             
             this.BrSet.SetParam(this.params, x0__,'spec');  % not sure this is useful anymore, if ever
-            this.x0 = unique(x0__', 'rows')';
+            this.x0 = unique(x0__', 'rows')';% remove duplicates, I guess. 
             
         end
         
@@ -594,7 +611,9 @@ classdef BreachProblem < BreachStatus
                     for iter = 1:nb_iter
 
                         % checks whether x has already been computed or not
-                        % can do better, but will do for now
+                        % skips logging if already computed 
+                        % might cause inconsistencies down the road...
+                        
                         if ~isempty(this.X_log)
                             xi = x(:, iter);
                             idx = find(sum(abs(this.X_log-repmat(xi, 1, size(this.X_log, 2)))) == 0,1);
@@ -602,23 +621,19 @@ classdef BreachProblem < BreachStatus
                             idx=[];
                         end
                         if ~isempty(idx)
-                            if  ~isempty(this.BrSet_Logged)
-                                this.BrSys.P = Sselect(this.BrSet_Logged.P,idx);
-                            end
                             fval(:,iter) = this.obj_log(:,idx);
                         else
                             % calling actual objective function
                             fval(:,iter) = fun(iter);
-                        end
-
-                        % logging and updating best
-                        this.LogX(x(:, iter), fval(:,iter));
                         
-                        % update status
-                        if rem(this.nb_obj_eval,this.freq_update)==0
-                            this.display_status();
+                            % logging and updating best
+                            this.LogX(x(:, iter), fval(:,iter));
+                            
+                            % update status
+                            if rem(this.nb_obj_eval,this.freq_update)==0
+                                this.display_status();
+                            end
                         end
-                        
                         % stops if falsified or other
                         if this.stopping()
                             break
@@ -675,9 +690,12 @@ classdef BreachProblem < BreachStatus
             if (this.log_traces)&&~(this.use_parallel)&&~(this.BrSet.UseDiskCaching) % FIXME - logging flags and methods need be revised
                 if isempty(this.BrSet_Logged)
                     this.BrSet_Logged = this.BrSys.copy();
+                    this.R_log = this.Spec.copy();
                 else
                     this.BrSet_Logged.Concat(this.BrSys);
+                    this.R_log.Concat(this.Spec);
                 end
+                this.Spec = this.R0.copy();
             end
             
             [fmin , imin] = min(min(fval));

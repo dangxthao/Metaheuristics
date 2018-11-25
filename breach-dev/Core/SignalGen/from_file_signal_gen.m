@@ -3,14 +3,14 @@ classdef from_file_signal_gen < signal_gen
         file_list
         file_name
         var_name
+        sg_name
         time_var_name
         params_from_file
         ignore_time = false   % if true, will ignore time given as parameter of Sim command and use time data instead
-        data_fmt = 'timed_variables' % other could be 'timed_array', 'struct_with_time', etc
         pts  % stores possible values of parameters
     end
     methods
-        function this = from_file_signal_gen(signals, fname, varname,params_from_file,p0)
+        function this = from_file_signal_gen(signals, fname, varname,params_from_file,sg_name,p0)
             
             if ~exist('fname', 'var')
                 [filenames, paths] = uigetfile( ...
@@ -51,11 +51,14 @@ classdef from_file_signal_gen < signal_gen
                 error('from_file_signal_gen:no_trace_file', 'No trace file.')
             end
             
+            
             this.params = {'file_idx'};
             if exist('p0', 'var')
                 this.p0 = p0;
+                read_p0 = false;
             else
                 this.p0 = 1;
+                read_p0 = true;
             end
             
             this.params_domain = BreachDomain('enum', [],  [1:numel(this.file_list)]);
@@ -70,7 +73,7 @@ classdef from_file_signal_gen < signal_gen
             % with.
             
             itime =find(strcmpi(vars, 'time'), 1);
-             if isempty(itime)
+            if isempty(itime)
                 itime = find(strcmpi(vars, 'ecutime'),1);
                 if isempty(itime)
                     error('The file must contain a 1D array named ''time'' (case insensitive) with properly ordered time samples.');
@@ -83,30 +86,37 @@ classdef from_file_signal_gen < signal_gen
             end
             
             % Next is detecting all parameters- we're looking for
-            % constant scalar parameters defined in all files - and all
+            % constant scalar parameters defined in the files - and all
             % signals - they have to be defined  in all files.
-            if exist('params_in_file','var')
+            if exist('params_from_file','var')
                 if ischar(params_from_file)&&~strcmp(params_from_file,'all')
                     params_from_file = {params_from_file};
                 end
             else
-                params_from_file= {}; 
+                params_from_file= {};
             end
             this.params_from_file = params_from_file;
             
             signals_all = {};
+            
+            
             for iv = 1:numel(vars)
                 v = vars{iv};
                 if (iv ~= itime)&&isnumeric(st.(v))   % ignore time and everything not numeric
-                    if isscalar(st.(v))&&(ismember(v,params_from_file)||(ischar(params_from_file)&&strcmp(params_from_file, 'all'))) % this is a parameter
+                    if isscalar(st.(v))&&...
+                            (ischar(params_from_file)&&strcmp(params_from_file, 'all'))||...
+                            isequal(v,params_from_file)||...
+                            iscell(params_from_file)&&ismember(v, params_from_file) % this is a parameter
+                        
                         this.params = [this.params v];
-                        this.p0(end+1) = st.(v);
+                        if read_p0
+                            this.p0(end+1) = st.(v);
+                        end
                     elseif length(st.(v))==length(time) % looks like  a signal
                         signals_all = [signals_all  v];
                     end
                 end
             end
-            
             
             % go over all files to fetch values for the parameters and
             % create enum domains
@@ -122,16 +132,15 @@ classdef from_file_signal_gen < signal_gen
                 this.params_domain(ip)= BreachDomain('enum', [], this.pts(ip, :));
             end
             
-            % Match signals with signals_all
+            if nargin==0||isempty(signals)
+                signals = signals_all;
+            end
+            
             if ischar(signals)
                 signals = {signals};
             end
             
-            if isempty(signals)
-                signals = signals_all;
-            end
-            
-            this.signals = signals;          
+            this.signals = signals;
             if ~exist('varname', 'var')||isempty(varname)
                 varname = signals{1};
             end
@@ -139,10 +148,12 @@ classdef from_file_signal_gen < signal_gen
             this.file_name = fname;
             this.var_name= varname;
             
-            if nargin==3
-                this.data_fmt = 'timed_array';
-                this.var_name = varname;
+            if ~exist('sg_name', 'var')||isempty(sg_name)
+                sg_name =  varname;
             end
+            
+            this.params{1} = [sg_name '_file_idx'];
+            this.sg_name = sg_name;
         end
         
         function [X, time] = computeSignals(this, p, time) % returns a p in pts
@@ -162,7 +173,6 @@ classdef from_file_signal_gen < signal_gen
                 error('from_file_signal_gen:no_time_variable' ,'File %s does not contain time data as variable  %s.', fname, this.time_var_time);
             end
             
-            
             if this.ignore_time
                 if size(t_sig,1)==1
                     time =t_sig;
@@ -174,7 +184,6 @@ classdef from_file_signal_gen < signal_gen
             else
                 X = zeros(numel(this.signals), numel(time));
             end
-
             
             % fetch signals data
             for isig = 1:numel(this.signals)
@@ -207,9 +216,9 @@ classdef from_file_signal_gen < signal_gen
                 end
             end
         end
-               
+        
         function args = getSignalGenArgs(this)
-            args = {'file_name','var_name', 'params_from_file'};
+            args = {'file_name','var_name', 'params_from_file', 'sg_name'};
         end
         
     end

@@ -193,7 +193,7 @@ classdef BreachOptionGui < handle
             this.gui_components{end+1,1} = g;
         end
         
-        function g  = create_check_box(string, pos)
+        function g  = create_check_box(this, string, pos)
             
             g = uicontrol('Parent',this.dlg,...
                 'Style','checkbox',...
@@ -327,6 +327,27 @@ classdef BreachOptionGui < handle
                 sz(i, 1) = sz(i-1,1)+sz(1,1)/nb+sz(1,3);
             end
         end
+
+        function pause_gui(this)
+            % pause_gui disable all that can be disabled
+            for ie = 1:numel(this.gui_components)
+                g = this.gui_components{ie};
+                try
+                    set(g, 'enable', 'off')
+                end
+            end
+        end
+        
+        function unpause_gui(this)
+            % pause_gui enable all that can be enabled 
+            for ie = 1:numel(this.gui_components)
+                g = this.gui_components{ie};
+                try
+                    set(g, 'enable', 'on')
+                end
+            end
+        end
+        
         
     end
 end
