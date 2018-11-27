@@ -268,7 +268,7 @@ classdef StatFalsify
       if num_params ~= size(param_ranges,1)
         error('Number of parameters not equal to number of range intervals');
       end
-      time = toc;
+      time = toc(tStart);
       
     % Loop until maximum number of simulations or maximum number of random
     % attemps.
