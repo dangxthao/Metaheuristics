@@ -34,13 +34,14 @@ fprintf('\n Range of Pedal Angle is [0, 40]\n')
 fprintf('Engine Speed is constant at 1000\n')
 fprintf('AF-Sensor Offset is constant at 1')
 fprintf('\n Grid discretization unit for Pedal Angle signal value range is 4 units\n')
-Sys = BrSys.copy();
-Sys.SetParamRanges(signal_u0,ones(N,1)*[0 40]);
-Sys.SetParam(signal_u1,ones(N,1)*1000);
-Sys.SetParam(signal_u2,ones(N,1)*1);
-Sys.SetEpsGridsize(4*ones(N,1));
-Sys.SetDeltaGridsize(2*Sys.epsgridsize);
+CBr = BrSys.copy();
+CBr.SetParamRanges(signal_u0,ones(N,1)*[0 40]);
+CBr.SetParam(signal_u1,ones(N,1)*1000);
+CBr.SetParam(signal_u2,ones(N,1)*1);
+CBr.SetEpsGridsize(4*ones(N,1));
+CBr.SetDeltaGridsize(2*CBr.epsgridsize);
 
 %% Specifying STL formula
 formulas = STL_ReadFile('prop1.stl');
 phi = phi26;
+R=  BreachRequirement(phi);

@@ -28,7 +28,6 @@ if  nb_dir>1
         br_old_dir =   fileparts(br_all_dir{idir});
         all_paths = strsplit(path, ';');
         nb_paths = numel(all_paths);
-        disp(['Warning: removing paths in ' br_old_dir]);
         rm_path_list = {};
         for ii = 1:nb_paths
             if strcmp(all_paths{ii}(1:min(numel(br_old_dir),end)),br_old_dir)
@@ -36,8 +35,11 @@ if  nb_dir>1
                 rm_path_list = [rm_path_list all_paths{ii}];
             end
         end
-        rmpath(rm_path_list{:});
-        disp(' ');
+        if ~isempty(rm_path_list)
+            disp(['Warning: removing paths in ' br_old_dir]);
+            rmpath(rm_path_list{:});
+            disp(' ');
+        end
     end
 end
     

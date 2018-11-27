@@ -17,7 +17,7 @@ classdef BreachOpenSystem < BreachSystem
     properties
         InputMap       % Maps input signals to idx in the input generator
         InputGenerator % BreachSystem responsible for generating inputs
-        use_precomputed_inputs = false % if true, will fetch traces in InputGenerator  
+        use_precomputed_inputs = false % if true, will fetch traces in InputGenerator
     end
     
     methods
@@ -76,9 +76,14 @@ classdef BreachOpenSystem < BreachSystem
         
         % we merge parameters of the input generator with those of the
         % system, but keep both BreachObjects
-        function SetInputGen(this, IG)
+        function SetInputGen(this, IG, varargin)
             % BreachOpenSystem.SetInputGen Attach a BreachSystem as input generator.
-                        
+
+            opt.SetInputGenTime = false;
+            opt= varargin2struct(opt, varargin{:});
+            
+            
+            
             % look for property parameters and save them
             PropParams={};
             if ~isempty(this.P)
@@ -223,6 +228,11 @@ classdef BreachOpenSystem < BreachSystem
                 end
             end
 
+            if opt.SetInputGenTime
+                this.SetTime(IG.GetTime());
+            end
+            
+            
         end
         
         function [params, idx] = GetPlantParamList(this)
@@ -322,7 +332,7 @@ classdef BreachOpenSystem < BreachSystem
         
         function st = PrintSignals(this)
             st = '';
-            if isempty(this.SignalRanges)
+            if (~this.hasTraj())
                 st =  sprintf('---  SIGNALS  ---\n');
                 for isig = 1:this.Sys.DimX
                     st = sprintf([st '%s %s\n'], this.P.ParamList{isig}, this.get_signal_attributes_string(this.P.ParamList{isig}));

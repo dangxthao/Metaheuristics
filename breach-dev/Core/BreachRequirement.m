@@ -256,6 +256,14 @@ classdef BreachRequirement < BreachTraceSystem
             end
         end
         
+        
+        function h = PlotSignals(this,varargin)
+        
+            h = BreachSignalsPlot(this,varargin{:});
+            
+            
+        end
+        
         function summary = GetSummary(this)
             
             summary = GetStatement(this);

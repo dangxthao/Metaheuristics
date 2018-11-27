@@ -57,8 +57,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             if exist('p0', 'var')&&iscell(p0)
                 p0 = cell2mat(p0);
             end
-            
-          
+                     
             if ~ischar(mdl_name)
                error('BreachSimulinkSystem:wrong_argument', 'First argument of BreachSimulinkSystem must be a string naming a Simulink system.'); 
             end
@@ -767,6 +766,10 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             %    end
             %end
             %
+
+            if ischar(tspan)
+               tspan = evalin('base', 'tspan');
+            end
             
             assignin('base','tspan',tspan);
             if numel(tspan)>2

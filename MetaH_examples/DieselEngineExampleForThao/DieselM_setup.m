@@ -1,6 +1,6 @@
 %% Breach Interface Object Creation
 close all
-%clear all
+clear all
 warning('off', 'ALL')
 
 addpath('/Users/thaodang/Metaheuristics/supp_code')
@@ -121,6 +121,6 @@ phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 41)')
 
 MetaObj = MetaFalsify;
 
-[r,falsified,total_nb_sim,falsi_point] = MetaCall(MetaObj,InputSys,phi);
+[r,falsified,total_nb_sim,falsi_point] = MetaObj.MetaCall(InputSys,phi);
 
 
