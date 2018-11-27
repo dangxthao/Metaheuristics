@@ -5,6 +5,17 @@ classdef MetaFalsify
 % 
 
   properties
+    
+      
+      
+    model_name = 'KD_cl_harness_forthao';
+    simTime = 50;
+    I0_signal_names = {'In1','In2','Out1'};
+    input_signal_names = {'In1','In2'};
+    signal_types = { 'UniStep', 'UniStep'} ;
+    nb_ctr_pts = [ 10 10 ] ;
+    CoverageBreachSet InputSys;
+    
     %% limit on nb of solver calls
     %this.nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
     nb_solver_calls = 30 %30 %1 %30
@@ -41,8 +52,91 @@ classdef MetaFalsify
 
 
   methods   
+    
+           
+      function BrSys = CoverageBreachSetCreation(this,model_name,IO_signal_names)          
+          this.InputSys = CoverageBreachSet(model_name,{},[], this.I0_signal_names);
+          this.I0_signal_names=IO_signal_names;
+          this.model_name=model_name;
+      end
+      
+      
+      function BrSys = SimTimeSetUp(this,BrSys,simTime)
+          this.InputSys.SetTime([0 this.simTime]);
+          this.simTime=simTime;
+      end
+      
+      
+     function this = InputSignalSetUp(this,input_signal_names,signal_types,nb_ctr_pts,input_ranges)          
+        nb_signals = numel(input_signal_names);
+
+        fprintf('\n Parametrizing input signal as piecewise constant....\n')
+        Input_Gen.type = signal_type;
+
+        %N = 10; % Number of control points
+        %fprintf('Number of control points is %d\n',N)
+
+        for ii=1:nb_signals
+            Input_Gen.cp = nb_ctr_pts(ii,1);
+            this.InputSys.SetInputGen(Input_Gen);
+            
+            % Specifying parameter names       
+            for i=0:nb_ctr_pts(ii,1)-1 
+                par_name_prefix = strcat('In',num2str(ii));
+                par_name_prefix = strcat(par_name_prefix,'_u');
+                signal_u(ii){1,i+1}=strcat(par_name_prefix,num2str(i));
+                %signal_u1{1,i+1}=strcat('In2_u',num2str(i));
+            end
+        end
+
+        %input_range = [5.0,45.0;1800, 3000]
+        % Input ranges
+        % fprintf('\n Range of In1 is% \n) [5.0,45.0]\n')
+        % fprintf('\n Range of In2 is [1800, 3000]\n')
         
+        %InputSys = BrSys.copy();
+
+        for ii=1:nb_signals
+          ii
+          input_ranges(ii,:)
+          this.InputSys.SetParamRanges(signal_u(ii),ones(N(ii,1),1)*input_ranges(ii,:));
+          %InputSys.SetParamRanges(signal_u(,ones(N,1)*[0 40]);
+          %InputSys.SetParamRanges(signal_u1,ones(N,1)*[1800 3000]);
+        end
+
+     end 
+
+
+    function this = GridSetUp(this,gridsizeMat)
+        % gridsizeMat = [];
+        % for ii = 1:2
+        %     gridsizeMat = [ gridsizeMat; 4*ones(N,1) ];
+        % end
+        % fprintf('\n Grid discretization unit for In1 signal value range is 4 units\n')
+
+        this.InputSys.SetEpsGridsize(gridsizeMat);
+        this.InputSys.SetDeltaGridsize(2*InputSys.epsgridsize);
+    end
+
+
+          
+    
+      
+      %%%%%%%%%%%%%
+      %%%%%%%%%%%%%
+      %%%%%%%%%%%%%
+      function this = STLFormulaSetUp(this,phi)
+        %% Specifying STL formula
+        this.phi = phi;
+
+      end
  %%  
+    function InputSys = FalsiSetUp(this,model_name,IO_signal_names,phi,simTime,gridsizeMat)
+        this.CoverageBreachSetCreation(model_name,IO_signal_names); 
+        this.STLFormulaSetUp(phi); 
+    end
+    
+    
     function [this,falsified,total_nb_sim,falsi_point] = MetaCall(this,InputSys,phi)
 
     % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL(InputSys, PHI, NB_SAMPLES, HITS)
@@ -62,7 +156,9 @@ classdef MetaFalsify
 
     
     %%%%%%% Method 'MetaCall' starts here
+        
     
+       
         %% Transform the STL formula into Breach Requirement
         if isa(phi, 'STL_Formula')
             phi = BreachRequirement(phi);

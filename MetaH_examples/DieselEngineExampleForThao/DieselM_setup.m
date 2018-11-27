@@ -21,9 +21,11 @@ load('thr_ff_map.mat')
 fprintf('\n Creating breach interface with simulink model %s\n',model_name)
 
 simTime = 50; 
-fprintf('\n Simulation time horizon is %d seconds\n',simTime)
+fprintf('\n Simulation time horizon is %d seconds\n',simTime);
 
-BrSys = CoverageBreachSet(model_name,{},[], {'In1','In2', 'Out1'});
+IOsignal_names = {'In1','In2','Out1'};
+
+BrSys = CoverageBreachSet(model_name,{},[], IOsignal_names);
 BrSys.SetTime([0 simTime]);
 
 
