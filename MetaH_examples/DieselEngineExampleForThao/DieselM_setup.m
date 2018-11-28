@@ -119,7 +119,7 @@ phi = STL_Formula('phi','alw_[15,30] (Out1[t] < 41)')
 % phi = STL_Formula('check', 'alw_[0.1, sim_time] (Out1[t] > -0.001)'); 
 % phi = set_params(phi, {'sim_time'}, [sim_time]);
 
-MetaObj = MetaFalsify;
+MetaObj = MetaFalsify(InputSys,phi);
 
 [r,falsified,total_nb_sim,falsi_point] = MetaObj.MetaCall(InputSys,phi);
 

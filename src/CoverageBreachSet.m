@@ -160,6 +160,9 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             % Number of parameters with ranges associated with them.
             num_ranges = 0;
             varying_parameter_indices = this.VaryingParamList;
+            this.VaryingParamList
+            length(varying_parameter_indices)
+            length(eps_size_vector)
             if length(eps_size_vector)~=length(varying_parameter_indices)
                 error('Length of the size vector does not match the number of parameters wth ranges associated with them.');
             end
