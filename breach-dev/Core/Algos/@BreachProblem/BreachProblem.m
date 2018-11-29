@@ -500,11 +500,12 @@ classdef BreachProblem < BreachStatus
             BrQ.ResetParamSet();
             BrQ.SetParamRanges(this.params, [this.lb this.ub])
             BrC = BrQ.copy();
+            nb_corners = this.solver_options.nb_max_corners;
             nb_samples = this.solver_options.nb_new_trials;
             step = this.solver_options.start_at_trial;
             
             BrC.P = CreateParamSet(BrC.Sys,this.params,[this.lb this.ub]);
-            BrC.CornerSample(nb_samples);
+            BrC.CornerSample(nb_corners);
             XC = BrC.GetParam(this.params);
             nb_corners= size(XC, 2);
             qstep = step-nb_corners;
@@ -527,7 +528,7 @@ classdef BreachProblem < BreachStatus
         end
         
         function x0 = generate_new_x0(this)
-            x0 = (this.ub-this.lb).*rand(3,1) + this.lb;
+            x0 = (this.ub-this.lb).*rand(numel(this.params),1) + this.lb;
         end
         
         function problem = get_problem(this)
@@ -798,10 +799,10 @@ classdef BreachProblem < BreachStatus
         
         function display_status_header(this)
             if ~isempty(this.Spec.precond_monitors)
-                hd_st = sprintf(  '#calls (max:%5d)        time spent (max: %g)       [current obj]   (current best)   [constraint]\n',...
+                hd_st = sprintf(  '#calls (max:%5d)        time spent (max: %g)     [current  obj]     (current best)   [constraint]\n',...
                     this.max_obj_eval, this.max_time);
             else
-                hd_st = sprintf(  '#calls (max:%5d)        time spent (max: %g)       [current obj]   (current best) \n',...
+                hd_st = sprintf(  '#calls (max:%5d)        time spent (max: %g)     [current  obj]     (current best) \n',...
                     this.max_obj_eval, this.max_time);
             end
        %     l = numel(hd_st);

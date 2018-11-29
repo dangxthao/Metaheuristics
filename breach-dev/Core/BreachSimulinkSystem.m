@@ -72,6 +72,8 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             this.mdl.mdl_breach_path = BreachGetModelsDataPath();
             this.ParamSrc = containers.Map();
             
+            this.SetupOptions(varargin{:})
+                
             switch nargin
                 case 1,
                     this.CreateInterface(mdl_name);
@@ -87,7 +89,6 @@ classdef BreachSimulinkSystem < BreachOpenSystem
                         this.SetInputGen(inputfn);
                     end
                 otherwise, % additional options
-                    this.SetupOptions(varargin{:})
                     this.CreateInterface(mdl_name, params, p0, signals);
                     if ~isempty(inputfn)
                         this.SetInputGen(inputfn);
