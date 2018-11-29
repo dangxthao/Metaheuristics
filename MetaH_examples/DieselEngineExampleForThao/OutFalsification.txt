@@ -1,27 +1,5 @@
 
  *** Running PseudoRandom
  Time limit of computation is 100 seconds
-
- nb_samples for PR is 10 seconds
-
- nb_hits for PR is 100 seconds
-
- PseudoRandom time = 18.327989 seconds
- This solver time = 18.338373 seconds
- Best Robustness Value of this call = 14.207968
- Best Robustness Value so far = 14.207968
-
-
-
- #Call  SolverID  Robustness  Coverage
-Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
- 1  0   14.20796815    0.01372173
- rob_stagnant = 0
- cov_monitoring_length = 1
- Solver call 1 done
- **** Running CMAES
- Time limit of computation is 2000 seconds
-
- This solver time = 393.966592 seconds
- Exit from Solver 1 
- Exit! TOTAL Computation time = 413.020158 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 

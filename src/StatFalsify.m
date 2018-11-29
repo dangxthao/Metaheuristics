@@ -266,9 +266,9 @@ classdef StatFalsify
       nb_attempts = 0;
       falsified = this.falsified; falsi_point = [];
       if num_params ~= size(param_ranges,1)
-          error('Number of parameters not equal to number of range intervals');
+        error('Number of parameters not equal to number of range intervals');
       end
-      time = toc;
+      time = toc(tStart);
       
     % Loop until maximum number of simulations or maximum number of random
     % attemps.
@@ -502,7 +502,9 @@ end
      %
      % MAX_TIME: Limit on computation time.
 
-     
+     if nargin==0
+         return;
+     end
      
       global start
 
@@ -588,9 +590,9 @@ end
               c(i) = log(numel(samples.vals)+1)/...
                          max(1,sum(log((bounds(:,2)-bounds(:,1))./eps+1)));
               if ~isempty(samples.pts)
-                  s = samples.vals;
-                  avg = mean(s);
-                  v(i) = avg-mean(max(0, avg-s));
+                  list = samples.vals;
+                  avg = mean(list);
+                  v(i) = avg-mean(max(0, avg-list));
               else 
                   avg(i) = 1;
                   v(i) = 1;
@@ -622,17 +624,17 @@ end
            if run
         % Perform probability based sampling
            sim_num = min(samp_nums(i),max_simulations-num_sim);
-           [this,s,this.falsified,nb_added,this.falsifier] =... 
+           [this,list,this.falsified,nb_added,this.falsifier] =... 
            this.PseudoRandSamp(CBS,param_names,bounds,phi,sim_num,max_time,init_samples);
                                                       
            num_sim = num_sim+nb_added;
               if nb_added>0
-                 samples.pts = [samples.pts; s.pts];
-                 samples.vals = [samples.vals; s.vals];
-                 this.all_samples.pts = [this.all_samples.pts; s.pts];
-                 this.all_samples.vals = [this.all_samples.vals; s.vals];
-                 this.new_samples.pts = [this.all_samples.pts; s.pts];
-                 this.new_samples.vals = [this.all_samples.vals; s.vals];
+                 samples.pts = [samples.pts; list.pts];
+                 samples.vals = [samples.vals; list.vals];
+                 this.all_samples.pts = [this.all_samples.pts; list.pts];
+                 this.all_samples.vals = [this.all_samples.vals; list.vals];
+                 this.new_samples.pts = [this.all_samples.pts; list.pts];
+                 this.new_samples.vals = [this.all_samples.vals; list.vals];
                  lb(i) = min(samples.vals);
               end
            end
@@ -645,17 +647,17 @@ end
                disp('singlular')
                nb = init_samples-numel(samples.vals);
                sim_num = min(nb,max_simulations-num_sim);
-              [this,s,this.falsified,nb_added,this.falsifier] = ...
+              [this,list,this.falsified,nb_added,this.falsifier] = ...
               this.PseudoRandSamp(CBS,param_names,bounds,phi,sim_num,max_time,4*init_samples);
           
-               if ~isempty(s)
-                  samples.pts = [samples.pts; s.pts];
-                  samples.vals = [samples.vals; s.vals];
+               if ~isempty(list)
+                  samples.pts = [samples.pts; list.pts];
+                  samples.vals = [samples.vals; list.vals];
                   num_sim = num_sim+nb_added;
-                  this.all_samples.pts = [this.all_samples.pts; s.pts];
-                  this.all_samples.vals = [this.all_samples.vals; s.vals];
-                  this.new_samples.pts = [this.all_samples.pts; s.pts];
-                  this.new_samples.vals = [this.all_samples.vals; s.vals];
+                  this.all_samples.pts = [this.all_samples.pts; list.pts];
+                  this.all_samples.vals = [this.all_samples.vals; list.vals];
+                  this.new_samples.pts = [this.all_samples.pts; list.pts];
+                  this.new_samples.vals = [this.all_samples.vals; list.vals];
                   try
                   lb(i) = min(samples.vals);  
                   catch

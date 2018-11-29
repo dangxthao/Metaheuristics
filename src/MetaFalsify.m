@@ -1,21 +1,30 @@
 classdef MetaFalsify < handle
 % METAFALSIFY: Class implementing combined metaheuristics falsification 
-%
-% 
+
+  properties
+    
+      
+      
+    model_name = 'KD_cl_harness_forthao';
+    simTime = 50;
+    I0_signal_names = {'In1','In2','Out1'};
+    input_signal_names = {'In1','In2'};
+    signal_types = { 'UniStep', 'UniStep'} ;
+    nb_ctr_pts = [ 10; 10 ] ;
+    %CoverageBreachSet Br;
+    
+
   %% Problem definition and logging 
-  properties 
+  
       %% 
       Br % BreachSystem 
       R  % Requirement to falsify 
       Pbs % (sequence of) falsification problem(s)
       
       max_time = 3600         % one hour default max time
-      max_obj_eval = 1024     % 1000 max evaluations/simulations
-  end
+      
   
   %% properties for combined metaheuristics algo 
-  properties 
-      
     %% limit on nb of solver calls
     %this.nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
     nb_solver_calls = 30 %30 %1 %30
@@ -42,28 +51,135 @@ classdef MetaFalsify < handle
 
     % num_solvers=nb of solvers other than pseudorandom sampling
     % TODO add solver_list, and init num_solver as numel(solver_list)
-    num_solvers=4; 
-    time_lim=100; % time spent in each solver
-                   % TODO should be solver dependent
+    num_solvers = 4; 
+                   
+    solver_time = [ 100 500 400 200 ]; % default for diesel model
+    max_obj_eval = [ 100 100 100 100 ]; % default for diesel model
     
     start_solver_index = 0; %1; %PR 0, cmaes 1, SA 2, GNM 3 
   end
 
   
   methods   
+    
+           
+      function this = CoverageBreachSetCreation(this,model_name,IO_signal_names)          
+          this.Br = CoverageBreachSet(model_name,{},[], this.I0_signal_names);
+          this.I0_signal_names=IO_signal_names;
+          this.model_name=model_name;
+      end
+      
+      
+      function BrSys = SimTimeSetUp(this,simTime)
+          this.Br.SetTime([0 simTime]);
+          this.simTime=simTime;
+      end
+      
+      
+     function this = InputSignalSetUp(this,input_signal_names,signal_types,nb_ctr_pts,input_ranges)          
+        nb_signals = numel(input_signal_names);
+
+        %fprintf('\n Parametrizing input signal as piecewise constant....\n')
+        nb_signals;
+        
+        
+        Input_Gen.cp = nb_ctr_pts'; %transposed
+        Input_Gen.type = 'UniStep'; %signal_types;
+        %Input_Gen.method = {'previous','previous'};
+        this.Br.SetInputGen(Input_Gen);
+        
+        signal_u = [];
+        for ii=1:nb_signals
+            %signal_types(ii,1)
+            %Input_Gen.type = 'UniStep'; %signal_types(ii,1) %'UniStep' 
+            %Input_Gen.cp = nb_ctr_pts(ii,1);
+            %this.Br.SetInputGen(Input_Gen);
+            
+            % Specifying parameter names 
+            signal_uii = {};
+            for i=0:nb_ctr_pts(ii,1)-1 
+                par_name_prefix = strcat('In',num2str(ii));
+                par_name_prefix = strcat(par_name_prefix,'_u');
+                signal_uii{1,i+1}=strcat(par_name_prefix,num2str(i));
+            end
+            signal_uii
+            signal_u = [ signal_u, signal_uii ];
+        end
+        
+        signal_u
+        
+        range_matrix = ones(nb_ctr_pts(1,1),1)*input_ranges(1,:);
+        %counter = 0;
+        for ii=2:nb_signals
+          %input_ranges(ii,:)
+          
+          range_matrix = [range_matrix; ones(nb_ctr_pts(ii,1),1)*input_ranges(ii,:)];
+%           signal_uii = signal_u(1, counter+1:counter+nb_ctr_pts(ii,1));
+%           class(signal_uii)
+%           input_ranges(ii,:)
+%           this.Br.SetParamRanges(signal_uii,ones(nb_ctr_pts(ii,1),1)*input_ranges(ii,:));
+%           %Br.SetParamRanges(signal_u1,ones(N,1)*[1800 3000]);
+          
+          %counter = counter + nb_ctr_pts(ii,1);
+        end
+        
+        this.Br.SetParamRanges(signal_u,range_matrix);
+          
+%         [~, varying_parameter_indices] = this.Br.GetBoundedDomains();
+%         varying_parameter_indices
+%         this.Br
+
+     end 
+
+
+    function this = GridSetUp(this,gridsize_vector,nb_ctr_pts)
+        gridsizeMat = []; 
+        for ii = 1:size(gridsize_vector,1)
+            gridsizeMat = [ gridsizeMat; gridsize_vector(ii,1)*ones(nb_ctr_pts(ii,1),1) ];
+        end
+%         fprintf('\n Grid discretization unit for signal value range is\n');
+%         gridsize_vector;
+
+        this.Br.SetEpsGridsize(gridsizeMat);
+        this.Br.SetDeltaGridsize(2*this.Br.epsgridsize);
+    end
+
+
+    function this = STLFormulaSetUp(this,phi)
+      %% Specifying STL formula or Breach requirement
+      this.R = phi;
+    end
+    
+    
       %% Simple constructor
-      function this = MetaFalsify(Br, R, solver)
+      function this = MetaFalsify(model_name,IO_signal_names)
+          if nargin == 2
+               this.CoverageBreachSetCreation(model_name,IO_signal_names);
+          else
+               this.Br = CoverageBreachSet();
+          end
+      end
+    
+          %% Simple constructor
+      function this = MetaFalsifySetup(model_name,IO_signal_names)
+          this.CoverageBreachSetCreation(model_name,IO_signal_names); 
+      end
+      
+      function this = MetaSetupRun(this, Br, R)
           this.Br = Br;
           this.R = R;
           
-          if nargin >= 3
-              this.Run(solver)
-          end
+%           if nargin >= 3
+%               this.Run(solver)
+%           end
+           this.MetaCall();
+           
       end
+      
+      
       
       %% 
       function this = Run(this, solver)
-         
           
           switch solver
               
@@ -130,14 +246,14 @@ classdef MetaFalsify < handle
       
       
       %% Combined metaheuristics main algo
-      function [this,falsified,total_nb_sim,falsi_point] = MetaCall(this,InputSys,phi)
+      function [this,falsified,total_nb_sim,falsi_point] = MetaCall(this)
           
-          % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL(InputSys, PHI, NB_SAMPLES, HITS)
+          % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL(Br, PHI, NB_SAMPLES, HITS)
           % FUNCTION: Call the metaheuristics to optimize the
           % robustness values
           %
           % INPUTS:
-          % InputSys: CoverageBreachSet object.
+          % Br: CoverageBreachSet object.
           %
           % phi: STL formula or BreachRequirement
           %
@@ -151,11 +267,11 @@ classdef MetaFalsify < handle
           %%%%%%% Method 'MetaCall' starts here
           
           %% Transform the STL formula into Breach Requirement
-          if isa(phi, 'STL_Formula')
-              phi = BreachRequirement(phi);
+          if isa(this.R, 'STL_Formula')
+              R = BreachRequirement(this.R);
           end
           disp('You selected the following STL formula for falsification')
-          disp(phi)
+          disp(this.R)
           
           prev_solver_index=0;
           solver_index = this.start_solver_index; %PR 0, cmaes 1, SA 2, GNM 3
@@ -197,7 +313,7 @@ classdef MetaFalsify < handle
           
           
           
-          search_space_dim = numel(InputSys.epsgridsize);
+          search_space_dim = numel(this.Br.epsgridsize);
           % search_space_dim is used to estimate the number of initial points
           
           total_nb_sim = 0; % current total number of simulations
@@ -218,14 +334,14 @@ classdef MetaFalsify < handle
               
               %% Make a working copy of the original coverage breach set object
               if call_count>1
-                  CBS=InputSys.copy();
+                  CBS=this.Br.copy();
               else
                   clear CBS;
-                  CBS = InputSys.copy();
+                  CBS = this.Br.copy();
               end
               
               %% Initialize the falsification problem with the system and the requirement
-              falsif_pb = FalsificationProblem(CBS, phi);
+              falsif_pb = FalsificationProblem(CBS, R);
               
               
               %% start counting computation time for each solver
@@ -242,7 +358,9 @@ classdef MetaFalsify < handle
                       fprintf(fileID,'\n *** Running PseudoRandom');
                       
                       
-                      time_lim = 100; %500;
+                      time_lim = this.solver_time(1,solver_index +1); %100; %500;
+                      
+                      
                       nb_samples = 10;
                       nb_hits = 20;
                       fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
@@ -253,13 +371,13 @@ classdef MetaFalsify < handle
                       fprintf(fileID, 'nb_hits for PR is %d \n',nb_hits);
                       
                       
-                      StatFalsObj=PseudoRandomCall(StatFalsObj,CBS,phi,nb_samples,time_lim,nb_hits);
+                      StatFalsObj=PseudoRandomCall(StatFalsObj,CBS,R,nb_samples,time_lim,nb_hits);
                       
                       %StatFalsObj
                       
-                      % adding new points to InputSys
+                      % adding new points to Br
                       new_pts = transpose(StatFalsObj.new_samples.pts); % column vectors of newly simulated points.
-                      %InputSys = CoverageBreachSet_Add_Pts(InputSys, new_pts);
+                      %Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                       % adding new points to xlog
                       %Xlog.xlogPR = [Xlog.xlogPR, new_pts];
                       
@@ -296,9 +414,9 @@ classdef MetaFalsify < handle
                       fprintf(fileID,'\n **** Running CMAES');
                       
                       if (call_count==1)
-                          time_lim = 2000; %2000 %800
+                          time_lim = this.solver_time(1,solver_index +1); %2000; %2000 %800
                       else
-                          time_lim = 2000; %500 %2000 %400
+                          time_lim = this.solver_time(1,solver_index +1); 2000; %500 %2000 %400
                       end
                       
                       fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
@@ -347,7 +465,7 @@ classdef MetaFalsify < handle
                       
                       % adding new points to xlog
                       new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
-                      %                     InputSys = CoverageBreachSet_Add_Pts(InputSys, new_pts);
+                      %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                       %                     Xlog.xlogCMAES = [Xlog.xlogCMAES, new_pts];
                       
                       % adding new points to xbest
@@ -372,7 +490,7 @@ classdef MetaFalsify < handle
                       fprintf(1,'\n *** Running Simulated Annealing');
                       fprintf(fileID,'\n *** Running Simulated Annealing');
                       
-                      time_lim = 1000;
+                      time_lim = this.solver_time(1,solver_index +1); %1000;
                       fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
                       fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
                       
@@ -416,7 +534,7 @@ classdef MetaFalsify < handle
                       falsif_pb.solve();
                       
                       new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-                      %                     InputSys = CoverageBreachSet_Add_Pts(InputSys, new_pts);
+                      %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                       %                     Xlog.xlogSA = [Xlog.xlogSA, new_pts];
                       
                       %             new_obj_val = falsif_pb.obj_log;
@@ -446,7 +564,7 @@ classdef MetaFalsify < handle
                       fprintf(fileID,'\n *** Running Global Nelder Mead');
                       
                       
-                      time_lim = 1000; %100
+                      time_lim = this.solver_time(1,solver_index +1); %1000; %100
                       fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
                       fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
                       
@@ -499,7 +617,7 @@ classdef MetaFalsify < handle
                       falsif_pb.solve();
                       
                       new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-                      %                     InputSys = CoverageBreachSet_Add_Pts(InputSys, new_pts);
+                      %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                       %                     Xlog.xlogGNM = [Xlog.xlogGNM, new_pts];
                       
                       new_obj_best = falsif_pb.obj_best;
@@ -522,8 +640,8 @@ classdef MetaFalsify < handle
               end   % end of switch
               
               
-              %%%%% Updating visited points in the current CoverageBreachSet InputSys
-              InputSys = CoverageBreachSet_Add_Pts(InputSys, new_pts);
+              %%%%% Updating visited points in the current CoverageBreachSet Br
+              this.Br = CoverageBreachSet_Add_Pts(this.Br, new_pts);
               
               
               %%%%% Updating SolverInfo to store xlog, xbest, valbest
@@ -625,7 +743,7 @@ classdef MetaFalsify < handle
               % the coverage graph is monotonic, we check the evolution of coverage
               % for non-increase by this.cov_epsilon
               % recompute current coverage
-              current_coverage_value = InputSys.ComputeLogCellOccupancyCoverage;
+              current_coverage_value = this.Br.ComputeLogCellOccupancyCoverage;
               % update coverage graph data
               coverage_graph_data= ...
                   [coverage_graph_data; [total_nb_sim current_coverage_value]];
@@ -732,5 +850,7 @@ classdef MetaFalsify < handle
           fprintf(1,'\n Exit! TOTAL Computation time = %f seconds',comptime );
           
       end %end function
- end %%end method
+      
+      
+end %%end method
 end %end classdef
