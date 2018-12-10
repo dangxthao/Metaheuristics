@@ -12,6 +12,7 @@ classdef MetaFalsify < handle
     signal_gen_method % = {'previous','previous'};
     %signal_types = { 'UniStep', 'UniStep'} ;
     nb_ctr_pts % = [ 10; 10 ] ;
+    input_ranges
     %CoverageBreachSet Br;
     
 
@@ -87,6 +88,8 @@ classdef MetaFalsify < handle
         nb_signals = numel(input_signal_names);
         this.input_signal_names=input_signal_names;
         this.signal_gen_method=signal_gen_method;
+        this.nb_ctr_pts=nb_ctr_pts;
+        this.input_ranges=input_ranges;
         
         %fprintf('\n Parametrizing input signal as piecewise constant....\n')
         %nb_signals;
