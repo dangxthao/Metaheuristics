@@ -18,7 +18,9 @@ fprintf('\n Creating breach interface with simulink model %s\n',model_name)
 simTime = 30 ; 
 fprintf('\n Simulation time horizon is %d seconds\n',simTime)
 
-BrSys = CoverageBreachSet(model_name,{});
+IO_signal_names = {'In1','In2','RMP','gear','speed'};
+BrSys = CoverageBreachSet(model_name,{},[],IO_signal_names);
+%BrSys = CoverageBreachSet(model_name,{});
 BrSys.SetTime([0 simTime]);
 
 %% Set input signals
@@ -51,8 +53,8 @@ signal = [signal_u0,signal_u1];
 % fprintf('Range of break is [0,40] \n')
 % fprintf('\n Grid discretization unit for both signal ranges is 4 units\n')
 R1 = [35,100];
-R2 = [0,40];
-Sys = BrSys.copy;
+R2 = [0, 40];
+Sys = BrSys.copy();
 %signal
 Sys.SetParamRanges(signal,[ones(N1,1)*R1;ones(N2,1)*R2]);
 Sys.SetEpsGridsize([4*ones(N1,1);4*ones(N2,1)]);
@@ -62,7 +64,7 @@ Sys.SetDeltaGridsize(2*Sys.epsgridsize);
 %fprintf('\n The STL formula is\n ')
 f1 = STL_Formula('f1','alw(RPM[t]<2520)');
 f2 = STL_Formula('f2','ev_[0,10](speed[t]>50)');
-phi = STL_Formula('phi1','not(f1 and f2)');
+phi = STL_Formula('phi','not(f1 and f2)');
 %phi = STL_Formula('phi','alw_[0,10](speed[t]<50)');
 
 % Can rewrite formula: [f1 => phitest2] where
@@ -94,7 +96,7 @@ MetaObj = MetaFalsify();
     MetaObj.cov_monitoring_win = 1;
 
     %%% Options for picking initial conditions
-    MetaObj.re_init_strategy = 2; 
+    MetaObj.re_init_strategy = 1; 
     % re_init_strategy=0 to pick randomly from the whole space
     % re_init_strategy=1 to pick randomly from xlog
     % re_init_strategy=2 to pick randomly from xbest
@@ -108,15 +110,15 @@ MetaObj = MetaFalsify();
     
     MetaObj.start_solver_index = 3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
     
-    MetaObj.solver_time = [200 900 200 200];
-    MetaObj.max_obj_eval = [ 100 100 100 100 ];
-  
+    MetaObj.solver_time = [200 1200 200 200];
+    MetaObj.max_obj_eval = [ 2000 2500 2000 2000 ];
+    MetaObj.seed = 5000;
     
     
 fprintf('\n The falsification problem by metaheuristics is\n ')
-MetaObj
+Sys
 
 %%%% Run the falsification
-MetaObj.MetaSetupRun(Sys, phi)
+MetaObj.MetaSetupRun(Sys, phi);
 
 

@@ -166,7 +166,7 @@ xbest_vec= [];
                     if (solversdone(rand_solverid) >0)
 %                         switch rand_solverid 
 %                             case 1 
-%                                 nb_pt_xbest=size(Xbest(rand_solverid+1,:),2);
+                                nb_pt_xbest=size(SolverInfo(rand_solverid+1).Xbest,2);
                                 if nb_pt_xbest>0
                                     rand_id = randi(nb_pt_xbest);
                                     if (rand_id<0 || rand_id>nb_pt_xbest)
