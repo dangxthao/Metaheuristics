@@ -11,15 +11,30 @@ Each $\inputs$ is a function $\timeinterval \mapsto \inputspace$, where $\timein
 Similarly, we assume that each output signal $\outsig \in \outsigset$ is a function $\timeinterval \mapsto \outspace$, where $\outspace$ is some metric space of finite dimension.
 
 Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but we restrict our investigation to the class of  input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
-can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions. We call elements of $\inputparamset$ parameter points. 
+can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. As another example, a piecewise linear signal over the same set of $m$ discontinuity time points can be also uniquely characterized by $m$ values $\inputparams_i = \inputs(\tau_i)$, that is $t \in [\tau_i, \tau_{i+1}) \;  \inputs(t) = \inputparams_i  + \frac{t -  \tau_i}{\inputparams_{i+1} - \inputparams_i}$.
 
-We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$, where $p\in \paramset = \paramsorigset \times \inputparamset$.
+Let $\inputgenerator:\inputparamset \rightarrow \inputset$ be the function that maps input parameters to input functions. We call elements of $\inputparamset$ parameter points. We define an augmented set of parameters $\param = (\paramsorig, \inputparams)$, where $p\in \paramset = \paramsorigset \times \inputparamset$.
 We define a function 
 \begin{eqnarray} \label{eq:behaviorfunc}
 y &=& \behaviorfunc(\param),
 \end{eqnarray}
 where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\inputparams))$.
 Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
+
+In the previous work, the time intervals are fixed and we search for the signal values at the extreme time points of the intervals. In this work, we extend this framework to classes of piecewise input signals which are more general in two aspects. First, the time intervals can be varied and thus become part of the search space. Second, the signals should satisfy a given temporal constraints. 
+
+%More concretely, in the previous work, we fix the time intervals and search for the signal values for each time interval. Now, using the methods for uniform random and low-discrepancy generation of timed words of timed automata, we need not fix the time intervals which become variables of the underlying optimization problem. 
+
+The motivation for considering the second aspect is to reduce the search space for better efficiency. Indeed, if the specification involves some temporal constraints on the input signals, focusing on such signals would increase the falsification efficiency. 
+
+On the other hand, compared to the previous work, we use here a notion of coverage of temporal specifications. Intuitively it measures the portion of the "good" behaviours satisfying the specification that have been explored.
+
+
+Let us now use a timed automaton $\A$ that describes the temporal constraints that the input signals should satisfy (a STL formalism can be used as well, but for simplicity of explanation. We know how to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [t_i, t_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
+
+Hence, given a timed word $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_n)$, a real-valued input signal corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
+$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [t_i, t_{i+1}), g_i(\param,t)  \le 0.$$
+And we denote this by $\inputs \models C_{\gamma}(\inputs)$.
 
 \paragraph{Signal Temporal Logic} 
 
@@ -57,6 +72,59 @@ the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
   I}\left(\min\left(\rho(\spec_2,\outsig,t^\prime),\min_{t^{\prime\prime}\in
   [t,t^\prime]}\left(\rho(\spec_1,\outsig,t^{\prime\prime})\right)\right)\right).$
 
+
+\paragraph{Timed Automata}
+Let us now use a timed automaton $\A$ that describes the temporal constraints that the input signals should satisfy. The STL formalism can be used as well, but the notion was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest. 
+
+{\bf Recall TA.}
+
+
+We want to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Our previous work \cite{maxent,BBBK16} propose a sampling method based on a maximal entropy measure which is given by a particular stochastic process \cite{maxent} for timed words of infinite length, and which is the uniform distribution for timed words of finite length \cite{BBBK16}. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behaviour. Indeed, this distribution assigns the same density of probability $\omega(\vec t) = 1/\Vol(\tpol)$ to every timed vector $\vec t\in\tpol$, where $\Vol(\tpol)=\int_{\tpol} 1 d\vec t$ is the $n$-dimensional volume of $\tpol$. In other words, a sampled timed vector falls in a given subset $A$ of a timed polytope $\tpol$ with probability $\Vol(A)/\Vol(\tpol)$. 
+%$\displaystyle \frac{\Vol(A)}{\Vol(\tpol)}$.
+
+The joint law of $\vec T=(T_1,\ldots,T_n)$ is uniquely characterised by its $n$-dimensional CDF which is defined by 
+$F(\vec T)=\prob(\vec T\leq \vec t)$ where the partial order $\leq$ is defined by  
+$(t_1,\ldots,t_n)\leq (T_1,\ldots,T_n)$ iff $T_i\leq t_i$ for every $i=1 \ldots n$. 
+This CDF is usually given by the sequence of conditional CDFs: 
+$F_i(t_i\mid t_1,\ldots,t_{i-1})=\prob(T_i\geq t_i\mid T_1= t_1,\ldots, T_{i-1}= t_{i-1})$, 
+the following chain rule gives the link between conditional CDF and the CDF of $\vec T$:
+$$F(t_1,\ldots,t_n)=F_1(t_1)F_2(t_2\mid t_1)\ldots F_n(t_n\mid t_1,\ldots, t_{n-1}).$$ 
+%When the language where $T$ takes its value is recognised by a deterministic timed automaton, a sequence of timed delays $\vec t=t_1,\ldots, t_i$ leads to a unique state $s_{\vec t}$. 
+In \cite{BBBK16}, the conditional CDFs $F_i(t_i\mid \vec t)$, used to sample $t_i$, depends only on the current state $(q_{i-1},\x_{i-1})$, that is, $F_i(t_i\mid \vec t)=G_i(t_i \mid (q_{i-1},\x_{i-1}))$ for some conditional CDF $G_i$. 
+
+The conditional CDFs for the uniform distribution on a timed polytope plays a particular role in our subsequent development, and we denote it by $\CDFunif=(\CDFunif_1,\ldots, \CDFunif_n)$. These CDFs are characterised in \cite{BBBK16}, via the definition of conditional PDFs which are the derivatives of the CDFs. The following theorem summarises the results we need.
+
+\begin{theorem}[\cite{BBBK16}]\label{theo:unifCDF}
+Given a path in a timed automaton one can compute the CDF $\CDFunif_i$ in polynomial time wrt.~the length of the path. 
+These CDFs can be written in the following form $ \CDFunif_i(t_i\mid t_1,\ldots,t_{i-1})=p_i(t_1, \ldots,t_{i-1})/q_i(t_1,\ldots, t_i)$%Le displaystyle est encore en dessous. Attention au guerre d'edition... 
+%$\displaystyle \CDFunif_i(t_i\mid t_1,\ldots,t_{i-1})=\frac{p_i(t_1, \ldots,t_{i-1})}{q_i(t_1,\ldots, t_i)}$ 
+with $p_i$ and $q_i$ polynomials of degree at most $i$.
+\end{theorem}
+
+The uniform sampling should not be confused with the sampling, called \emph{isotropic} in \cite{BBBK16}, that at each step makes a uniform choice amongst the possible delays which is used as a ``default'' sampling in several work (see~\cite{smtcaveat} and references therein). 
+
+
+
+\paragraph{Coverage by measuring uniformity degree using the star-discrepancy of a sample of timed vectors}\label{sec:KS}\label{sec:backward}
+One way to characterise the uniformity degree of a sample of timed vectors is to use the Kolmogorov-Smirnov test, which is a statistical test to measure how well a sample $S$ of points fits a distribution given by a known CDF $F$. We point out in this section the link between this test and the star-discrepancy. This link allows us to exploit the backward use of $\CDFunif^{-1}$, from the timed polytope to the unit box. %We exploit the ideas from \cite{rosenblatt1952remarks} that were originally developed for the Kolmogorov-Smirnov test of real valued random variables. 
+
+We first recall that the Kolmogorov-Smirnov statistics is defined by the following value (which is a random variable when the sample is drawn at random):
+$$\KS(F,S)=\sup_{\vec p\in\R^n}|F(\vec p)-\tilde F_S(\vec p)|$$
+where $\tilde F_S$ is the empirical distribution associated with the sample $S$ defined by the CDF 
+$\tilde F_S(\vec p)=|\{\vec p'\in S\mid  \vec p'\leq \vec p\}|/|S|,$ which is the ratio of number of points in $S$ that falls in the box $[-\infty, p_1]\times \ldots\times [-\infty, p_n].$ When $F_U$ is the CDF associated to $n$ i.i.d. uniform random variables on $[0,1]$ then  $F_U(\vec p)$ is the volume of the box $[\vec 0, \vec p]$,
+and the KS statistics $\KS(F_U,S)$ becomes 
+%$$\KS(F_U,S)=\sup_{\vec p\in\R^n}\left|\prod_{i=1..n} p_i- \tilde F_S(\vec p)\right|=D_{\star}(S),$$ which is 
+nothing else than $D_{\star}(S)$ the \emph{star-discrepancy} of $S$. This connection is known, see e.g.~\cite{liang2001testing} and reference therein. 
+One can translate the multi-dimensional KS statistics  for a sample $S$ (that takes values, in our setting, in a timed polytope) with respect to a CDF $F$  into the KS statistics for the sample $F(S)=\{F(\vec p)\mid \vec p \in P\}$ with respect to the uniform distribution on the unit box. The latter is, as said before, the star-discrepancy of this transformed sample $F(S)$.
+
+In our setting we specify $\CDFunif$ as the CDF of the uniform distribution on a timed polytope. Then,
+$$\KS(\CDFunif,S)=\stardisc{\CDFunif(S)}.$$
+
+Note that when $S$ is obtained via uniform (resp.~low-discrepancy) sampling then 
+$S=\CDFunif^{-1}(S')$ where $S'$ is a sample of uniform random vectors (resp.~a low-discrepancy sample).
+So in that case $\KS(\CDFunif,S)=\stardisc{\CDFunif(\CDFunif^{-1}(S'))}=\stardisc{S'}$. % and the KS test (that requires the KS statistics to be below a threshold) will pass with high probability (resp.~for sure). 
+
+
 \paragraph{Property Falsification}	
 
 Property falsification is a means of performing automatic bug-finding in system designs.
@@ -84,6 +152,40 @@ For such problems, in general there are no algorithms that can guarantee to find
 %In case the dynamics are continuous, well-known methods for global optimization are only efficient if the cost functions are convex or have some structural properties. Similarly, existing discrete optimization techniques, often faced with the combinatorial explosion issue, are designed to efficiently address specific classes of problems. 
 
 The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby} and CMA-ES \cite{hansen2006eda}. Also, we note that for most problems, we do not need to identify a true optimum; we merely seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
+
+\paragraph{Mapping timed words to real-valued input signals}\label{sec:KS}\label{sec:backward}
+We now know how to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [t_i, t_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
+
+Hence, given a timed word $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_n)$, a real-valued input signal corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
+$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [t_i, t_{i+1}), g_i(\param,t)  \le 0.$$
+And we denote this by $\inputs \models C_{\gamma}(\inputs)$.
+
+The optimization problem becomes parameterized with $\gamma$:
+\begin{eqnarray} \label{eq:optim2}
+\min \rho(\spec, \inputs) \\ \nonumber
+s.t. ~\outsig=\behaviorfunc(\inputs) \\ \nonumber
+\inputs \models C_{\gamma}(\inputs), \inputs \in \inputset \nonumber
+\end{eqnarray}
+Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$.
+
+Using the method in \cite{Cosmos}, we generate a set $\Gamma$ of timed words (with good coverage properties). A first {\em abstract} algorithm of our falsification approach is described as follows.
+\begin{algorithm}
+\caption{Falsification}
+\begin{algorithmic}
+%\Require  
+%\Ensure  		
+	        \ForAll{$\gamma \in \Gamma$} 
+		\State $\tilde{\rho} = Solve(\mathcal{O}_{\gamma})$
+		\If{$\tilde{\rho} \le 0$}
+		  \State Exit	
+		\EndIf
+		\EndFor
+		\State No falsifying behavior found. Report coverage of $\spec$
+\end{algorithmic}
+\end{algorithm}
+The function $Solve(\mathcal{O}_{\gamma})$ implements a number of black-box optimization techniques using metaheuristics (such as Simulated Annealing, Evolution Strategies, {\it etc.}), as we have done in \cite{}, to return a best result $\tilde{\rho}$. 
+
+To improve search efficiency, that is to quickly find a falsifying input signal, the values $\tilde{\rho}$ of the objective function can be exploited. Note that if an order on $\Gamma$ can be defined, the search can follow a gridding structure as done in \cite{Valko2018} (Valko)... {\color{red} [to elaborate]}
 
 
 \paragraph{Coverage as Exploration Performance Measure}	
