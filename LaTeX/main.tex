@@ -1,5 +1,6 @@
 %\documentclass[10pt,oneside,letterpaper,twocolumn]{article}
-\documentclass[twocolumn,9pt,sigconf]{acmart}
+%\documentclass[twocolumn,9pt,sigconf]{acmart}
+\documentclass[10pt]{llncs}
 
 %\usepackage[a4paper, total={6in, 8in}]{geometry}
 \usepackage{times}
@@ -13,7 +14,8 @@
 %\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{array}
 
-\usepackage{amsmath,amsthm, amssymb,eufrak}
+%\usepackage{amsmath,amsthm, amssymb,eufrak}
+\usepackage{amsmath,amssymb,eufrak}
 \usepackage{enumitem}
 \usepackage{float}
 
@@ -33,47 +35,65 @@
 \newcommand{\commentout}[1]{}
 
 \input{macros}
-\input{defs}
+%\input{defs}
 \newcommand{\lt}{<}
 \newcommand{\rt}{>}
+\newcommand{\Vol}{\mathtt{Vol}}
+\newcommand{\tpol}{\mathcal{P}}
+\newcommand{\prob}{\textrm{Prob}}
+\newcommand{\x}{\vec x}
+\newcommand{\CDFunif}{\mathfrak{F}}
+\newcommand{\KS}{\mathbf{KS}}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\stardisc}[1]{D_{\star}(#1)}
 
 
 \title{Coverage-guided Adaptive Search Strategies for Falsification}
 
-\author{Thao Dang}
-\affiliation{%
-  \institution{CNRS/Verimag, France}
-}
-\email{Thao.Dang@univ-grenoble-alpes.fr}
+%\author{Thao Dang}
+%\affiliation{%
+%  \institution{CNRS/Verimag, France}
+%}
+%\email{Thao.Dang@univ-grenoble-alpes.fr}
+%
+%\author{Alexandre Donz{\'{e}}}
+%\affiliation{%
+%  \institution{Decyphir SAS, France}
+%}
+%\email{alex@decyphir.com}
+%
+%\author{James Kapinski}
+%\affiliation{%
+%  \institution{Toyota Research Institute - North America}
+%}
+%\email{jim.kapinski@toyota.com}
+%
+%\author{Hisahiro Ito}
+%\affiliation{%
+%  \institution{Toyota Motor Corporation, Japan}
+%}
+%\email{hisahiro_ito@mail.toyota.co.jp}
 
-\author{Alexandre Donz{\'{e}}}
-\affiliation{%
-  \institution{Decyphir SAS, France}
+\author{Thao Dang\inst{1} \and Alexandre Donz{\'{e}}\inst{2} \and James Kapinski\inst{3} \and Hisahiro Ito\inst{4}}
+ \institute{CNRS/Verimag, France \\
+ Decyphir SAS, France\\
+ Toyota Research Institute - North America\\
+ Toyota Motor Corporation, Japan
 }
-\email{alex@decyphir.com}
 
-\author{James Kapinski}
-\affiliation{%
-  \institution{Toyota Research Institute - North America}
-}
-\email{jim.kapinski@toyota.com}
-
-\author{Hisahiro Ito}
-\affiliation{%
-  \institution{Toyota Motor Corporation, Japan}
-}
-\email{hisahiro_ito@mail.toyota.co.jp}
 
 \date{}
 
+
+
 \begin{document}
 
+\maketitle
 
 \begin{abstract}
 \input{abstract}
 \end{abstract}
 
-\maketitle
 
 \input{intro}
 \input{prelims}

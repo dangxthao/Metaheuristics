@@ -30,7 +30,7 @@ The motivation for considering the second aspect is to reduce the search space f
 On the other hand, compared to the previous work, we use here a notion of coverage of temporal specifications. Intuitively it measures the portion of the "good" behaviours satisfying the specification that have been explored.
 
 
-Let us now use a timed automaton $\A$ that describes the temporal constraints that the input signals should satisfy (a STL formalism can be used as well, but for simplicity of explanation. We know how to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [t_i, t_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
+Let us now use a timed automaton $\mathcal{A}$ that describes the temporal constraints that the input signals should satisfy (a STL formalism can be used as well, but for simplicity of explanation. We know how to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [t_i, t_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
 
 Hence, given a timed word $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_n)$, a real-valued input signal corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
 $$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [t_i, t_{i+1}), g_i(\param,t)  \le 0.$$
@@ -74,7 +74,7 @@ the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
 
 
 \paragraph{Timed Automata}
-Let us now use a timed automaton $\A$ that describes the temporal constraints that the input signals should satisfy. The STL formalism can be used as well, but the notion was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest. 
+Let us now use a timed automaton $\mathcal{A}$ that describes the temporal constraints that the input signals should satisfy. The STL formalism can be used as well, but the notion was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest. 
 
 {\bf Recall TA.}
 
