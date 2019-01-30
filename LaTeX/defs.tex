@@ -1,0 +1,317 @@
+%\newcommand{\subsub}{\paragraph
+%\newcommand{\todo}[1]{\textcolor{red}{[#1]}}
+%\newcommand{\sinit}{s_{\text{init}}}
+\newcommand{\tpol}{\mathcal{P}}
+\newcommand{\timeperiod}{\tau}
+\newcommand{\prob}{\textrm{Prob}}
+\newcommand{\stardisc}[1]{D_{\star}(#1)}
+\newcommand{\boxvec}[1]{[\vec 0, #1]}
+\newcommand{\KS}{\mathbf{KS}}
+\newcommand{\CDFunif}{\mathfrak{F}}
+\newcommand{\dpdfromfun}[2]{\omega(#1,#2)}
+\newcommand{\pdffromfun}[3]{\varphi(#1,#2,#3)}
+\newcommand{\isodpd}[1]{\texttt{isoDPD}(#1)}
+\newcommand{\isopdf}[1]{\texttt{isoPDF}(#1)}
+\newcommand{\pt}{\mathtt{pdf}}
+\newcommand{\pword}{Weight}
+%\newcommand{\Interval}{I}
+\newcommand{\pdelta}{\mathtt{dpd}}
+\newcommand{\sinit}{s}
+\newcommand{\tb}{t_b}
+\newcommand{\nb}{n_b}
+%\newcommand{\dt}{\mathrm{d}t}
+\newcommand{\minquot}{C^-}
+\newcommand{\maxquot}{C^+}
+\newcommand{\singleloc}{q}
+\newcommand{\dt}{dt}
+\newcommand{\loczone}{l}
+\newcommand{\TE}{\mathtt{TE}}
+\newcommand{\LB}{\texttt{lb}}
+\newcommand{\UB}{\texttt{ub}}
+\newcommand{\POST}{\texttt{POST}}
+\newcommand{\POSTOP}{\texttt{POST}^{\circ}}
+\newcommand{\capop}{\cap^\circ}
+\newcommand{\cand}{\texttt{cand}}
+\newcommand{\toexplore}{\texttt{to\_explore}}
+\newcommand{\loczones}{\texttt{loczones}}
+\newcommand{\fbisim}{f_{1}}
+\newcommand{\fbisimtrans}{f_2}
+\newcommand{\fbisimter}{f_3}
+\newcommand{\fbisimrun}{f}
+\newcommand{\fsplit}{\varphi_1}
+\newcommand{\fsplittrans}{\varphi_2}
+\newcommand{\fsplitrun}{\varphi}
+\newcommand{\fsplitter}{\varphi_3}
+\newtheorem{method}{Method}
+\newtheorem{application}{Application}
+%\newproof{pot}{Proof}
+%\spnewtheorem*{classictheorem}{\theoremname}{\normalfont\bfseries}{\itshape}
+\newcommand{\afaire}[1]{\textcolor{red}{!!!!!!!!!!!!!!!A FAIRE #1}}
+\newcommand{\arefaire}[1]{\textcolor{green}{!!!!!!!!!!!!!!!A REFAIRE #1}}
+\newcommand{\aalpha}{\vec \alpha }
+\newcommand{\ggamma}{\vec \gamma }
+\newcommand{\ssigma}{\vec \sigma }
+\newcommand{\al}{\Sigma}
+\newcommand{\mydef}{\stackrel{\mbox{\rm {\tiny def}}}{=}}
+\newcommand{\acc}[1]{\mathtt{Reach}(#1)}
+\newcommand{\actr}{ \triangleright}
+\newcommand{\actl}{ \triangleleft}
+\newcommand{\adh}[1]{\overline{#1}}
+\newcommand{\per}{\mathfrak{p}}
+\newcommand{\A}{\mathcal{A}}
+\newcommand{\B}{\mathcal{B}}
+%\newcommand{\G}{\mathcal{G}}
+\newcommand{\Gexun}{\G^\mathtt{ex1}}
+\newcommand{\Aexdeux}{\A^\mathtt{ex2}}
+\newcommand{\Gex}[1]{\G^\mathtt{ex#1}}
+%\newcommand{\forwReach}[1]{\texttt{Forw}(#1)}
+\newcommand{\forwReach}[1]{\texttt{ForwardReach}(#1)}
+\newcommand{\annexe}[1]{}
+
+\newcommand{\ant}{D}
+
+\newcommand{\aut}[1]{\mathcal{B}(#1)}
+
+\newcommand{\autn}[2]{#1_{#2}}
+\newcommand{\ball}{\mathcal B}
+
+\newcommand{\brouillon}[1]{}
+
+\newcommand{\Card}[1]{\left|#1\right|}
+
+\newcommand{\cardcount}{{\Card{X}}}
+\newcommand{\clocks}{X}
+\newcommand{\Complex}{\mathbb{C}}
+\newcommand{\CM}{\mathcal{C}_{M,\Event}}
+\newcommand{\com}{\vec c}
+\newcommand{\Conv}[1]{\mathbf{Conv}(#1)}
+
+\newcommand{\cs}{\mathtt{cs}}
+\newcommand{\Def}[1]{\emph{{#1}}}
+
+\newcommand{\deltasig}{\delta_\Sigma}
+\newcommand{\dist}{\mathop d}
+
+\newcommand{\down}{\mathtt{Down}}
+\newcommand{\ent}{h}
+
+\newcommand{\Event}{\Sigma}
+\newcommand{\ER}{\mathtt{ER}}
+\newcommand{\forb}[1]{X_{#1}}
+\newcommand{\fr}[1]{\{ #1 \}}
+
+\newcommand{\Guard}{\mathtt{Guards}}
+
+\newcommand{\guard}{\mathfrak g}
+
+\newcommand{\hvol}{\mathcal{H}}
+
+\newcommand{\I}{\mathcal{I}}
+
+\newcommand{\inalph}{A}
+\newcommand{\inalphfin}{\Sigma}
+\newcommand{\incdec}{c}
+\newcommand{\Inflate}{\mathrm{Inflate}}
+\newcommand{\init}{\xi_0 }
+
+\newcommand{\Int}{\bbbz}
+\newcommand{\intervals}{Int}
+\newcommand{\intpart}[1]{\lfloor #1 \rfloor}
+
+\newcommand{\Inv}{\mathbf{Inv}}
+\newcommand{\lb}{\mathrm{lb}}
+\newcommand{\ub}{\mathrm{ub}}
+
+\newcommand{\Lc}{\mathcal{L}}
+\newcommand{\Labin}{\mathcal{I}}
+\newcommand{\Lab}{\mathtt{Lab}}
+
+\newcommand{\Labout}{\mathcal{O}}
+\newcommand{\LabSBC}{\mu}
+\newcommand{\Lin}[1]{\mathcal{#1}_{in}}
+\newcommand{\Loc}{Q}
+
+\newcommand{\Lout}[1]{\mathcal{#1}_{in}}
+\newcommand{\LVol}{\mathtt{LVol}}
+\newcommand{\matop}[1]{[#1]}
+\newcommand{\maxconst}{M}
+
+\newcommand{\maxtr}{D}
+
+\newcommand{\mdim}{\mathbf{mdim}}
+
+\newcommand{\mesfull}[1]{\mu_{#1}}
+\newcommand{\M}{\mathcal{M}}
+
+\newcommand{\morph}{\mu}
+
+\newcommand{\Nat}{\mathbb{N}}
+
+\newcommand{\N}{\mathbb{N}}
+\newcommand{\NPin}{\mathtt{NPin}}
+
+\newcommand{\nr}{\nu}
+
+\newcommand{\one}{\mathbf{1}}
+
+\newcommand{\op}{\psi}
+
+\newcommand{\Op}{\Psi}
+
+\newcommand{\orbit}{\gamma}
+
+\newcommand{\ori}[1]{{#1}^-}
+
+\newcommand{\outalph}{A'}
+\newcommand{\outalphfin}{\Sigma'}
+\newcommand{\Path}{\mathtt{Path}}
+\newcommand{\pinit}{\mathtt{pinit}}
+\newcommand{\Pin}{\mathtt{Pin}}
+
+
+\newcommand{\Pol}{\mathcal{P}}
+\newcommand{\Prob}{\emph{P}}
+\newcommand{\probmes}{\mu}
+\newcommand{\prop}{\mathit{prop}}
+\newcommand{\ptrans}{\mathtt{ptrans}}
+\newcommand{\Q}{\mathbb{Q}}
+\newcommand{\rad}{\rho}
+\newcommand{\R}{\mathbb{R}}
+\newcommand{\RAND}{\texttt{RAND}}
+%\newcommand{\R}{\mathbb{R}}
+\newcommand{\reach}[1]{\mathtt{Reach}(#1)}
+\newcommand{\REACH}{\mathtt{REACH}}
+\newcommand{\reduced}{reduced }
+\newcommand{\reg}{\mathbf r}
+
+\newcommand{\Reg}{\mathbf{Reg}}
+\newcommand{\Run}{\mathcal{R}}
+\newcommand{\reset}{\mathfrak r}
+
+\newcommand{\ret}[2]{[#1]^{(-#2)}}
+\newcommand{\easyAut}{\mathcal C}
+\newcommand{\RG}{\mathcal G}
+
+\newcommand{\interior}[1]{\mathtt{int}(#1)}
+
+
+%\newcommand{\R}{\mathbb{R}}
+\newcommand{\RS}[1]{\mathtt{RS}(#1)}
+
+\newcommand{\RV}{X}
+\newcommand{\scal}[2]{\left\langle #1,#2 \right\rangle}
+
+\newcommand{\shiftgraph}[1]{L(#1)}
+\newcommand{\Space}{\mathcal F}
+
+\newcommand{\start}{\mathtt{Start}}
+\newcommand{\state}{\mathbb{S}}
+\newcommand{\stategen}{\mathbb{D}}
+\newcommand{\Stoc}{\mathtt{Stoc}}
+\newcommand{\subst}[4]{{#1}^{#3,#4}_{#2}}
+\newcommand{\suc}{\mathop{\sigma}\nolimits}
+%\newcommand{\t}{\vec t}
+\newcommand{\Tau}{\mathcal{T}}
+\newcommand{\ter}[1]{{#1}^+}
+
+\newcommand{\Time}{\theta}
+
+%\newcommand{\t}{\mathbf t}
+\newcommand{\triplet}{\mathtt{trip}}
+\newcommand{\ttrans}{\mathbb{A}}
+\newcommand{\talph}{\mathbb{B}}
+\newcommand{\unif}{\upsilon}
+\newcommand{\Untime}{\eta}
+
+\newcommand{\upd}{\mathtt{Up}}
+%\newcommand{\vec}[1]{\overrightarrow{#1}}
+%\newcommand{\vec}[1]{\overrightarrow{#1}}
+
+\newcommand{\Vol}{\mathtt{Vol}}
+\newcommand{\Vreach}[1]{\mathtt{Vscc(#1)}}
+
+%\newcommand{\wideinterior}[1]{\widering{#1}}
+
+%\newcommand{\widering}[1]{\ring{#1}}
+
+%\newcommand{\widering}[1]{\ring{\wideparen{#1}}}
+%\newcommand{\widering}[1]{\ring{\wideparen{#1}}}
+\newcommand{\x}{\vec x}
+\newcommand{\subseteqfull}{\subseteq_{\texttt{full-dim}}}
+\newcommand{\y}{\vec y}
+\newcommand{\meset}{A}
+
+\newcommand{\zero}{\mathbf{0}}
+
+\newcommand{\Z}{\mathbb{Z}}
+%\newcommand{\Z}{\mathbb{Z}}
+%\newcommand{\Z}{\mathbb{Z}}
+\newcommand{\zs}{\mathtt{zs}}
+%\@tempa\ring{017}
+%\@tempa\ring{017}
+%\usepackage{array}
+%\usepackage{array}
+
+% ------------- Comments -------------------------------------------------- %
+%
+%\newcommand{\comment}[1]{\marginpar{\raggedright\footnotesize\color{red}\textsf{#1}}}
+\newcommand{\TODO}[1]{{\color{red} [#1]}}
+\newcommand{\rewrite}[1]{{\color{blue} [#1]}}
+%\newcommand{\obsolete}[1]{{\color{gray} [OBSOLETE:#1]}}
+\newcommand{\obsolete}[1]{}
+\newcommand{\aistis}[1]{\marginpar{\raggedright\footnotesize\color{red}{\bf A:} \textsf{#1}}}
+\newcommand{\clemens}[1]{\marginpar{\raggedright\footnotesize\color{magenta}{\bf C:} \textsf{#1}}}
+\newcommand{\nicolas}[1]{\marginpar{\raggedright\footnotesize\color{purple}{\bf NB:} \textsf{#1}}}
+\newcommand{\taolue}[1]{\marginpar{\raggedright\footnotesize\color{blue}{\bf TL:} \textsf{#1}}}
+\definecolor{green}{rgb}{0,.7,0}
+\newcommand{\vojta}[1]{\marginpar{\raggedright\footnotesize\color{green}{\bf V:} \textsf{#1}}}
+\newcommand{\michael}[1]{\marginpar{\raggedright\footnotesize\color{cyan}{\bf M:} \textsf{#1}}}
+\newcommand{\ashu}[1]{\marginpar{\raggedright\footnotesize\color{pink}{\bf AT:} \textsf{#1}}}
+\newcommand{\marta}[1]{\marginpar{\raggedright\footnotesize\color{magenta}{\bf MT:} \textsf{#1}}}
+
+
+
+%%%%%%%%%%%%%%%%%%%%%%%%%
+% TIKZ Declarration
+
+\pgfdeclarelayer{edgelayer}
+\pgfdeclarelayer{nodelayer}
+\pgfsetlayers{edgelayer,nodelayer,main}
+
+\tikzstyle{none}=[inner sep=0pt]
+\tikzstyle{dashed}=[dotted]
+\tikzstyle{arrow}=[->,thick]
+\tikzstyle{bigArrow2}=[->,very thick]
+\tikzstyle{bigArrow} = [thick, decoration={markings,mark=at position 1 with{
+\arrow[semithick]{open triangle 60}}},
+   double distance=1.4pt, shorten >= 5.5pt,
+   preaction = {decorate},
+   postaction = {draw,line width=1.4pt, white,shorten >= 4.5pt}]
+\tikzstyle{innerWhite} = [semithick, white,line width=1.4pt, shorten >= 4.5pt]
+\tikzstyle{twoLines} = [thick,
+   double distance=1.6pt]
+
+\definecolor{Black}{rgb}{0.0,0.0,0}
+\definecolor{White}{rgb}{1,1,1}
+\definecolor{Red}{rgb}{1,0,0}
+\definecolor{Purple}{rgb}{0.5,0,0.5}
+\definecolor{acceptcol}{rgb}{0.0,0.65,0}
+\definecolor{rejectcol}{rgb}{0.65,0.0,0}
+\definecolor{hexcolor0x8c8c8c}{rgb}{0.549,0.549,0.549}
+\definecolor{hexcolor0x829600}{rgb}{0.510,0.588,0.000}
+\definecolor{hexcolor0xffdcb2}{rgb}{1.000,0.863,0.698}
+\definecolor{hexcolor0xffa02f}{RGB}{255,160,47}
+
+\tikzstyle{square}=[rectangle,rounded corners=3pt,dashed,thick,draw=Black]
+\tikzstyle{robot}=[rectangle,fill=White,draw=Black]
+\tikzstyle{state}=[circle,fill=White,draw=Black,inner sep=1pt]
+\tikzstyle{stateaccept}=[circle,fill=hexcolor0x829600,draw=Black]
+\tikzstyle{box}=[rectangle,rounded corners=5pt,draw=Black]
+\tikzstyle{state2}=[circle,fill=hexcolor0xffdcb2,draw=hexcolor0xffa02f]
+\tikzstyle{Line}=[thick]
+\tikzstyle{transimm}=[rectangle,fill=Black,draw=Black,inner sep=6pt]
+\tikzstyle{brace}=[decorate,decoration={brace,amplitude=3.0pt}]
+\tikzstyle{Empty}=[inner sep=5pt]
+
+%\newcommand{\northLoop}[4]{
+%        \draw[rounded corners=3pt] ([xshift=-#2]#1.north) -- ++(0,#3) --  node[above]{#4} -- ++($ 2*(#1,0) $) -- ([xshift=#2]#1.north) ;}
