@@ -211,7 +211,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             end
 
             if any(new_point < lower_left_corner)||any(new_point>upper_right_corner)
-                fprintf('\nNew point out of range.\n');
+                %fprintf('\nNew point out of range.\n');
                 inRange = false;
             end
         end
@@ -258,7 +258,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             end
             
             if ~this.TestPointInRange(new_point)
-                fprintf('\nPoint not in range, so it was not added.\n');
+                %fprintf('\nPoint not in range, so it was not added.\n');
                 if nargout>0
                     varargout{1} = false;
                 end
@@ -379,7 +379,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             end
             
             if ~this.TestPointInRange(new_point)
-                fprintf('\nPoint not in range, so it was not added.\n');
+                %fprintf('\nPoint not in range, so it was not added.\n');
                 return
             end
             
