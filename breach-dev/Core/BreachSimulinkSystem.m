@@ -41,7 +41,6 @@ classdef BreachSimulinkSystem < BreachOpenSystem
         StopAtSimulinkError=false
         mdl
         DiskCachingRoot 
-        UseDiskCaching=false   %  set by SetupDiskCaching
     end
     
     
@@ -234,7 +233,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             cs.set_param('ReturnWorkspaceOutputs', 'on');   % Save simulation output as single object
             
             %%  Solver pane - times
-            t_end= str2num(cs.get_param('StopTime'));
+            t_end= evalin('base',cs.get_param('StopTime'));
             if isinf(t_end)
                 warning('BreachSimulinkSystem:t_end_inf', 'stop time is inf, setting to 1 instead. Use SetTime method to specify another simulation end time.');
                 t_end= 1;
@@ -491,7 +490,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
                 found = ismember(signals, sig_log);
                 
                 if ~all(found)
-                    not_found = find(~all(found));
+                    not_found = find(~found);
                     warning('BreachSimulinkSystem:signal_not_found',['Signal ' signals{not_found} ' not found in model.']);
                 end
             end
@@ -755,6 +754,17 @@ classdef BreachSimulinkSystem < BreachOpenSystem
                 bparam.setValue(pval); % set value in the appropriate workspace
             end
             
+            if ischar(tspan)
+                tspan = evalin('base', tspan);
+            end
+            
+            if isfield(Sys,'init_u')
+                U = Sys.init_u(Sys.InputOpt, pts, tspan);
+                assignin('base','t__',U.t);
+                assignin('base', 'u__',U.u);
+            end
+
+            
             %
             % TODO: fix support for signal builder using a proper
             % BreachParam
@@ -768,9 +778,6 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             %end
             %
 
-            if ischar(tspan)
-               tspan = evalin('base', 'tspan');
-            end
             
             assignin('base','tspan',tspan);
             if numel(tspan)>2

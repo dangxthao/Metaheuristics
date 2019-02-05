@@ -57,8 +57,8 @@ classdef MaxSatProblem < BreachProblem
         
         end
         
-        function ResetObjective(this)
-            ResetObjective@BreachProblem(this);
+        function ResetObjective(this, varargin)
+            ResetObjective@BreachProblem(this, varargin{:});
             this.X_true = [];
             this.BrSet_True = [];
         end

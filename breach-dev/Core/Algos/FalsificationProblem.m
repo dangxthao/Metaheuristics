@@ -64,8 +64,8 @@ classdef FalsificationProblem < BreachProblem
             this.obj_best=inf;
         end
         
-        function ResetObjective(this)
-            ResetObjective@BreachProblem(this);
+        function ResetObjective(this, varargin)
+            ResetObjective@BreachProblem(this,varargin{:});
             this.X_false = [];
             this.BrSet_False = [];
             this.obj_best = inf;

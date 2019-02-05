@@ -264,10 +264,10 @@ classdef BreachRequirement < BreachTraceSystem
             
         end
         
-        function summary = GetSummary(this)
+        function summary = GetSummary(this, varargin)
             
             summary = GetStatement(this);
-            summary.signature = this.GetSignature();
+            summary.signature = this.GetSignature(varargin{:});
             summary.num_violations_per_trace =sum(this.traces_vals<0 , 2 )';
             [~,idxm ] = sort(summary.num_violations_per_trace, 2, 'descend');
             summary.idx_traces_with_most_violations = idxm;
@@ -313,6 +313,11 @@ classdef BreachRequirement < BreachTraceSystem
             else
                 summary.statement = [summary.statement '.'];
             end
+            if isa(this.BrSet, 'BreachImportData')
+                summary.file_names = this.BrSet.signalGenerators{1}.file_list;
+            end
+            
+            
         end
         
         function values = GetParam(this, params, ip)
@@ -393,6 +398,10 @@ classdef BreachRequirement < BreachTraceSystem
             if all(ifound)
                 X = GetSignalValues@BreachTraceSystem(this,idxR, varargin{2:end});
             else
+                if any(~ifound&~ifoundB)
+                   absent =  find(~ifound&~ifoundB,1);
+                   warning('GetSignalsValues:not_found', 'Signal %s not found', signals{absent});
+                end
                 if any(ifound)
                     idxR = idxR(ifound==1);
                     values_req = this.GetSignalValues@BreachTraceSystem(idxR, varargin{2:end});
@@ -418,8 +427,9 @@ classdef BreachRequirement < BreachTraceSystem
                         nb_traj =numel(values_data);
                     else
                         nb_traj =1;
-                    end
+                    end                    
                 end
+                
                 if nb_traj>1
                     X = cell(nb_traj,1);
                     for iv = 1:nb_traj
@@ -552,6 +562,9 @@ classdef BreachRequirement < BreachTraceSystem
             if foundB
                 sig = this.BrSet.P.ParamList{idxB};
                 atts = union(atts, this.BrSet.get_signal_attributes(sig));
+                if ~this.is_a_data_in(sig)
+                    atts =union(atts, {'data_other'});
+                end
             elseif found
                 sig = this.P.ParamList{idx};
                 
@@ -628,24 +641,25 @@ classdef BreachRequirement < BreachTraceSystem
             % Additional options
             if ~exist('folder_name', 'var')
                 folder_name = '';
+            else
+                [success,msg,msg_id] = mkdir(folder_name);
+                if ~success
+                    error('Failed to create folder %s, received error id [%s], with message ''%s''', folder_name,msg_id, msg);
+                end
+            end
+            if isempty(folder_name)
+                folder_name = pwd;
             end
             options = struct('FolderName', folder_name, 'ExportToExcel', false, 'ExcelFileName', 'Results.xlsx', ...
                 'IncludeSignals', [],  'IncludeParams', []);
             options = varargin2struct(options, varargin{:});
             
-            if isempty(options.FolderName)
-                try
-                    options.FolderName = [this.BrSet.mdl.name '_Results_' datestr(now, 'dd_mm_yyyy_HHMM')];
-                catch
-                    options.FolderName = ['Req_Results_' datestr(now, 'dd_mm_yyyy_HHMM')];
-                end
+            try
+                folder_name = [options.FolderName filesep this.BrSet.mdl.name '_Results_' datestr(now, 'dd_mm_yyyy_HHMM')];
+            catch
+                folder_name = [options.FolderName filesep 'Req_Results_' datestr(now, 'dd_mm_yyyy_HHMM')];
             end
-            
-            folder_name = options.FolderName;
-            [success,msg,msg_id] = mkdir(folder_name);
-            if ~success
-                error('Failed to create folder %s, received error id [%s], with message ''%s''', folder_name,msg_id, msg);
-            end
+        
             trace_folder_name = [folder_name filesep 'traces'];
             [success,msg,msg_id] = mkdir(trace_folder_name);
             
@@ -665,7 +679,7 @@ classdef BreachRequirement < BreachTraceSystem
                 return;
             end
             
-            summary = this.GetSummary();
+            summary = this.GetSummary(options.IncludeSignals, options.IncludeParams);
             summary_filename = [folder_name filesep 'summary'];
             tr = this.ExportTraces(options.IncludeSignals, options.IncludeParams, 'WriteToFolder', [folder_name filesep 'traces']);
             summary.traces_list = cell(1,numel(tr));
