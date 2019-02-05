@@ -84,7 +84,7 @@ classdef MetaFalsify < handle
       end
       
       
-     function this = InputSignalSetUp(this,input_signal_names,signal_gen_method,nb_ctr_pts,input_ranges,timepoints)          
+     function this = InputSignalSetUp(this,input_signal_names,signal_gen_method,nb_ctr_pts,input_ranges,timepoints,timeFixed)          
         nb_signals = numel(input_signal_names);
         this.input_signal_names=input_signal_names;
         this.signal_gen_method=signal_gen_method;
@@ -149,9 +149,17 @@ classdef MetaFalsify < handle
 %         
         %this.Br.SetParamRanges(signal_u,range_matrix);
         this.Br.SetParamRanges(signal_u,input_ranges);
-        this.Br.SetParam(signal_dt, diff(timepoints)');
-          
-          
+        
+        if (timeFixed) 
+          this.Br.SetParam(signal_dt, diff(timepoints)');
+        else
+          starttime=zeros(nb_ctr_pts,1);
+          endtime=timepoints(size(timepoints,1))*ones(nb_ctr_pts,1);
+        
+          time_ranges = [starttime endtime];
+          this.Br.SetParamRanges(signal_dt, time_ranges);
+        end
+        
 %         [~, varying_parameter_indices] = this.Br.GetBoundedDomains();
 %         varying_parameter_indices
 %         this.Br
@@ -161,14 +169,23 @@ classdef MetaFalsify < handle
      end 
 
 
-    function this = GridSetUp(this,gridsize_vector,nb_ctr_pts)
+    function this = GridSetUp(this,gridsize_vector,nb_ctr_pts,timeFixed)
         gridsizeMat = []; 
+        size(gridsize_vector,1)
         for ii = 1:size(gridsize_vector,1)
             gridsizeMat = [ gridsizeMat; gridsize_vector(ii,1)*ones(nb_ctr_pts(ii,1),1) ];
         end
 %         fprintf('\n Grid discretization unit for signal value range is\n');
 %         gridsize_vector;
 
+ %gridsizeMat
+ %size(gridsizeMat,1)
+ 
+        % add this grid size for time parameters, # = nb_ctr_pts(ii,1)-1
+        if (timeFixed==false) 
+            gridsizeMat = [ gridsizeMat; gridsize_vector(1,1)*ones(nb_ctr_pts(ii,1)-1,1) ];
+        end
+        
         this.Br.SetEpsGridsize(gridsizeMat);
         this.Br.SetDeltaGridsize(2*this.Br.epsgridsize);
         disp('Done with grid setup');
