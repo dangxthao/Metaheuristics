@@ -201,6 +201,8 @@ classdef BreachSystem < BreachSet
                     error('BreachSystem:SetTime:neg_time', 'Cannot set negative time.')
                 end
                 this.Sys.tspan = tspan;
+            else
+                this.Sys.tspan = tspan;
             end
         end
         
@@ -231,13 +233,13 @@ classdef BreachSystem < BreachSet
             global BreachGlobOpt
             if isa(varargin{1},'STL_Formula')
                 phi = varargin{1};
-                phi_id = get_id(phi);            
+                phi_id = get_id(phi);
             elseif ischar(varargin{1})
                 phi_id = MakeUniqueID([this.Sys.name '_spec'],  BreachGlobOpt.STLDB.keys);
                 phi = STL_Formula(phi_id, varargin{1});
             elseif isa(varargin{1}, 'BreachRequirement')
                 phi_id = varargin{1}.req_monitors{1}.name;
-                phi = varargin{1}; 
+                phi = varargin{1};
             else
                 error('Argument not a formula.');
             end
@@ -257,7 +259,7 @@ classdef BreachSystem < BreachSet
                     [~, stat] = FindParam(this.P, params_names);
                     p_not_found = params_names( stat==0 )';
                     this.SetParamSpec(p_not_found, cellfun(@(c) (params_prop.(c)), p_not_found),1);
-                end                
+                end
             end
             
             this.Specs(phi_id) = phi;
@@ -375,7 +377,7 @@ classdef BreachSystem < BreachSet
             
             % FIXME: this is going to break with multiple trajectories with
             % some of them containing NaN -
-              
+            
             if any(isnan(this.P.traj{1}.X))
                 tau = t_phi;
                 rob = t_phi;
@@ -443,7 +445,7 @@ classdef BreachSystem < BreachSet
             
             [valu, pvalu, val, pval] = this.GetSatValues(phi, params);
             if isa(phi, 'BreachRequirement')
-                phi = phi.formulas{1}.formula_id; 
+                phi = phi.formulas{1}.formula_id;
             end
             
             if isempty(valu)
