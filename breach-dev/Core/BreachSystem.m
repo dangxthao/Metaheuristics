@@ -30,6 +30,7 @@ classdef BreachSystem < BreachSet
         use_parallel = 0     % the flag to indicate the usage of parallel computing
         ParallelTempRoot = ''   % the default temporary folder for parallel computing
         InitFn = ''             % Initialization function
+        UseDiskCaching=false   %  set by SetupDiskCaching
     end
     
     methods
@@ -136,9 +137,6 @@ classdef BreachSystem < BreachSet
                     pause(0.2*attempt)
                 end
             end
-            if status == 0
-                warning('Warning failed to clean up the temp folder for parallelism');
-            end
             this.Sys.use_parallel = 0;
             cd(cwd)
         end
@@ -189,7 +187,7 @@ classdef BreachSystem < BreachSet
         function SetTime(this,tspan)
             if ischar(tspan)  % if time is an expression, test it in base
                 try
-                    tspan = evalin('base', tspan);
+                    T= evalin('base', tspan);
                     this.Sys.tspan = tspan;
                 catch
                     error('BreachSystem:SetTime:undef', 'Cannot evaluate time.expression %s', tspan);
@@ -846,7 +844,7 @@ classdef BreachSystem < BreachSet
         
         %% Printing
         function st = PrintSpecs(this)
-            st= printf('--- SPECIFICATIONS ---\n');
+            st= sprintf('--- SPECIFICATIONS ---\n');
             keys = this.Specs.keys;
             for is = 1:numel(keys)
                 prop_name = keys{is};

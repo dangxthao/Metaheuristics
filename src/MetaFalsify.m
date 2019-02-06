@@ -30,10 +30,8 @@ classdef MetaFalsify < handle
     
     seed = 5000
     %% limit on nb of solver calls
-    %this.nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
     nb_solver_calls = 30 %30 %1 %30
-    %fprintf('\n Max Nb of Solver Calls: ',this.nb_solver_calls)
-
+    
     %%%% Search Monitoring Parameters 
     %% cov_epsilon = input('Specify coverage increase threshold : '); 
     cov_epsilon = 1e-3
@@ -65,8 +63,7 @@ classdef MetaFalsify < handle
 
   
   methods   
-    
-           
+               
       function this = CoverageBreachSetCreation(this,model_name,IO_signal_names)          
           %this.Br = CoverageBreachSet(model_name,{},[],IO_signal_names);
           this.Br = CoverageBreachSet(model_name,{});

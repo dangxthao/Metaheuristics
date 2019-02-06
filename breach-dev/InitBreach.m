@@ -101,6 +101,12 @@ list_path = { ...
 addpath(list_path{:});
 cd(cdr);
 
+%% Lookfor extensions
+if exist('InitBreachFlows', 'file')
+    InitBreachFlows;
+end
+
+
 %% Init BreachGlobOpt global configuration variable
 
  % Some global constants

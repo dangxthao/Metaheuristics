@@ -78,7 +78,6 @@ Let us now use a timed automaton $\mathcal{A}$ that describes the temporal const
 
 {\bf Recall TA.}
 
-
 We want to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Our previous work \cite{maxent,BBBK16} propose a sampling method based on a maximal entropy measure which is given by a particular stochastic process \cite{maxent} for timed words of infinite length, and which is the uniform distribution for timed words of finite length \cite{BBBK16}. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behaviour. Indeed, this distribution assigns the same density of probability $\omega(\vec t) = 1/\Vol(\tpol)$ to every timed vector $\vec t\in\tpol$, where $\Vol(\tpol)=\int_{\tpol} 1 d\vec t$ is the $n$-dimensional volume of $\tpol$. In other words, a sampled timed vector falls in a given subset $A$ of a timed polytope $\tpol$ with probability $\Vol(A)/\Vol(\tpol)$. 
 %$\displaystyle \frac{\Vol(A)}{\Vol(\tpol)}$.
 

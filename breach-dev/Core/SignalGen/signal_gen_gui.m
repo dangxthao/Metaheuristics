@@ -22,16 +22,16 @@ function varargout = signal_gen_gui(varargin)
 
 % Edit the above text to modify the response to help signal_gen_gui
 
-% Last Modified by GUIDE v2.5 19-Apr-2017 14:26:27
+% Last Modified by GUIDE v2.5 18-Jan-2019 19:20:15
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
 gui_State = struct('gui_Name',       mfilename, ...
-                   'gui_Singleton',  gui_Singleton, ...
-                   'gui_OpeningFcn', @signal_gen_gui_OpeningFcn, ...
-                   'gui_OutputFcn',  @signal_gen_gui_OutputFcn, ...
-                   'gui_LayoutFcn',  [] , ...
-                   'gui_Callback',   []);
+    'gui_Singleton',  gui_Singleton, ...
+    'gui_OpeningFcn', @signal_gen_gui_OpeningFcn, ...
+    'gui_OutputFcn',  @signal_gen_gui_OutputFcn, ...
+    'gui_LayoutFcn',  [] , ...
+    'gui_Callback',   []);
 if nargin && ischar(varargin{1})
     gui_State.gui_Callback = str2func(varargin{1});
 end
@@ -64,52 +64,53 @@ end
 
 hfn = fieldnames(handles);
 for ifn = 1:numel(hfn)
-    try 
+    try
         set(handles.(hfn{ifn}), 'FontSize', FONT);
     end
 end
 %set(handles.main, 'Position',POS);
 
-handles.select_cells = []; 
+handles.select_cells = [];
 
 % get signal names
 if isa(varargin{1}, 'BreachOpenSystem')
-  handles.B = varargin{1};
-  handles.IG = handles.B.InputGenerator.copy();
-  signal_names = handles.B.Sys.InputList; 
+    handles.B = varargin{1};
+    handles.IG = handles.B.InputGenerator.copy();
+    signal_names = handles.B.Sys.InputList;
 elseif isstruct(varargin{1})||ischar(varargin{1})  % configuration struct
     handles.B = [];
     handles.IG = ReadInputGenCfg(varargin{1});
     signal_names = handles.IG.GetSignalList();
     if isfield(varargin{1}, 'sim_time')
-        handles.time = eval(varargin{1}.sim_time);
+        handles.time = varargin{1}.sim_time;
     end
 end
 set(handles.popupmenu_signal_name, 'String', signal_names);
 
 
-%  
+%
 signal_types= {
- 'constant_signal_gen',...
- 'step_signal_gen',...
- 'fixed_cp_signal_gen',...
- 'var_cp_signal_gen',...
- 'pulse_signal_gen',...
- 'random_signal_gen'...
- 'exponential_signal_gen'...
- 'sinusoid_signal_gen'...
- 'spike_signal_gen'...  
- 'from_file_signal_gen',...  % done from main gui now.
- };
+    'constant_signal_gen',...
+    'step_signal_gen',...
+    'fixed_cp_signal_gen',...
+    'var_cp_signal_gen',...
+    'pulse_signal_gen',...
+    'random_signal_gen'...
+    'exponential_signal_gen'...
+    'sinusoid_signal_gen'...
+    'spike_signal_gen'...
+    'from_file_signal_gen',...  % done from main gui now.
+    };
 set(handles.popupmenu_signal_gen_type, 'String', signal_types);
 
-% Assign default signal gen 
+% Assign default signal gen
 handles.signal_gen_map = containers.Map();
 for isig= 1:numel(signal_names)
     c = signal_names{isig};
+    handles.signal_gen_map(c)=constant_signal_gen({c});
 
-    % try to import from B - works when one sg for one signal (TODO: generalize) 
-    try 
+    % try to import from B - works when one sg for one signal (TODO: generalize)
+    try
         sg = handles.IG.GetSignalGenFromSignalName(c);
         if numel(sg.signals)==1
             handles.signal_gen_map(c)=sg;
@@ -119,20 +120,29 @@ for isig= 1:numel(signal_names)
                 set(handles.popupmenu_signal_gen_type,'Value', idx);
             end
         else
-           handles.signal_gen_map(c)=constant_signal_gen({c});
+            sgs = sg.split();
+            for isg =1:numel(sgs)
+                if strcmp(sgs{isg}.signals{1}, c)
+                    handles.signal_gen_map(c)= sgs{isg};
+                    break;
+                end
+            end
         end
     catch
         handles.signal_gen_map(c)=constant_signal_gen({c});
     end
-      
+    
 end
 
 % Init time
-if ~isempty(handles.B)    
-    handles.time = handles.B.GetTime();
-elseif ~isfield(handles, 'time')
-    handles.time = 0:.01:1;
+if ~isfield(handles, 'time')
+    if ~isempty(handles.B)
+        handles.time = get_time_string(handles.B.GetTime());
+    else
+        handles.time = 0:.01:1;
+    end
 end
+
 set( handles.edit_time, 'String', get_time_string(handles.time));
 % Choose default command line output for signal_gen_gui
 signal_gens= handles.signal_gen_map.values;
@@ -150,20 +160,23 @@ guidata(hObject, handles);
 %uiwait(handles.main);
 
 function st = dbl2str(x)
-    st = num2str(x, '%0.5g');
+st = num2str(x, '%0.5g');
 
 function time_string = get_time_string(time)
-
-   if isscalar(time)
+if ischar(time)
+    time_string = time;
+elseif isnumeric()
+    if isscalar(time)
         time_string = ['[0 ' dbl2str(time) ']'];
     elseif numel(time)==2
         time_string = ['[' dbl2str(time(1)) ' ' dbl2str(time(2)) ']'];
-   elseif max(diff(diff(time)))<100*eps
-       time_string = ['0:' dbl2str(time(2)-time(1)) ':' dbl2str(time(end))];
-   else
-       time_string = num2str(time);
-   end
-   
+    elseif max(diff(diff(time)))<100*eps
+        time_string = ['0:' dbl2str(time(2)-time(1)) ':' dbl2str(time(end))];
+    else
+        time_string = num2str(time);
+    end
+end
+
 % --- Outputs from this function are returned to the command line.
 function varargout = signal_gen_gui_OutputFcn(hObject, eventdata, handles)
 % varargout  cell array for returning output args (see VARARGOUT);
@@ -180,21 +193,21 @@ function popupmenu_signal_gen_type_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% get signal name 
+% get signal name
 sig_name = get_current_signal(handles);
 
 % assign new signal generator
 idx = get(hObject,'Value');
 classes = get(hObject,'String');
 class_name = classes{idx};
-try 
+try
     handles.signal_gen_map(sig_name) = eval([class_name '({ sig_name });']);
 end
 
 % update config and params
 update_config(handles);
 
-% update plot 
+% update plot
 update_plot(handles);
 
 % update stuff
@@ -230,7 +243,7 @@ if isempty(idx)
     classes = [classes {sg_class}];
     set(handles.popupmenu_signal_gen_type, 'String', classes);
     idx = numel(classes);
-end 
+end
 set(handles.popupmenu_signal_gen_type,'Value', idx);
 
 % update config and params
@@ -259,9 +272,15 @@ function edit_time_Callback(hObject, eventdata, handles)
 % hObject    handle to edit_time (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
+try
+    time_st=get(hObject, 'String');
+    time = evalin('base', time_st);
+    handles.time = time_st;
+    update_plot(handles);
+catch
+    set(hObject, 'String',handles.time);
+end
 
-handles.time = str2num(get(hObject,'String'));
-update_plot(handles);
 guidata(hObject,handles);
 
 % --- Executes during object creation, after setting all properties.
@@ -312,39 +331,48 @@ function uitable_config_CellEditCallback(hObject, eventdata, handles)
 % hObject    handle to uitable_config (see GCBO)
 % eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
 
-sg = get_current_sg(handles);
-content = get(hObject, 'Data');
-
-cfg_params = sg.getSignalGenArgs();
-
-% update param struct
-if  ~isempty(cfg_params)
-    for ip = 1:numel(cfg_params)
-        content{ip, 1} = cfg_params{ip};
-        old_val = sg.(cfg_params{ip});
-        if iscell(old_val)
-            val = cell(1,1);
-            val{1} = content{ip,2};
-        else
-            val= content{ip,2};
+try
+    
+    sg = get_current_sg(handles);
+    content = get(hObject, 'Data');
+    
+    cfg_params = sg.getSignalGenArgs();
+    
+    % update param struct
+    if  ~isempty(cfg_params)
+        for ip = 1:numel(cfg_params)
+            content{ip, 1} = cfg_params{ip};
+            old_val = sg.(cfg_params{ip});
+            if iscell(old_val)
+                val = cell(1,1);
+                val{1} = content{ip,2};
+            else
+                val= content{ip,2};
+            end
+            args_val{ip}= val;
         end
-         args_val{ip}= val;
     end
+    
+    % create new signal gen
+    sg_name = class(sg);
+    sig_name = get_current_signal(handles);
+    niou_sg = eval([sg_name '(sig_name, args_val{:});']);
+    if isequal(size(sg.p0),size(niou_sg.p0))
+        niou_sg.p0 = sg.p0;
+    end
+    
+    handles.signal_gen_map(sig_name)= niou_sg;
+    
+    update_config(handles);
+    update_plot(handles);
+    guidata(hObject, handles);
+    
+catch
+    update_config(handles);
+    update_plot(handles);
+    guidata(hObject, handles);
+    
 end
-
-% create new signal gen
-sg_name = class(sg);
- sig_name = get_current_signal(handles);
- niou_sg = eval([sg_name '(sig_name, args_val{:});']);
- if isequal(size(sg.p0),size(niou_sg.p0))
-    niou_sg.p0 = sg.p0;
- end
- 
-handles.signal_gen_map(sig_name)= niou_sg;
- 
-update_config(handles);
-update_plot(handles);
-guidata(hObject, handles);
 
 %% update functions
 function update_config(handles)
@@ -364,7 +392,8 @@ content = {'',''};
 if  ~isempty(cfg_params)
     content = cell(1,1);
     for ip = 1:numel(cfg_params)
-        content{ip, 1} = cfg_params{ip};
+        par = cfg_params{ip};
+        content{ip, 1} = par;
         val = sg.(cfg_params{ip});
         if iscell(val)&&~isempty(val)
             content{ip,2} = val{1} ;
@@ -375,6 +404,7 @@ if  ~isempty(cfg_params)
         end
     end
 end
+
 set(h_uitable, 'Data', content);
 
 
@@ -388,21 +418,22 @@ axes(handles.axes1);
 popup_sel_index = get(handles.popupmenu_signal_name, 'Value');
 sig_names = get(handles.popupmenu_signal_name, 'String');
 sig_name = sig_names{popup_sel_index};
-    
+
 % fetch current generator
 sg = handles.signal_gen_map(sig_name);
 
 % compute and plot signal
-sg.plot(handles.time);
+time = evalin('base',handles.time);
+sg.plot(time);
 
-title(sig_name, 'Interpreter', 'None');    
+title(sig_name, 'Interpreter', 'None');
 grid on;
 set(gca, 'FontSize',8)
 
 update_uitable(handles);
 
 function update_uitable(handles)
-sg = get_current_sg(handles);   
+sg = get_current_sg(handles);
 fill_uitable_params(handles.uitable_params, sg.params, sg.p0, sg.params_domain);
 set(handles.uitable_params, 'ColumnWidth', handles.TBL_SZ);
 
@@ -433,26 +464,26 @@ function uitable_params_KeyPressFcn(hObject, eventdata, handles)
 if (isa(eventdata, 'matlab.ui.eventdata.UIClientComponentKeyEvent'))
     switch eventdata.Key
         case 'return'
-            if strcmp(eventdata.Modifier, 'shift') 
-            val = inputdlg('Enter value');
-            if ~isempty(val)&&~isempty(handles.select_cells)
-                 tdata = get(hObject,'Data');
-                for irow = 1:size(handles.select_cells)
-                    num_val = str2num(val{1});
-                    if numel(num_val)>1
-                        tdata{handles.select_cells(irow, 1),handles.select_cells(irow, 2)} = val{1};
-                    else
-                        tdata{handles.select_cells(irow, 1),handles.select_cells(irow, 2)} = num_val;
+            if strcmp(eventdata.Modifier, 'shift')
+                val = inputdlg('Enter value');
+                if ~isempty(val)&&~isempty(handles.select_cells)
+                    tdata = get(hObject,'Data');
+                    for irow = 1:size(handles.select_cells)
+                        num_val = str2num(val{1});
+                        if numel(num_val)>1
+                            tdata{handles.select_cells(irow, 1),handles.select_cells(irow, 2)} = val{1};
+                        else
+                            tdata{handles.select_cells(irow, 1),handles.select_cells(irow, 2)} = num_val;
+                        end
                     end
+                    set(hObject,'Data',tdata);
+                    
+                    sg = get_current_sg(handles);
+                    [sg.params, sg.p0, sg.params_domain] = read_uitable_params(hObject);
+                    
+                    update_plot(handles);
+                    guidata(hObject, handles);
                 end
-                set(hObject,'Data',tdata);
-                
-                sg = get_current_sg(handles);
-                [sg.params, sg.p0, sg.params_domain] = read_uitable_params(hObject);
-                
-                update_plot(handles);
-                guidata(hObject, handles);
-            end
             end
             
     end
@@ -468,3 +499,9 @@ function uitable_params_CellSelectionCallback(hObject, eventdata, handles)
 
 handles.select_cells = eventdata.Indices;
 guidata(hObject,handles);
+
+
+% --- Executes on button press in button_cancel.
+function button_cancel_Callback(hObject, eventdata, handles)
+handles.output.signalGenerators = {};
+close(handles.main);

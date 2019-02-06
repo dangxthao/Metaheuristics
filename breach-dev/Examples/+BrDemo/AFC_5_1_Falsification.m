@@ -78,7 +78,7 @@ falsif_pb.max_obj_eval
 %% Understanding the Solver Behavior (ct'd) 
 % We can examine which parameter value was tested as follows: 
 
-BrLog2 = falsif_pb2.GetBrSet_Logged(); 
+BrLog = falsif_pb2.GetLog(); 
 BreachSamplesPlot(BrLog);
 
 %% Understanding the Solver Behavior (ct'd)
