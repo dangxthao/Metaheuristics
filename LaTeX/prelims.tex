@@ -51,13 +51,11 @@ can be uniquely characterized by a set of $m$ parameters, whose valuation $\inpu
 
 In this previous work, the time instants are fixed and we search for the signal values at these instants encodes as parameters. In this work, we extend this framework to classes of piecewise input signals in two directions. First, the time instants are also parameterized and thus become part of the search space. This allows to consider larger classes of input signals. Second, the selected input signals should satisfy a given temporal constraints, the goal of which, as mentioned in the introduction, is to reduce the search space to the input signals of interest. Indeed, if the specification involves some temporal constraints on the input signals, focusing only on such signals would increase the falsification efficiency. 
 
-Let us define a {\em parametrization function} that maps input parameters to input functions. The input parameters are put into two parameter vectors: (1) the vector of time parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \vaueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$.
-The parametrization function $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$ is defined as follows:
+Let us define a {\em parametrization function} that maps input parameters to input functions. The input parameters are put into two parameter vectors: (1) the vector of time parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \vaueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$. Given a parametrization function $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$, the dynamical system can be described as follows:
 \begin{eqnarray} \label{eq:behaviorfunc}
 y &=& \behaviorfunc(\param),
 \end{eqnarray}
-where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\tau, \inputparams))$.
-Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
+where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\tau, \inputparams))$.  Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
 
 \paragraph{Generation of timed patterns.} 
 In addition to the coverage of parameter space, we use here a notion of coverage of temporal specifications. Intuitively it measures the portion of the "good" behaviours satisfying the specification that have been explored. Let us now use a timed automaton $\mathcal{A}$ to describe the temporal constraints that the input signals should satisfy \footnote{A STL formalism can be used, but {\color{red}TODO}}.  Let us now use a timed automaton $\mathcal{A}$ that describes the temporal constraints that the input signals should satisfy. The STL formalism can be used as well, but the generation method  was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest. 
@@ -68,11 +66,7 @@ The labels of discrete transitions correspond to the predicates on the signal va
 
 A timed word of length $n$ of the timed automaton is $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$ where $\delta_i$ are labels of discrete transitions and $\tau_i$ are the time duration between two consecutive transitions; $(\tau_1, \ldots, \tau_m)$ is called a timed vector. Each label $\delta_i$ corresponds to a predicate on the real values $\valueparams$ of the signal of the form $\pi_i(\valueparams) \le 0$. For piecewise constant signals, these predicates are simply interval constraints. For piecewise linear signals, $\pi_i$ are linear constraints on $\valueparams$. 
 
-Timed words provide the timed patterns for the signals satisfying the time constraints described by the automaton. Hence, given a timed word $\gamma = (\delta_1, \tau_1), \ldots, (\delta_n, \tau_n)$, a real-valued input signal corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
-$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [\tau_i, \tau_{i+1}), g_i(\param,t)  \le 0.$$
-And we denote this by $\inputs \models C_{\gamma}(\inputs)$.
-
-The work \cite{BBBK16} {\color{red}TODO} proposes a sampling method according the uniform distribution for timed words of finite length. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behaviour. The uniform sampling should not be confused with an intuitive sampling method, called \emph{isotropic}, which at each continuous step makes a uniform choice amongst the possible delays.
+Timed words provide the timed patterns for the signals satisfying the time constraints described by the automaton. The work \cite{BBBK16} {\color{red}TODO} proposes a sampling method according the uniform distribution for timed words of finite length. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behaviour. The uniform sampling should not be confused with an intuitive sampling method, called \emph{isotropic}, which at each continuous step makes a uniform choice amongst the possible delays.
 
 
 %\paragraph{Coverage by measuring uniformity degree using the star-discrepancy of a sample of timed vectors}\label{sec:KS}\label{sec:backward}
@@ -97,7 +91,7 @@ We can use this notion of "uniformity degree" to measure the coverage of a set o
 %So in that case $\KS(\CDFunif,S)=\stardisc{\CDFunif(\CDFunif^{-1}(S'))}=\stardisc{S'}$. % and the KS test (that requires the KS statistics to be below a threshold) will pass with high probability (resp.~for sure). 
 
 
-\paragraph{Property Falsification}	
+\paragraph{Property Falsification using Optimization}	
 
 Property falsification is a means of performing automatic bug-finding in system designs.
 Given a system model such as (\ref{eq:behaviorfunc}) and a system property $\spec$ provided in the form of an STL formula, 
@@ -108,7 +102,7 @@ Note that a counterexample is identified when
 $\rho(\spec,\param)<0$. We call the task of finding a counterexample 
 a {\em falsification problem}. 
 
-\paragraph{Optimization and Solvers}	
+%\paragraph{Optimization and Solvers}	
 
 We formulate the property falsification task as an optimization problem as follows.
 \begin{eqnarray} \label{eq:optim1}
@@ -125,27 +119,28 @@ For such problems, in general there are no algorithms that can guarantee to find
 
 The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby} and CMA-ES \cite{hansen2006eda}. Also, we note that for most problems, we do not need to identify a true optimum; we merely seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
 
-\paragraph{Mapping timed words to real-valued input signals}\label{sec:KS}\label{sec:backward}
-We now know how to generate a good sample of $N$ timed words of length $n$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [t_i, t_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
+%\paragraph{Mapping timed words to real-valued input signals}\label{sec:KS}\label{sec:backward}
+%We now know how to generate a good sample of $N$ timed words of length $m$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_m, \tau_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [\taut_i, \taut_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
 
-Hence, given a timed word $\gamma = (\delta_1, t_1), \ldots, (\delta_n, t_n)$, a real-valued input signal corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
-$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [t_i, t_{i+1}), g_i(\param,t)  \le 0.$$
-And we denote this by $\inputs \models C_{\gamma}(\inputs)$.
+\paragraph{Combining optimization and timed patterns generation} Considering the both time instants and values as optimization variables is expensive not only because of high dimension but also because it is difficult to capture and handle time constraints on the input signals in this formulation. An intuitive approach is to first generate a candidate solution and then check whether it satisfies the time constraints. The candidate solution is rejected if it is not valid, that is it does not satisfy the time constraints and a new candidate solution is generated. This method is clearly not efficient especially when the space of valid input signals is small compared to the whole space of input signals. It is thus very desirable to generate only valid candidate solutions. To this end, we propose to combine optimization and timed patterns generation: we generate timed patterns from the timed automaton (describing the time constraints) and then for each timed pattern (with now fixed instant parameters) the optimization problem is solved for signal value parameters. More concretely, our approach is sketched as follows.
+
+Given a timed word $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$, a real-valued input signal $\inputs$ corresponding to $\gamma$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
+$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \param, t \in [\tau_i, \tau_{i+1}), \pi_i(\param)  \le 0.$$
+And we denote this by $\param \models C_{\gamma}(\param)$.
 
 The optimization problem becomes parameterized with $\gamma$:
 \begin{eqnarray} \label{eq:optim2}
 \min \rho(\spec, \inputs) \\ \nonumber
-s.t. ~\outsig=\behaviorfunc(\inputs) \\ \nonumber
-\inputs \models C_{\gamma}(\inputs), \inputs \in \inputset \nonumber
+s.t. ~\outsig=\behaviorfunc(\param) \\ \nonumber
+\param \models C_{\gamma}(\param), \param \in \paramset \nonumber
 \end{eqnarray}
-Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$.
-
-Using the method in \cite{Cosmos}, we generate a set $\Gamma$ of timed words (with good coverage properties). A first {\em abstract} algorithm of our falsification approach is described as follows.
+Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$. A first {\em abstract} algorithm of our falsification approach is described as follows.
 \begin{algorithm}
 \caption{Falsification}
 \begin{algorithmic}
 %\Require  
 %\Ensure  		
+		\State $\Gamma = Generate(\mathcal{A},m)$
 	        \ForAll{$\gamma \in \Gamma$} 
 		\State $\tilde{\rho} = Solve(\mathcal{O}_{\gamma})$
 		\If{$\tilde{\rho} \le 0$}
@@ -155,7 +150,7 @@ Using the method in \cite{Cosmos}, we generate a set $\Gamma$ of timed words (wi
 		\State No falsifying behavior found. Report coverage of $\spec$
 \end{algorithmic}
 \end{algorithm}
-The function $Solve(\mathcal{O}_{\gamma})$ implements a number of black-box optimization techniques using metaheuristics (such as Simulated Annealing, Evolution Strategies, {\it etc.}), as we have done in \cite{}, to return a best result $\tilde{\rho}$. 
+The set $\Gamma$ of timed words of (discrete) length $m$ of the timed automaton $\mathcal{A}$ (with good coverage properties) is generated using the method in \cite{Cosmos}. The function $Solve(\mathcal{O}_{\gamma})$ implements a number of black-box optimization techniques using metaheuristics (such as Simulated Annealing, Evolution Strategies, {\it etc.}), as we have done in \cite{}, to return a best result $\tilde{\rho}$. 
 
 To improve search efficiency, that is to quickly find a falsifying input signal, the values $\tilde{\rho}$ of the objective function can be exploited. Note that if an order on $\Gamma$ can be defined, the search can follow a gridding structure as done in \cite{Valko2018} (Valko)... {\color{red} [to elaborate]}
 
