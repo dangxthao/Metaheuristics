@@ -1,0 +1,374 @@
+>> Autotrans_falsi
+Initializing Breach from folder /Users/thaodang/Metaheuristics/breach-dev...
+
+ Creating breach interface with simulink model autotrans_mod04
+
+ Simulation time horizon is 30 seconds
+
+ Parametrizing input signals throttle and break....
+
+ Input signals are parametrized as piecewise constant
+ Varying param
+
+ans =
+
+   Empty matrix: 1-by-0
+
+Done with signal setup
+Done with STL setup
+
+ans =
+
+     9    10    11    12    13    14    15    16    17    18
+
+
+ans =
+
+    10
+
+Done with grid setup
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'autotrans_mod04'
+                simTime: 30
+        IO_signal_names: {'In1'  'In2'  'RPM'  'gear'  'speed'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+           input_ranges: [2x2 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+                   seed: 5000
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'autotrans_mod04'
+                simTime: 30
+        IO_signal_names: {'In1'  'In2'  'RPM'  'gear'  'speed'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+           input_ranges: [2x2 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+                   seed: 5000
+        nb_solver_calls: 2
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 200
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+ The falsification problem by metaheuristics is
+ 
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'autotrans_mod04'
+                simTime: 30
+        IO_signal_names: {'In1'  'In2'  'RPM'  'gear'  'speed'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+           input_ranges: [2x2 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+                   seed: 5000
+        nb_solver_calls: 2
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 200
+            num_solvers: 4
+            solver_time: [500 2000 500 900]
+           max_obj_eval: [1000 20000 1000 50000]
+     start_solver_index: 2
+
+You selected the following STL formula for falsification
+
+not ((alw ((RPM[t]<2520))) and (ev_[0,10] ((speed[t]>50))))
+
+
+ *** Running Simulated Annealing
+ Time limit of computation is 500 seconds
+Setting options for simulannealbnd solver
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+     0          1        1351.84        1351.84            100
+    10         11        1144.84        1160.49          56.88
+    20         21        893.643        893.643        34.0562
+    30         31        885.877        885.877        20.3907
+    40         41        757.844        757.844        12.2087
+    50         51        562.982        562.982        7.30977
+    60         61            538            538        4.37663
+    70         71         438.43         438.43        2.62045
+    80         81          425.4          425.4        1.56896
+    90         91        396.879        397.345       0.939395
+   100        101        363.653        363.653        0.56245
+   110        111        352.122        352.122        0.33676
+   120        121        350.542        350.542       0.201631
+   130        131          348.4        348.797       0.120724
+   140        141          348.4        348.449      0.0722817
+   150        151        347.181        347.181      0.0432777
+   160        161        346.002        346.002       0.025912
+   170        171        345.447        345.447      0.0155145
+   180        181        345.224        345.224     0.00928908
+   190        191        345.052        345.052     0.00556171
+   200        201        344.969        344.969        0.00333
+   210        211        344.866        344.866      0.0019938
+*  216        227        344.845        344.845        24.5487
+   220        231        341.951        341.951        19.9951
+   230        241        341.951        341.951        11.9718
+   240        251        341.951        362.875        7.16796
+   250        261        330.869        330.869        4.29172
+   260        271        316.239        317.312        2.56961
+   270        281        316.239        316.273        1.53852
+   280        291        315.452        315.452        0.92117
+   290        301        314.576        314.681       0.551539
+   300        311        314.439        314.439       0.330227
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   310        321          311.3          311.3       0.197719
+   320        331         310.68         310.68       0.118382
+   330        341        310.444        310.551      0.0708794
+   340        351        309.895        309.895      0.0424381
+   350        361        309.895        310.169      0.0254093
+   360        371        309.895        309.977      0.0152135
+   370        381        309.895        309.932     0.00910887
+   380        391        309.881        309.881     0.00545382
+   390        401        309.846        309.846      0.0032654
+   400        411        309.836        309.836     0.00195512
+   410        421        309.836        309.836      0.0011706
+   420        431        309.835        309.835    0.000700882
+   430        441        309.835        309.836    0.000419644
+   440        451        309.834        309.834    0.000251256
+   450        461        309.834        309.834    0.000150436
+   460        471        309.834        309.834    9.00718e-05
+   470        481        309.833        309.833    5.39293e-05
+   480        491        309.833        309.833    3.22895e-05
+   490        501        309.833        309.833    1.93329e-05
+   500        511        309.833        309.833    1.15753e-05
+*  509        530        309.833        309.833        21.6058
+   510        531        309.833        309.833        20.5255
+   520        541        309.833        377.961        12.2894
+   530        551        309.833        327.336        7.35812
+   540        561        303.029        303.029        4.40558
+   550        571        224.132        224.132        2.63778
+   560        581        163.468        166.718        1.57934
+   570        591        143.547        143.547       0.945607
+   580        601        143.261        143.261        0.56617
+   590        611         130.02         130.02       0.338987
+   600        621        127.215        128.732       0.202964
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   610        631        125.435        125.435       0.121522
+   620        641        124.925        124.925      0.0727597
+   630        651        123.591        123.591      0.0435639
+   640        661          123.3          123.3      0.0260833
+   650        671         122.91         122.91      0.0156171
+   660        681        122.459        122.459     0.00935051
+   670        691        122.298        122.298      0.0055985
+   680        701        122.213        122.213     0.00335203
+   690        711        122.157        122.157     0.00200698
+   700        721        122.113        122.113     0.00120165
+*  707        738        122.083        122.083        50.5049
+   710        741        122.083        230.242        43.3016
+   720        751        122.083        172.053        25.9263
+   730        761        122.083        219.383         15.523
+   740        771        122.083        211.155         9.2942
+   750        781        122.083         124.34        5.56478
+   760        791        97.7945         100.18        3.33184
+   770        801        95.4826        95.4826         1.9949
+   780        811        71.3844        71.3844        1.19442
+   790        821        67.6635        67.6635       0.715142
+   800        831        65.7117        65.7117       0.428182
+   810        841        60.4986        60.4986       0.256368
+   820        851        59.9965        59.9965       0.153497
+   830        861        59.9965        60.1986      0.0919045
+   840        871        59.7162        59.7162      0.0550266
+   850        881        59.0811        59.1066      0.0329465
+   860        891        58.9214         58.925      0.0197263
+   870        901        58.7687        58.7712      0.0118108
+   880        911        58.7311        58.7311     0.00707159
+   890        921        58.6754        58.6754     0.00423402
+   900        931        58.6051        58.6051     0.00253506
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   910        941        58.5951        58.5951     0.00151784
+   920        951        58.5787        58.5787    0.000908785
+   930        961        58.5652        58.5652    0.000544123
+*  933        974        58.5644        58.5644        48.6806
+   940        981        58.5644        172.269        33.9955
+   950        991        30.8422        30.8422        20.3544
+   960       1001        29.4955        41.2745        12.1869
+Maximum number of function evaluations exceeded: increase options.MaxFunEvals.
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 29.4955 found with
+        In1_u0 = 36.815
+        In1_u1 = 35.1763
+        In1_u2 = 35.0639
+        In1_u3 = 35.0713
+        In1_u4 = 35.0796
+        In1_u5 = 39.8627
+        In1_u6 = 35
+        In2_u0 = 27.942
+        In2_u1 = 29.9604
+        In2_u2 = 39.9699
+
+No falsifying trace found.
+
+ This solver time = 363.775551 seconds
+ Best Robustness Value of this call = 29.495511
+ Best Robustness Value so far = 29.495511
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2   29.49551096    0.20067039
+ stagnant_count = 0
+local_optimum_stuck =
+
+     0
+
+
+
+*******
+ #1 round(s) of solver calls done
+rob_stagnant =
+
+     0
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'autotrans_mod04'
+                simTime: 30
+        IO_signal_names: {'In1'  'In2'  'RPM'  'gear'  'speed'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+           input_ranges: [2x2 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 BreachRequirement]
+                    Pbs: []
+               max_time: 3600
+                   seed: 5000
+        nb_solver_calls: 2
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 200
+            num_solvers: 4
+            solver_time: [500 2000 500 900]
+           max_obj_eval: [1000 20000 1000 50000]
+     start_solver_index: 2
+
+
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 2000 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=10: (5,10)-CMA-ES(w=[46 27 16 9 3]%, mu_eff=3.2) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     11 : 3.0061092334026e+02 +(3e+02,1e+03) | 1.66e+00 | 10:1.0e+01  5:1.7e+01
+    2 ,     21 : 1.0573557319316e+02 +(5e+02,1e+03) | 1.73e+00 | 10:9.7e+00  1:1.6e+01
+  100 ,   1001 : 1.0745105010897e+01 +(5e+00,7e+00) | 3.14e+00 |  3:5.1e-01 10:1.1e+00
+  200 ,   2001 : 1.2932206796266e-01 +(1e-02,1e-01) | 4.78e+00 |  7:1.6e-02  9:5.1e-02
+  268 ,   2681 : -3.1486193965087e-02 +(0e+00,0e+00) | 1.51e+01 |  7:7.6e-02  9:5.3e-01
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+   2682: -3.14861939651e-02 | -3.14861939651e-02 | equalfunvals
+mean solution: +3.7e+01 +3.6e+01 +3.6e+01 +3.6e+01 +3.6e+01 +3.5e+01 +3.5e+01 +7.7e+00 +3.7e+01 +3.9e+01
+std deviation:  1.2e-01  1.7e-01  1.3e-01  1.3e-01  1.4e-01  9.0e-02  7.6e-02  3.2e-01  5.3e-01  2.1e-01
+
+ ---- Best value -0.0314862 found with
+        In1_u0 = 37.3127
+        In1_u1 = 36.1099
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 7.94545
+        In2_u1 = 40
+        In2_u2 = 40
+
+Falsified with obj = -0.0314862
+
+ This solver time = 1037.513690 seconds
+ans = 
+
+  BreachSignalsPlot with properties:
+
+    BrSet: [1x1 BreachRequirement]
+      Fig: [1x1 Figure]
+     Axes: [1x1 Axes]
+     ipts: 1
+
+Error using MetaFalsify/MetaCall (line 682)
+Falisifier found! Exit normally
+ *** Running Simulated Annealing
+ Time limit of computation is 500 seconds
+
+ This solver time = 363.775551 seconds
+ Best Robustness Value of this call = 29.495511
+ Best Robustness Value so far = 29.495511
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2   29.49551096    0.20067039
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 2000 seconds
+
+ This solver time = 1037.513690 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 1402.990605 seconds

@@ -1,0 +1,23 @@
+
+ *** Running Simulated Annealing
+ Time limit of computation is 500 seconds
+
+ This solver time = 363.775551 seconds
+ Best Robustness Value of this call = 29.495511
+ Best Robustness Value so far = 29.495511
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2   29.49551096    0.20067039
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 2000 seconds
+
+ This solver time = 1037.513690 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 1402.990605 seconds

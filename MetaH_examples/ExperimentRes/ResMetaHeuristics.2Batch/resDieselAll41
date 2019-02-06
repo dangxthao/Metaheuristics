@@ -1,0 +1,173 @@
+DieselM_falsi
+Initializing Breach from folder /Users/thaodang/Metaheuristics/breach-dev...
+
+ Creating breach interface with simulink model KD_cl_harness_forthao
+
+ Simulation time horizon is 50 seconds
+
+alw_[15,30] ((Out1[t] < 41))
+
+
+ Parametrizing input signal as piecewise constant....
+
+nb_signals =
+
+     2
+
+
+Input_Gen = 
+
+    type: 'UniStep'
+      cp: 10
+
+
+Input_Gen = 
+
+    type: 'UniStep'
+      cp: 10
+
+You selected the following STL formula for falsification
+
+ans =
+
+alw_[15,30] ((Out1[t] < 41))
+
+
+ *** Running PseudoRandom
+ Time limit of computation is 100 seconds
+nb_samples for PR is 10 seconds
+nb_hits for PR 20 
+
+newminrob =
+
+    6.5920
+
+
+min_id =
+
+     3
+
+
+ PseudoRandom time = 19.280305 seconds
+ This solver time = 19.290770 seconds
+ Best Robustness Value of this call = 6.592030
+ Best Robustness Value so far = 6.592030
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  0    6.59203005    0.01372173
+ stagnant_count = 0
+local_optimum_stuck =
+
+     0
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+           signal_types: {'UniStep'  'UniStep'}
+             nb_ctr_pts: [10 10]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+           max_obj_eval: 1024
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 1
+      re_init_num_xbest: 1
+            num_solvers: 4
+               time_lim: 100
+     start_solver_index: 0
+
+
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 2000 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=20: (6,12)-CMA-ES(w=[40 25 17 10 6 2]%, mu_eff=3.7) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     13 : 9.1381040709890e+00 +(1e+01,2e+01) | 3.41e+01 | 10:9.9e+00 14:3.4e+02
+    2 ,     25 : 8.9486744676870e+00 +(1e+01,2e+01) | 3.41e+01 | 10:9.6e+00 18:3.3e+02
+    9 ,    109 : -2.8096991385200e-01 +(0e+00,6e+00) | 3.56e+01 | 10:8.9e+00 14:3.0e+02
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+    110: -2.80969913852e-01 | -2.80969913852e-01 | maxfunevals
+mean solution: +4.8e+00 +1.2e+01 +4.6e+01 +5.2e+00 +2.8e+01 +1.4e+01 +2.5e+01 +1.9e+01 +1.1e+01 +1.2e+01 +2.9e+03 +2.7e+03 +2.4e+03 +2.1e+03 +2.4e+03 +2.4e+03 +1.9e+03 +2.8e+03 +2.2e+03 +2.5e+03
+std deviation:  9.4e+00  9.4e+00  9.7e+00  9.5e+00  9.4e+00  9.5e+00  9.4e+00  9.7e+00  9.2e+00  8.9e+00  2.8e+02  2.9e+02  2.8e+02  3.0e+02  2.8e+02  2.9e+02  2.7e+02  3.0e+02  2.4e+02  2.6e+02
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value -0.28097 found with
+        In1_u0 = 16.983
+        In1_u1 = 0.127123
+        In1_u2 = 40
+        In1_u3 = 0
+        In1_u4 = 29.6759
+        In1_u5 = 12.3253
+        In1_u6 = 30.4065
+        In1_u7 = 20.0442
+        In1_u8 = 10.174
+        In1_u9 = 31.1472
+        In2_u0 = 2922.04
+        In2_u1 = 2664.51
+        In2_u2 = 2121.85
+        In2_u3 = 1800
+        In2_u4 = 2312.22
+        In2_u5 = 1973.73
+        In2_u6 = 2221.68
+        In2_u7 = 2934.67
+        In2_u8 = 1800
+        In2_u9 = 2177.6
+
+Falsified with obj = -0.28097
+
+ This solver time = 607.419209 seconds
+ans = 
+
+  BreachSignalsPlot with properties:
+
+    BrSet: [1x1 BreachRequirement]
+      Fig: [1x1 Figure]
+     Axes: [1x1 Axes]
+     ipts: 1
+
+Error using MetaFalsify/MetaCall (line 1293)
+Falisifier found! Exit normally
+
+
+=== Short Summary
+ *** Running PseudoRandom
+ Time limit of computation is 100 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 
+
+ PseudoRandom time = 19.280305 seconds
+ This solver time = 19.290770 seconds
+ Best Robustness Value of this call = 6.592030
+ Best Robustness Value so far = 6.592030
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  0    6.59203005    0.01372173
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 2000 seconds
+
+ This solver time = 607.419209 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 630.402496 seconds

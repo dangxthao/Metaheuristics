@@ -1,0 +1,841 @@
+
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+
+ This solver time = 201.275264 seconds
+ Best Robustness Value of this call = 519.401915
+ Best Robustness Value so far = 519.401915
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 1200 seconds
+
+ This solver time = 1043.442440 seconds
+ Best Robustness Value of this call = 0.867477
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 200 seconds
+
+ This solver time = 201.924957 seconds
+ Best Robustness Value of this call = 0.867477
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 3 done
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+
+ This solver time = 201.459169 seconds
+ Best Robustness Value of this call = 519.401915
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ Coverage stagnant
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 4 done
+ *** Running PseudoRandom
+ Time limit of computation is 300 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 
+
+ PseudoRandom time = 5.227725 seconds
+ This solver time = 5.265178 seconds
+ Best Robustness Value of this call = 1077.371939
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ 5  0    0.86747736    0.24889224
+ Coverage stagnant
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 5 done
+ *** Running PseudoRandom
+ Time limit of computation is 300 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 
+
+ PseudoRandom time = 5.187090 seconds
+ This solver time = 5.223647 seconds
+ Best Robustness Value of this call = 1244.747837
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ 5  0    0.86747736    0.24889224
+ 6  0    0.86747736    0.24984265
+ rob_stagnant = 1
+ cov_monitoring_length = 2
+ #2 round(s) of solver calls done
+ Solver call 6 done
+ **** Running CMAES
+ Time limit of computation is 1200 seconds
+
+ This solver time = 885.552636 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 2548.911843 seconds
+
+
+Autotrans_setup
+Initializing Breach from folder /Users/thaodang/Metaheuristics/breach-dev...
+
+ Creating breach interface with simulink model autotrans_mod04
+
+ Simulation time horizon is 30 seconds
+
+ Parametrizing input signals throttle and break....
+
+ Input signals are parametrized as piecewise constant
+ Number of control points for throttle input is 7
+Number of control points for break input is 3
+
+ans =
+
+    10
+
+
+ans =
+
+    10
+
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+ The falsification problem by metaheuristics is
+ 
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [300 1200 200 200]
+           max_obj_eval: [2000 2500 2000 2000]
+     start_solver_index: 3
+
+You selected the following STL formula for falsification
+
+ans =
+
+not ((alw ((RPM[t]<2520))) and (ev_[0,10] ((speed[t]>50))))
+
+
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+Eval objective function on 32 initial parameters.
+#calls (max: 2000)        time spent (max: 200)       [current obj]   (current best) 
+        10                        7.0               [+2.23934e+03]    (+1.20278e+03)
+        20                        9.7               [+1.21540e+03]    (+1.17517e+03)
+        30                       12.4               [+1.66901e+03]    (+1.17517e+03)
+
+Starting local optimization using Nelder-Mead algorithm
+#calls (max: 2000)        time spent (max: 200)       [current obj]   (current best) 
+        40                       15.4               [+1.17915e+03]    (+1.17517e+03)
+        50                       18.3               [+1.16356e+03]    (+1.16356e+03)
+        60                       21.1               [+1.15316e+03]    (+1.15316e+03)
+        70                       24.0               [+1.11234e+03]    (+1.11234e+03)
+        80                       27.0               [+1.06557e+03]    (+1.06557e+03)
+        90                       29.9               [+1.01458e+03]    (+9.85004e+02)
+       100                       32.9               [+9.11484e+02]    (+8.83069e+02)
+       110                       35.9               [+7.83219e+02]    (+7.83219e+02)
+       120                       38.7               [+7.92655e+02]    (+7.83219e+02)
+       130                       41.5               [+7.85945e+02]    (+7.82460e+02)
+       140                       44.5               [+7.70923e+02]    (+7.62366e+02)
+       150                       47.4               [+7.64915e+02]    (+7.51306e+02)
+       160                       50.3               [+7.58434e+02]    (+7.50038e+02)
+       170                       53.2               [+7.55879e+02]    (+7.50038e+02)
+       180                       56.1               [+1.18829e+03]    (+7.50038e+02)
+       190                       58.9               [+1.18192e+03]    (+7.50038e+02)
+       200                       61.8               [+1.16461e+03]    (+7.50038e+02)
+       210                       64.7               [+1.15131e+03]    (+7.50038e+02)
+       220                       67.5               [+1.12028e+03]    (+7.50038e+02)
+       230                       70.4               [+1.05220e+03]    (+7.50038e+02)
+       240                       73.3               [+9.54302e+02]    (+7.50038e+02)
+       250                       76.2               [+8.31931e+02]    (+7.50038e+02)
+       260                       79.2               [+7.47098e+02]    (+7.25552e+02)
+       270                       82.2               [+1.12654e+03]    (+7.01818e+02)
+       280                       85.2               [+1.49711e+03]    (+6.43057e+02)
+       290                       88.2               [+1.30348e+03]    (+6.42386e+02)
+       300                       91.1               [+6.68451e+02]    (+6.26491e+02)
+       310                       94.2               [+1.26334e+03]    (+5.56517e+02)
+       320                       97.2               [+7.53339e+02]    (+5.19402e+02)
+       330                      100.2               [+1.21355e+03]    (+5.19402e+02)
+       340                      103.2               [+1.14759e+03]    (+5.19402e+02)
+       350                      106.2               [+1.11025e+03]    (+5.19402e+02)
+       360                      109.2               [+1.08297e+03]    (+5.19402e+02)
+       370                      112.2               [+1.04171e+03]    (+5.19402e+02)
+       380                      115.2               [+9.59732e+02]    (+5.19402e+02)
+       390                      118.2               [+8.45986e+02]    (+5.19402e+02)
+       400                      121.2               [+7.38651e+02]    (+5.19402e+02)
+       410                      124.2               [+1.80362e+03]    (+5.19402e+02)
+       420                      127.2               [+7.06999e+02]    (+5.19402e+02)
+       430                      130.3               [+6.96588e+02]    (+5.19402e+02)
+       440                      133.3               [+6.41576e+02]    (+5.19402e+02)
+       450                      136.4               [+5.94744e+02]    (+5.19402e+02)
+       460                      139.5               [+5.58264e+02]    (+5.19402e+02)
+       470                      142.6               [+1.22119e+03]    (+5.19402e+02)
+       480                      145.7               [+1.20739e+03]    (+5.19402e+02)
+       490                      148.7               [+1.17561e+03]    (+5.19402e+02)
+       500                      151.8               [+1.13895e+03]    (+5.19402e+02)
+       510                      154.9               [+2.24148e+03]    (+5.19402e+02)
+       520                      158.0               [+1.14659e+03]    (+5.19402e+02)
+       530                      161.1               [+2.24001e+03]    (+5.19402e+02)
+       540                      164.2               [+1.13610e+03]    (+5.19402e+02)
+       550                      167.4               [+2.24336e+03]    (+5.19402e+02)
+       560                      170.5               [+1.13255e+03]    (+5.19402e+02)
+       570                      173.7               [+1.13148e+03]    (+5.19402e+02)
+       580                      176.9               [+2.24740e+03]    (+5.19402e+02)
+       590                      180.1               [+1.13012e+03]    (+5.19402e+02)
+       600                      183.2               [+2.24674e+03]    (+5.19402e+02)
+       610                      186.5               [+2.24686e+03]    (+5.19402e+02)
+       620                      189.8               [+1.12773e+03]    (+5.19402e+02)
+       630                      193.0               [+1.12767e+03]    (+5.19402e+02)
+       640                      196.2               [+1.12731e+03]    (+5.19402e+02)
+       650                      199.4               [+1.24920e+03]    (+5.19402e+02)
+       652                      200.0               [+1.24961e+03]    (+5.19402e+02)
+
+ Stopped after max_time was reached.
+
+ ---- Best value 519.402 found with
+        In1_u0 = 35.0806
+        In1_u1 = 53.9551
+        In1_u2 = 35.0306
+        In1_u3 = 36.2093
+        In1_u4 = 35.2063
+        In1_u5 = 43.4755
+        In1_u6 = 58.645
+        In2_u0 = 15.8207
+        In2_u1 = 39.6499
+        In2_u2 = 8.35624
+
+No falsifying trace found.
+
+ This solver time = 201.275264 seconds
+ Best Robustness Value of this call = 519.401915
+ Best Robustness Value so far = 519.401915
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ stagnant_count = 0
+local_optimum_stuck =
+
+     0
+
+
+
+*******
+ #1 round(s) of solver calls done
+rob_stagnant =
+
+     0
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [300 1200 200 200]
+           max_obj_eval: [2000 2500 2000 2000]
+     start_solver_index: 3
+
+
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 1200 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=10: (5,10)-CMA-ES(w=[46 27 16 9 3]%, mu_eff=3.2) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     11 : 1.4290608088608e+03 +(4e+02,8e+02) | 1.77e+00 | 10:9.5e+00  2:1.7e+01
+    2 ,     21 : 1.0508801124782e+03 +(5e+02,1e+03) | 1.79e+00 | 10:8.7e+00  7:1.5e+01
+  100 ,   1001 : 1.2092487181160e+00 +(3e-01,2e+00) | 1.93e+00 |  6:2.7e-01  9:4.0e-01
+  200 ,   2001 : 9.1320961109521e-01 +(3e-02,4e-01) | 4.67e+00 |  6:2.7e-02  9:6.1e-02
+  250 ,   2501 : 8.6765370427939e-01 +(4e-02,3e-01) | 6.98e+00 |  4:2.4e-02  9:7.0e-02
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+   2502: 8.67477361767e-01 | 8.67477361767e-01 | maxfunevals
+mean solution: +3.5e+01 +3.6e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +7.7e+00 +2.8e+01 +4.0e+01
+std deviation:  3.3e-02  2.8e-02  3.7e-02  2.4e-02  3.1e-02  2.9e-02  3.9e-02  5.9e-02  7.0e-02  4.2e-02
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 0.867477 found with
+        In1_u0 = 35
+        In1_u1 = 36.3927
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 7.69106
+        In2_u1 = 28.135
+        In2_u2 = 40
+
+No falsifying trace found.
+
+ This solver time = 1043.442440 seconds
+ Best Robustness Value of this call = 0.867477
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 200 seconds
+Setting options for simulannealbnd solver
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+     0          1       0.867477       0.867477            100
+    10         11       0.867477       0.867477          56.88
+    20         21       0.867477        49.6331        34.0562
+    30         31       0.867477        86.4125        20.3907
+    40         41       0.867477        54.8571        12.2087
+    50         51       0.867477        54.8571        7.30977
+    60         61       0.867477        35.2029        4.37663
+    70         71       0.867477        36.4871        2.62045
+    80         81       0.867477        34.9611        1.56896
+    90         91       0.867477        20.8088       0.939395
+   100        101       0.867477        20.1333        0.56245
+   110        111       0.867477        19.9532        0.33676
+   120        121       0.867477        19.8839       0.201631
+   130        131       0.867477        18.9651       0.120724
+   140        141       0.867477        17.9864      0.0722817
+   150        151       0.867477        17.4776      0.0432777
+   160        161       0.867477        17.3599       0.025912
+   170        171       0.867477        17.2074      0.0155145
+   180        181       0.867477        17.2065     0.00928908
+   190        191       0.867477         17.204     0.00556171
+   200        201       0.867477        17.1714        0.00333
+   210        211       0.867477        17.1582      0.0019938
+   220        221       0.867477        17.1489     0.00119376
+   230        231       0.867477         17.141    0.000714748
+   240        241       0.867477        17.1349    0.000427946
+   250        251       0.867477        17.1281    0.000256227
+   260        261       0.867477        17.1247    0.000153413
+   270        271       0.867477        17.1222    9.18538e-05
+*  280        291       0.867477        17.1203        43.7037
+   290        301       0.867477        153.825         26.167
+   300        311       0.867477        80.6944        15.6672
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   310        321       0.867477        47.4358        9.38052
+   320        331       0.867477        66.5882        5.61646
+   330        341       0.867477        45.6901        3.36278
+   340        351       0.867477        32.3344        2.01342
+   350        361       0.867477        31.2157        1.20551
+   360        371       0.867477        26.7234       0.721784
+   370        381       0.867477         25.123       0.432159
+   380        391       0.867477          25.99       0.258749
+   390        401       0.867477        23.1996       0.154923
+   400        411       0.867477        22.5477       0.092758
+   410        421       0.867477        22.2683      0.0555376
+   420        431       0.867477         21.907      0.0332524
+   430        441       0.867477        21.7284      0.0199095
+   440        451       0.867477        21.6614      0.0119205
+   450        461       0.867477         21.657     0.00713726
+   460        471       0.867477        21.5857     0.00427334
+   470        481       0.867477        21.5205     0.00255861
+   480        491       0.867477        21.4795     0.00153193
+   490        501       0.867477        21.4743    0.000917225
+   500        511       0.867477        21.4709    0.000549176
+   510        521       0.867477         21.467    0.000328812
+   520        531       0.867477        21.4647    0.000196872
+*  521        542       0.867477        21.4629        46.5252
+   530        551       0.867477        25.8699        29.3225
+   540        561       0.867477        141.762        17.5564
+   550        571       0.867477        166.035        10.5117
+   560        581       0.867477        151.115        6.29374
+   570        591       0.867477         122.97        3.76829
+   580        601       0.867477       0.867477        2.25622
+   590        611       0.867477       0.867477        1.35088
+   600        621       0.867477       0.867477       0.808822
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   610        631       0.867477       0.867477       0.484271
+   620        641       0.867477       0.867477       0.289951
+   630        651       0.867477       0.867477       0.173605
+   640        661       0.867477       0.867477       0.103943
+   650        671       0.867477       0.867477      0.0622348
+   660        681       0.867477       0.867477      0.0372623
+   670        691       0.867477       0.867477      0.0223103
+   680        701       0.867477       0.867477       0.013358
+   690        711       0.867477       0.867477     0.00799792
+   700        721       0.867477       0.867477     0.00478865
+   710        731       0.867477       0.867477     0.00286714
+   720        741       0.867477       0.867477     0.00171666
+   730        751       0.867477       0.867477     0.00102783
+   740        761       0.867477       0.867477      0.0006154
+   750        771       0.867477       0.867477    0.000368463
+   760        781       0.867477       0.867477    0.000220612
+   770        791       0.867477       0.867477    0.000132089
+*  772        803       0.867477       0.867477        49.8017
+   780        811       0.867477       0.867477        33.0395
+   790        821       0.867477       0.867477         19.782
+   800        831       0.867477       0.867477        11.8442
+   810        841       0.867477       0.867477        7.09155
+   820        851       0.867477       0.867477        4.24597
+   830        861       0.867477       0.867477        2.54222
+   840        871       0.867477       0.867477        1.52212
+   850        881       0.867477       0.867477       0.911351
+   860        891       0.867477       0.867477       0.545659
+   870        901       0.867477       0.867477       0.326706
+   880        911       0.867477       0.867477       0.195611
+   890        921       0.867477       0.867477        0.11712
+   900        931       0.867477       0.867477      0.0701239
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   910        941       0.867477       0.867477      0.0419857
+   920        951       0.867477       0.867477      0.0251384
+   930        961       0.867477       0.867477      0.0150513
+   940        971       0.867477       0.867477     0.00901177
+   950        981       0.867477       0.867477     0.00539568
+*  960       1001       0.867477       0.867477        58.9928
+Maximum number of function evaluations exceeded: increase options.MaxFunEvals.
+
+ Stopped after max_time was reached.
+
+ ---- Best value 0.867477 found with
+        In1_u0 = 35
+        In1_u1 = 36.3927
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 7.69106
+        In2_u1 = 28.135
+        In2_u2 = 40
+
+No falsifying trace found.
+
+ This solver time = 201.924957 seconds
+ Best Robustness Value of this call = 0.867477
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+ Solver call 3 done
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+Eval objective function on 32 initial parameters.
+#calls (max: 2000)        time spent (max: 200)       [current obj]   (current best) 
+        10                        3.6               [+2.23934e+03]    (+1.20278e+03)
+        20                        6.9               [+1.21540e+03]    (+1.17517e+03)
+        30                       10.0               [+1.66901e+03]    (+1.17517e+03)
+
+Starting local optimization using Nelder-Mead algorithm
+#calls (max: 2000)        time spent (max: 200)       [current obj]   (current best) 
+        40                       13.3               [+1.17915e+03]    (+1.17517e+03)
+        50                       16.7               [+1.16356e+03]    (+1.16356e+03)
+        60                       20.0               [+1.15316e+03]    (+1.15316e+03)
+        70                       23.5               [+1.11234e+03]    (+1.11234e+03)
+        80                       27.0               [+1.06557e+03]    (+1.06557e+03)
+        90                       30.4               [+1.01458e+03]    (+9.85004e+02)
+       100                       33.9               [+9.11484e+02]    (+8.83069e+02)
+       110                       37.4               [+7.83219e+02]    (+7.83219e+02)
+       120                       40.7               [+7.92655e+02]    (+7.83219e+02)
+       130                       44.0               [+7.85945e+02]    (+7.82460e+02)
+       140                       47.5               [+7.70923e+02]    (+7.62366e+02)
+       150                       51.0               [+7.64915e+02]    (+7.51306e+02)
+       160                       54.4               [+7.58434e+02]    (+7.50038e+02)
+       170                       57.7               [+7.55879e+02]    (+7.50038e+02)
+       180                       61.1               [+1.18829e+03]    (+7.50038e+02)
+       190                       64.4               [+1.18192e+03]    (+7.50038e+02)
+       200                       67.7               [+1.16461e+03]    (+7.50038e+02)
+       210                       71.1               [+1.15131e+03]    (+7.50038e+02)
+       220                       74.5               [+1.12028e+03]    (+7.50038e+02)
+       230                       77.8               [+1.05220e+03]    (+7.50038e+02)
+       240                       81.2               [+9.54302e+02]    (+7.50038e+02)
+       250                       84.6               [+8.31931e+02]    (+7.50038e+02)
+       260                       88.0               [+7.47098e+02]    (+7.25552e+02)
+       270                       91.5               [+1.12654e+03]    (+7.01818e+02)
+       280                       95.1               [+1.49711e+03]    (+6.43057e+02)
+       290                       98.5               [+1.30348e+03]    (+6.42386e+02)
+       300                      102.0               [+6.68451e+02]    (+6.26491e+02)
+       310                      105.6               [+1.26334e+03]    (+5.56517e+02)
+       320                      109.2               [+7.53339e+02]    (+5.19402e+02)
+       330                      112.7               [+1.21355e+03]    (+5.19402e+02)
+       340                      116.2               [+1.14759e+03]    (+5.19402e+02)
+       350                      119.7               [+1.11025e+03]    (+5.19402e+02)
+       360                      123.1               [+1.08297e+03]    (+5.19402e+02)
+       370                      126.6               [+1.04171e+03]    (+5.19402e+02)
+       380                      130.0               [+9.59732e+02]    (+5.19402e+02)
+       390                      133.5               [+8.45986e+02]    (+5.19402e+02)
+       400                      137.1               [+7.38651e+02]    (+5.19402e+02)
+       410                      140.6               [+1.80362e+03]    (+5.19402e+02)
+       420                      144.0               [+7.06999e+02]    (+5.19402e+02)
+       430                      147.6               [+6.96588e+02]    (+5.19402e+02)
+       440                      151.0               [+6.41576e+02]    (+5.19402e+02)
+       450                      154.6               [+5.94744e+02]    (+5.19402e+02)
+       460                      158.1               [+5.58264e+02]    (+5.19402e+02)
+       470                      161.6               [+1.22119e+03]    (+5.19402e+02)
+       480                      165.2               [+1.20739e+03]    (+5.19402e+02)
+       490                      168.8               [+1.17561e+03]    (+5.19402e+02)
+       500                      172.4               [+1.13895e+03]    (+5.19402e+02)
+       510                      176.0               [+2.24148e+03]    (+5.19402e+02)
+       520                      179.5               [+1.14659e+03]    (+5.19402e+02)
+       530                      183.1               [+2.24001e+03]    (+5.19402e+02)
+       540                      186.6               [+1.13610e+03]    (+5.19402e+02)
+       550                      190.2               [+2.24336e+03]    (+5.19402e+02)
+       560                      193.8               [+1.13255e+03]    (+5.19402e+02)
+       570                      197.4               [+1.13148e+03]    (+5.19402e+02)
+       578                      200.3               [+2.24739e+03]    (+5.19402e+02)
+
+ Stopped after max_time was reached.
+
+ ---- Best value 519.402 found with
+        In1_u0 = 35.0806
+        In1_u1 = 53.9551
+        In1_u2 = 35.0306
+        In1_u3 = 36.2093
+        In1_u4 = 35.2063
+        In1_u5 = 43.4755
+        In1_u6 = 58.645
+        In2_u0 = 15.8207
+        In2_u1 = 39.6499
+        In2_u2 = 8.35624
+
+No falsifying trace found.
+
+ This solver time = 201.459169 seconds
+ Best Robustness Value of this call = 519.401915
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ stagnant_count = 2
+local_optimum_stuck =
+
+     1
+
+
+ Solver call 4 done
+ *** Running PseudoRandom
+ Time limit of computation is 300 seconds
+nb_samples for PR is 10 seconds
+nb_hits for PR 20 
+
+newminrob =
+
+   1.0774e+03
+
+
+min_id =
+
+     8
+
+
+ PseudoRandom time = 5.227725 seconds
+ This solver time = 5.265178 seconds
+ Best Robustness Value of this call = 1077.371939
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ 5  0    0.86747736    0.24889224
+ stagnant_count = 3
+local_optimum_stuck =
+
+     1
+
+
+ Solver call 5 done
+ *** Running PseudoRandom
+ Time limit of computation is 300 seconds
+nb_samples for PR is 10 seconds
+nb_hits for PR 20 
+
+newminrob =
+
+   1.2447e+03
+
+
+min_id =
+
+     9
+
+
+ PseudoRandom time = 5.187090 seconds
+ This solver time = 5.223647 seconds
+ Best Robustness Value of this call = 1244.747837
+ Best Robustness Value so far = 0.867477
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  519.40191518    0.20908508
+ 2  1    0.86747736    0.24267556
+ 3  2    0.86747736    0.24791704
+ 4  3    0.86747736    0.24791704
+ 5  0    0.86747736    0.24889224
+ 6  0    0.86747736    0.24984265
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+
+*******
+ #2 round(s) of solver calls done
+rob_stagnant =
+
+     1
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 0
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [300 1200 200 200]
+           max_obj_eval: [2000 2500 2000 2000]
+     start_solver_index: 3
+
+
+ Solver call 6 done
+ **** Running CMAES
+ Time limit of computation is 1200 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=10: (5,10)-CMA-ES(w=[46 27 16 9 3]%, mu_eff=3.2) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     11 : 1.4107029140733e+03 +(4e+02,8e+02) | 1.77e+00 | 10:9.6e+00  3:1.7e+01
+    2 ,     21 : 1.2031468282077e+03 +(4e+02,1e+03) | 1.79e+00 | 10:8.7e+00  3:1.5e+01
+  100 ,   1001 : 4.3603628627046e-01 +(1e-01,5e+00) | 2.41e+00 |  7:2.1e-01  1:3.0e-01
+  200 ,   2001 : 1.7672610180121e-02 +(6e-03,3e-01) | 3.94e+00 |  3:8.9e-03  9:2.1e-02
+  250 ,   2501 : -3.1934477071616e-05 +(0e+00,0e+00) | 6.58e+00 |  7:2.4e-02  9:7.4e-02
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+   2502: -3.19344770716e-05 | -3.19344770716e-05 | equalfunvalsmaxfunevals
+mean solution: +3.8e+01 +3.7e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +4.0e+01 +3.9e+01 +4.0e+01
+std deviation:  5.7e-02  4.4e-02  2.7e-02  3.1e-02  2.9e-02  4.6e-02  2.4e-02  4.8e-02  7.4e-02  3.6e-02
+
+ ---- Best value -3.19345e-05 found with
+        In1_u0 = 38.5742
+        In1_u1 = 37.2861
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 39.8341
+        In2_u1 = 39.4702
+        In2_u2 = 39.9919
+
+Falsified with obj = -3.19345e-05
+
+ This solver time = 885.552636 seconds
+ans = 
+
+  BreachSignalsPlot with properties:
+
+    BrSet: [1x1 BreachRequirement]
+      Fig: [1x1 Figure]
+     Axes: [1x1 Axes]
+     ipts: 1
+
+Error using MetaFalsify/MetaCall (line 659)
+Falisifier found! Exit normally
+
+Error in MetaFalsify/MetaSetupRun (line 181)
+           this.MetaCall();
+
+Error in Autotrans_setup (line 120)
+MetaObj.MetaSetupRun(Sys, phi)

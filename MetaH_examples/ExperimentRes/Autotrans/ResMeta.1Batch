@@ -1,0 +1,774 @@
+%%% Set up falsification options
+
+    %% limit on nb of solver calls
+    %this.nb_solver_calls = input('Specify Max Nb of Solver Calls: '); 
+    MetaObj.nb_solver_calls = 30 %30 %1 %30
+    %fprintf('\n Max Nb of Solver Calls: ',this.nb_solver_calls)
+
+    %%%% Search Monitoring Parameters 
+    %% cov_epsilon = input('Specify coverage increase threshold : '); 
+    MetaObj.cov_epsilon = 1e-3;
+    %% min robustness decrease in percentage
+    MetaObj.rob_epsilon_percent = 0.05;
+    %% min robustness stagnant monitoring window
+    MetaObj.rob_stagnant_win = 1 
+    %% coverage stagnant monitoring window
+    MetaObj.cov_monitoring_win = 1;
+
+    %%% Options for picking initial conditions
+    MetaObj.re_init_strategy = 2; 
+    % re_init_strategy=0 to pick randomly from the whole space
+    % re_init_strategy=1 to pick randomly from xlog
+    % re_init_strategy=2 to pick randomly from xbest
+            
+    % re_init_num_xbest: window of choice from xbest, for picking initial point         
+    MetaObj.re_init_num_xbest = 1;
+
+    % num_solvers=nb of solvers %%other than pseudorandom sampling
+    % TODO add solver_list, and init num_solver as numel(solver_list)
+    MetaObj.num_solvers=4; 
+    
+    MetaObj.start_solver_index = 3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
+    
+    MetaObj.solver_time = [200 900 200 200];
+    MetaObj.max_obj_eval = [ 2000 2000 2000 2000 ];
+
+
+
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+
+ This solver time = 35.120434 seconds
+ Best Robustness Value of this call = 883.069481
+ Best Robustness Value so far = 883.069481
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 900 seconds
+
+ This solver time = 778.195697 seconds
+ Best Robustness Value of this call = 0.913210
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 200 seconds
+
+ This solver time = 37.140661 seconds
+ Best Robustness Value of this call = 66.073636
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 3 done
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+
+ This solver time = 36.791911 seconds
+ Best Robustness Value of this call = 883.069481
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ Coverage stagnant
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 4 done
+ *** Running PseudoRandom
+ Time limit of computation is 200 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 
+
+ PseudoRandom time = 6.249256 seconds
+ This solver time = 6.293094 seconds
+ Best Robustness Value of this call = 1015.530115
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ 5  0    0.91320961    0.23401681
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 5 done
+ *** Running PseudoRandom
+ Time limit of computation is 200 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 
+
+ PseudoRandom time = 6.255280 seconds
+ This solver time = 6.292221 seconds
+ Best Robustness Value of this call = 1138.439309
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ 5  0    0.91320961    0.23401681
+ 6  0    0.91320961    0.23542287
+ rob_stagnant = 1
+ cov_monitoring_length = 2
+ #2 round(s) of solver calls done
+ Solver call 6 done
+ **** Running CMAES
+ Time limit of computation is 900 seconds
+
+ This solver time = 833.490266 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 1738.444491 seconds
+
+
+
+Autotrans_setup
+Initializing Breach from folder /Users/thaodang/Metaheuristics/breach-dev...
+
+ Creating breach interface with simulink model autotrans_mod04
+
+ Simulation time horizon is 30 seconds
+
+ Parametrizing input signals throttle and break....
+
+ Input signals are parametrized as piecewise constant
+ Number of control points for throttle input is 7
+Number of control points for break input is 3
+
+ans =
+
+    10
+
+
+ans =
+
+    10
+
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [100 500 400 200]
+           max_obj_eval: [100 100 100 100]
+     start_solver_index: 0
+
+
+ The falsification problem by metaheuristics is
+ 
+MetaObj = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: []
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [200 900 200 200]
+           max_obj_eval: [2000 2000 2000 2000]
+     start_solver_index: 3
+
+You selected the following STL formula for falsification
+
+ans =
+
+not ((alw ((RPM[t]<2520))) and (ev_[0,10] ((speed[t]>50))))
+
+
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+Eval objective function on 32 initial parameters.
+#calls (max:  100)        time spent (max: 200)       [current obj]   (current best) 
+        10                        7.4               [+2.23934e+03]    (+1.20278e+03)
+        20                       10.3               [+1.21540e+03]    (+1.17517e+03)
+        30                       13.3               [+1.66901e+03]    (+1.17517e+03)
+
+Starting local optimization using Nelder-Mead algorithm
+#calls (max:  100)        time spent (max: 200)       [current obj]   (current best) 
+        40                       16.4               [+1.17915e+03]    (+1.17517e+03)
+        50                       19.6               [+1.16356e+03]    (+1.16356e+03)
+        60                       22.6               [+1.15316e+03]    (+1.15316e+03)
+        70                       25.7               [+1.11234e+03]    (+1.11234e+03)
+        80                       28.8               [+1.06557e+03]    (+1.06557e+03)
+        90                       31.6               [+1.01458e+03]    (+9.85004e+02)
+       100                       34.5               [+9.11484e+02]    (+8.83069e+02)
+       101                       34.8               [+8.96069e+02]    (+8.83069e+02)
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 883.069 found with
+        In1_u0 = 35.8139
+        In1_u1 = 58.2391
+        In1_u2 = 39.6374
+        In1_u3 = 36.9821
+        In1_u4 = 45.7468
+        In1_u5 = 48.4224
+        In1_u6 = 98.9154
+        In2_u0 = 29.0559
+        In2_u1 = 4.20959
+        In2_u2 = 28.9959
+
+No falsifying trace found.
+
+ This solver time = 35.120434 seconds
+ Best Robustness Value of this call = 883.069481
+ Best Robustness Value so far = 883.069481
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ stagnant_count = 0
+local_optimum_stuck =
+
+     0
+
+
+
+*******
+ #1 round(s) of solver calls done
+rob_stagnant =
+
+     0
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 2
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [200 900 200 200]
+           max_obj_eval: [2000 2000 2000 2000]
+     start_solver_index: 3
+
+
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 900 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=10: (5,10)-CMA-ES(w=[46 27 16 9 3]%, mu_eff=3.2) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     11 : 1.4290608088608e+03 +(4e+02,8e+02) | 1.77e+00 | 10:9.5e+00  2:1.7e+01
+    2 ,     21 : 1.0508801124782e+03 +(5e+02,1e+03) | 1.79e+00 | 10:8.7e+00  7:1.5e+01
+  100 ,   1001 : 1.2092487181160e+00 +(3e-01,2e+00) | 1.93e+00 |  6:2.7e-01  9:4.0e-01
+  200 ,   2001 : 9.1320961109521e-01 +(3e-02,4e-01) | 4.67e+00 |  6:2.7e-02  9:6.1e-02
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+   2002: 9.13209611095e-01 | 9.13209611095e-01 | maxfunevals
+mean solution: +3.5e+01 +3.6e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +7.7e+00 +2.8e+01 +4.0e+01
+std deviation:  3.2e-02  4.2e-02  3.3e-02  2.8e-02  3.3e-02  2.7e-02  4.0e-02  5.2e-02  6.1e-02  4.9e-02
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 0.91321 found with
+        In1_u0 = 35
+        In1_u1 = 36.3033
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 7.71415
+        In2_u1 = 27.6452
+        In2_u2 = 40
+
+No falsifying trace found.
+
+ This solver time = 778.195697 seconds
+ Best Robustness Value of this call = 0.913210
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 200 seconds
+Setting options for simulannealbnd solver
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+     0          1         68.039         68.039            100
+    10         11        66.0736        66.0736          56.88
+    20         21        66.0736        188.604        34.0562
+    30         31        66.0736        185.515        20.3907
+    40         41        66.0736        109.167        12.2087
+    50         51        66.0736        104.211        7.30977
+    60         61        66.0736        128.062        4.37663
+    70         71        66.0736        126.905        2.62045
+    80         81        66.0736        115.157        1.56896
+    90         91        66.0736        95.5994       0.939395
+   100        101        66.0736        97.2777        0.56245
+   110        111        66.0736        66.0736        0.33676
+   120        121        66.0736        66.0736       0.201631
+   130        131        66.0736        66.0736       0.120724
+   140        141        66.0736        66.0736      0.0722817
+   150        151        66.0736        66.0736      0.0432777
+   160        161        66.0736        66.0736       0.025912
+   170        171        66.0736        66.0736      0.0155145
+   180        181        66.0736        66.0736     0.00928908
+   190        191        66.0736        66.0736     0.00556171
+   200        201        66.0736        66.0736        0.00333
+   210        211        66.0736        66.0736      0.0019938
+   220        221        66.0736        66.0736     0.00119376
+*  229        240        66.0736        66.0736        54.7442
+   230        241        66.0736        66.0736         52.007
+   240        251        66.0736        66.0736        31.1385
+   250        261        66.0736        66.0736        18.6438
+   260        271        66.0736        66.0736        11.1627
+   270        281        66.0736        66.0736        6.68353
+   280        291        66.0736        66.0736        4.00167
+   290        301        66.0736        66.0736        2.39595
+   300        311        66.0736        66.0736        1.43454
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   310        321        66.0736        66.0736       0.858914
+   320        331        66.0736        66.0736       0.514264
+   330        341        66.0736        66.0736       0.307909
+   340        351        66.0736        66.0736       0.184356
+   350        361        66.0736        66.0736       0.110381
+   360        371        66.0736        66.0736      0.0660891
+   370        381        66.0736        66.0736        0.03957
+   380        391        66.0736        66.0736       0.023692
+   390        401        66.0736        66.0736      0.0141853
+   400        411        66.0736        66.0736     0.00849326
+   410        421        66.0736        66.0736     0.00508523
+   420        431        66.0736        66.0736     0.00304471
+   430        441        66.0736        66.0736     0.00182298
+   440        451        66.0736        66.0736     0.00109149
+*  442        463        66.0736        66.0736        55.5061
+   450        471        66.0736        66.0736        36.8239
+   460        481        66.0736        66.0736        22.0478
+   470        491        66.0736        66.0736        13.2009
+   480        501        66.0736        66.0736        7.90384
+   490        511        66.0736        66.0736        4.73232
+   500        521        66.0736        66.0736        2.83341
+   510        531        66.0736        66.0736        1.69647
+   520        541        66.0736        66.0736        1.01574
+   530        551        66.0736        66.0736       0.608161
+   540        561        66.0736        66.0736       0.364128
+   550        571        66.0736        66.0736       0.218017
+   560        581        66.0736        66.0736       0.130535
+   570        591        66.0736        66.0736       0.078156
+   580        601        66.0736        66.0736      0.0467949
+   590        611        66.0736        66.0736      0.0280178
+   600        621        66.0736        66.0736      0.0167753
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   610        631        66.0736        66.0736       0.010044
+   620        641        66.0736        66.0736     0.00601371
+   630        651        66.0736        66.0736     0.00360063
+*  632        663        66.0736        66.0736        59.0105
+   640        671        66.0736        66.0736        39.1488
+   650        681        66.0736        66.0736        23.4398
+   660        691        66.0736        66.0736        14.0343
+   670        701        66.0736        66.0736        8.40285
+   680        711        66.0736        66.0736        5.03109
+   690        721        66.0736        66.0736         3.0123
+   700        731        66.0736        66.0736        1.80358
+   710        741        66.0736        66.0736        1.07987
+   720        751        66.0736        66.0736       0.646557
+   730        761        66.0736        66.0736       0.387117
+   740        771        66.0736        66.0736       0.231782
+   750        781        66.0736        66.0736       0.138776
+   760        791        66.0736        66.0736      0.0830904
+   770        801        66.0736        66.0736      0.0497493
+   780        811        66.0736        66.0736      0.0297867
+   790        821        66.0736        66.0736      0.0178344
+   800        831        66.0736        66.0736      0.0106781
+   810        841        66.0736        66.0736     0.00639339
+   820        851        66.0736        66.0736     0.00382796
+*  830        871        66.0736        66.0736        57.9632
+   840        881        66.0736        66.0736        34.7047
+   850        891        66.0736        66.0736         20.779
+   860        901        66.0736        66.0736        12.4411
+   870        911        66.0736        66.0736        7.44897
+   880        921        66.0736        66.0736        4.45998
+   890        931        66.0736        66.0736        2.67035
+   900        941        66.0736        66.0736        1.59884
+
+                           Best        Current           Mean
+Iteration   f-count         f(x)         f(x)         temperature
+   910        951        66.0736        66.0736       0.957284
+   920        961        66.0736        66.0736       0.573161
+   930        971        66.0736        66.0736       0.343173
+   940        981        66.0736        66.0736        0.20547
+   950        991        66.0736        66.0736       0.123023
+   960       1001        66.0736        66.0736      0.0736582
+Maximum number of function evaluations exceeded: increase options.MaxFunEvals.
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 66.0736 found with
+        In1_u0 = 35
+        In1_u1 = 35
+        In1_u2 = 35
+        In1_u3 = 35.1153
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 1.29906
+        In2_u1 = 0
+        In2_u2 = 1.87301
+
+No falsifying trace found.
+
+ This solver time = 37.140661 seconds
+ Best Robustness Value of this call = 66.073636
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+ Solver call 3 done
+ *** Running Global Nelder Mead
+ Time limit of computation is 200 seconds
+
+ Nb of local iterations 100 
+Eval objective function on 32 initial parameters.
+#calls (max:  100)        time spent (max: 200)       [current obj]   (current best) 
+        10                        4.0               [+2.23934e+03]    (+1.20278e+03)
+        20                        7.5               [+1.21540e+03]    (+1.17517e+03)
+        30                       10.6               [+1.66901e+03]    (+1.17517e+03)
+
+Starting local optimization using Nelder-Mead algorithm
+#calls (max:  100)        time spent (max: 200)       [current obj]   (current best) 
+        40                       14.2               [+1.17915e+03]    (+1.17517e+03)
+        50                       17.8               [+1.16356e+03]    (+1.16356e+03)
+        60                       21.1               [+1.15316e+03]    (+1.15316e+03)
+        70                       24.7               [+1.11234e+03]    (+1.11234e+03)
+        80                       28.5               [+1.06557e+03]    (+1.06557e+03)
+        90                       32.2               [+1.01458e+03]    (+9.85004e+02)
+       100                       36.1               [+9.11484e+02]    (+8.83069e+02)
+       101                       36.5               [+8.96069e+02]    (+8.83069e+02)
+
+ Stopped after max_obj_eval was reached (maximum number of objective function evaluation.
+
+ ---- Best value 883.069 found with
+        In1_u0 = 35.8139
+        In1_u1 = 58.2391
+        In1_u2 = 39.6374
+        In1_u3 = 36.9821
+        In1_u4 = 45.7468
+        In1_u5 = 48.4224
+        In1_u6 = 98.9154
+        In2_u0 = 29.0559
+        In2_u1 = 4.20959
+        In2_u2 = 28.9959
+
+No falsifying trace found.
+
+ This solver time = 36.791911 seconds
+ Best Robustness Value of this call = 883.069481
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ stagnant_count = 2
+local_optimum_stuck =
+
+     1
+
+
+ Solver call 4 done
+ *** Running PseudoRandom
+ Time limit of computation is 200 seconds
+nb_samples for PR is 10 seconds
+nb_hits for PR 20 
+
+newminrob =
+
+   1.0155e+03
+
+
+min_id =
+
+     4
+
+
+ PseudoRandom time = 6.249256 seconds
+ This solver time = 6.293094 seconds
+ Best Robustness Value of this call = 1015.530115
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ 5  0    0.91320961    0.23401681
+ stagnant_count = 1
+local_optimum_stuck =
+
+     1
+
+
+ Solver call 5 done
+ *** Running PseudoRandom
+ Time limit of computation is 200 seconds
+nb_samples for PR is 10 seconds
+nb_hits for PR 20 
+
+newminrob =
+
+   1.1384e+03
+
+
+min_id =
+
+    20
+
+
+ PseudoRandom time = 6.255280 seconds
+ This solver time = 6.292221 seconds
+ Best Robustness Value of this call = 1138.439309
+ Best Robustness Value so far = 0.913210
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3  883.06948126    0.15248689
+ 2  1    0.91320961    0.22821622
+ 3  2    0.91320961    0.23255581
+ 4  3    0.91320961    0.23255581
+ 5  0    0.91320961    0.23401681
+ 6  0    0.91320961    0.23542287
+ stagnant_count = 1
+local_optimum_stuck =
+
+     0
+
+
+
+*******
+ #2 round(s) of solver calls done
+rob_stagnant =
+
+     1
+
+
+this = 
+
+  MetaFalsify with properties:
+
+             model_name: 'KD_cl_harness_forthao'
+                simTime: 50
+        I0_signal_names: {'In1'  'In2'  'Out1'}
+     input_signal_names: {'In1'  'In2'}
+      signal_gen_method: {'previous'  'previous'}
+             nb_ctr_pts: [2x1 double]
+                     Br: [1x1 CoverageBreachSet]
+                      R: [1x1 STL_Formula]
+                    Pbs: []
+               max_time: 3600
+        nb_solver_calls: 30
+            cov_epsilon: 1.0000e-03
+    rob_epsilon_percent: 0.0500
+       rob_stagnant_win: 1
+     cov_monitoring_win: 1
+       re_init_strategy: 0
+      re_init_num_xbest: 1
+            num_solvers: 4
+            solver_time: [200 900 200 200]
+           max_obj_eval: [2000 2000 2000 2000]
+     start_solver_index: 3
+
+
+ Solver call 6 done
+ **** Running CMAES
+ Time limit of computation is 900 seconds
+Setting options for cmaes solver - use help cmaes for details
+Default options returned (type "help cmaes" for help).
+  n=10: (5,10)-CMA-ES(w=[46 27 16 9 3]%, mu_eff=3.2) on objective function 
+Iterat, #Fevals:   Function Value    (median,worst) |Axis Ratio|idx:Min SD idx:Max SD
+    1 ,     11 : 1.4731969622602e+03 +(4e+02,7e+02) | 1.82e+00 | 10:9.9e+00  7:1.8e+01
+    2 ,     21 : 1.1824582479867e+03 +(4e+02,1e+03) | 1.94e+00 | 10:9.8e+00  7:1.8e+01
+  100 ,   1001 : 2.7397867622548e+00 +(8e-01,6e+00) | 2.90e+00 |  9:3.4e-01 10:8.0e-01
+  200 ,   2001 : -3.5777612341462e-02 +(0e+00,0e+00) | 1.92e+01 |  5:1.3e-01 10:2.0e+00
+#Fevals:   f(returned x)   |    bestever.f     | stopflag
+   2002: -3.57776123415e-02 | -3.57776123415e-02 | maxfunevals
+mean solution: +3.6e+01 +3.8e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.5e+01 +3.8e+01 +4.0e+01 +3.7e+01
+std deviation:  2.0e-01  3.5e-01  1.7e-01  1.7e-01  1.3e-01  1.4e-01  1.5e-01  3.0e-01  1.8e-01  2.0e+00
+
+ ---- Best value -0.0357776 found with
+        In1_u0 = 36.3428
+        In1_u1 = 39.2331
+        In1_u2 = 35
+        In1_u3 = 35
+        In1_u4 = 35
+        In1_u5 = 35
+        In1_u6 = 35
+        In2_u0 = 38.2772
+        In2_u1 = 40
+        In2_u2 = 40
+
+Falsified with obj = -0.0357776
+
+ This solver time = 833.490266 seconds
+ans = 
+
+  BreachSignalsPlot with properties:
+
+    BrSet: [1x1 BreachRequirement]
+      Fig: [1x1 Figure]
+     Axes: [1x1 Axes]
+     ipts: 1
+
+Error using MetaFalsify/MetaCall (line 657)
+Falisifier found! Exit normally
+
+Error in MetaFalsify/MetaSetupRun (line 181)
+           this.MetaCall();
+
+Error in Autotrans_setup (line 120)
+MetaObj.MetaSetupRun(Sys, phi)

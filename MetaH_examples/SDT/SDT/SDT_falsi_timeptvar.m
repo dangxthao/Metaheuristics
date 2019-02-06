@@ -75,7 +75,7 @@ for sigId = 0:51
 
 
         %%%% grid size collumn on the range of each input signal
-        gridsize_vector = [ 4 ];
+        gridsize_vector = [ 4  ];
 
 
         %%%% Once the above system specifications and falsification options are given,
@@ -88,15 +88,13 @@ for sigId = 0:51
 
 
         % specify the class of input signals
-        % time pattern fixed
-        timeFixed = true;
-        MetaObj.InputSignalSetUp(input_signal_names,signal_gen_method,nb_ctr_pts,input_ranges,timepoints,timeFixed);
+        MetaObj.InputSignalSetUp(input_signal_names,signal_gen_method,nb_ctr_pts,input_ranges,timepoints);
 
         % specify the property to falsify
         MetaObj.STLFormulaSetUp(phi);
 
         % set up a grid on the input ranges, to estimate coverage
-        MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts,timeFixed);        
+        MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);        
 
 
         %% Start the falsification process
@@ -130,7 +128,7 @@ for sigId = 0:51
             %% limit on nb of solver calls
             MetaObj.nb_solver_calls = 2  %1 %30
 
-            MetaObj.start_solver_index = 2; %3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
+            MetaObj.start_solver_index = 1; %3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
 
             MetaObj.solver_time = [ 300 300 300 300 ];
             MetaObj.max_obj_eval = [ 200 200 200 200 ];
