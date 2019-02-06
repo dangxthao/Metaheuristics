@@ -1,5 +1,5 @@
 \begin{picture}(0,0)%
-\includegraphics{LocalOptima.pdf}%
+\includegraphics[scale=0.8]{LocalOptima.pdf}%
 \end{picture}%
 \setlength{\unitlength}{1657sp}%
 %
