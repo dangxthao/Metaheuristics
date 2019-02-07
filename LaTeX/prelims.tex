@@ -1,8 +1,13 @@
-\section{Preliminaries}\label{sec:prlim}
-\paragraph{Signal Temporal Logic} 
-%STL is appropriate for specifying correct behavior for CPSs, as it can be defined over the real-valued, continuous-time signals that characterize CPS behaviors.
- We are interested in behaviors of CPS which are defined as signals (that is functions from time domains to value domains). To specify the correct or expected behaviors of CPS in an unambiguous form that can be efficiently measured and quantified, we use the signal temporal logic (STL) which is a modal logic that is well-defined over discrete or real-valued signals and discrete or continuous time\footnote{The reader is referred to \cite{MalerN04} for a detailed presentation of STL} \cite{MalerN04}. An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
-Atomic predicates are defined over signal values and have the form $\spec$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
+\section{Preliminaries} \label{sec:prlim}
+\paragraph{Signal Temporal Logic.} 
+
+We assume that the correct or expected behaviors for system (\ref{eq:behaviorfunc}) are provided in an unambiguous form that can be efficiently measured and quantified. For this purpose, we use the signal temporal logic (STL) language to define the system specifications.
+STL is a modal logic that is well-defined over discrete or real-valued signals and discrete or continuous time \cite{MalerN04}.
+STL is appropriate for specifying correct behavior for CPSs, as it can be defined over the real-valued, continuous-time signals that characterize CPS behaviors. 
+
+We present an overview of STL and refer the reader to \cite{MalerN04} for a detailed presentation.
+An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
+Atomic predicates are defined over signal values and have the form $ f(\outsig(t))\sim 0$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
 Temporal operators ``always'' ($\G$), ``eventually'' ($\F$), and ``until'' ($\U$) have the usual meaning and are scoped using intervals of the form $(a,b)$, $(a,b]$, $[a,b)$, $[a,b]$, or $(a,\infty)$, where 
 $a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language.
 \begin{equation}~\label{eqn:stl-gen}
@@ -30,48 +35,56 @@ the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
   I}\left(\min\left(\rho(\spec_2,\outsig,t^\prime),\min_{t^{\prime\prime}\in
   [t,t^\prime]}\left(\rho(\spec_1,\outsig,t^{\prime\prime})\right)\right)\right).$
 
-
-\paragraph{Input signal parametrization.} We consider dynamical system models, represented by the following mapping
+\paragraph{Input signal parametrization.} We consider dynamical system models, represented by the following mapping:
 \begin{eqnarray}
 \outsig = \transfunc (\paramsorig, \inputs),
 \end{eqnarray}
-where $\paramsorig \in \paramsorigset$ is a set of {\em model parameters} that affect the system behaviors, and $\inputs \in \inputset$ is a function of time that represents the inputs to the system.
+where $\paramsorig \in \paramsorigset$ is a set of parameters that affect the system behaviors, and $\inputs \in \inputset$ is a function of time that represents the inputs to the system.
 Parameters $\paramsorig$ could contain a set of system initial conditions as well as some finite set of variables that affect how the system maps inputs to outputs.
 Each $\inputs$ is a function $\timeinterval \mapsto \inputspace$, where $\timeinterval$ is an interval (either continuous or discrete) from $0$ to some finite value, and $\inputspace$ is some metric space of finite dimension.
 Similarly, we assume that each output signal $\outsig \in \outsigset$ is a function $\timeinterval \mapsto \outspace$, where $\outspace$ is some metric space of finite dimension.
 
-Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but to be computationally tractable we restrict our investigation to the class of input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
-can be uniquely characterized by a set of $m$ parameters (called {\em input parameters} to distinguish them from the model parameters), whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, in \cite{} {\color{red} TODO cite} a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. As another example, a piecewise linear signal over the same set of $m$ discontinuity time instants can be also uniquely characterized by $m$ values $\inputparams_i = \inputs(\tau_i)$, that is $t \in [\tau_i, \tau_{i+1}) \;  \inputs(t) = \inputparams_i  + \frac{t -  \tau_i}{\inputparams_{i+1} - \inputparams_i}$.
+Input $\inputs$ is generally taken from an infinite-dimensional signal space (i.e., these can be partial functions over a continuous time-domain), but we restrict our investigation to the class of  input signals that are finitely parameterizable. That is, we assume that any input signal $\inputs$ 
+can be uniquely characterized by a set of $m$ parameters, whose valuation $\inputparams =(\inputparams_1,\ldots,\inputparams_m) \in \inputparamset$ is in a subset of an $m$-dimensional metric space. For example, in \cite{} {\color{red} TODO cite} a right-continuous piecewise constant input signal $\inputs:\timeinterval \rightarrow \real$, where $\timeinterval=[ 0,T ]$, with discontinuities occurring at monotonically increasing instants $\tau_1,\ldots, \tau_m$, where $0=\tau_1<\tau_m<T$, can be uniquely characterized by $m$ values $\inputs(\tau_i)$, and we can define $\inputparams_i=\inputs(\tau_i)$. As another example, a piecewise linear signal over the same set of $m$ time points used to define the non-differentiable instants can be also uniquely characterized by $m$ values $\inputparams_i = \inputs(\tau_i)$, that is $\forall t \in [\tau_i, \tau_{i+1})$, $\inputs(t) = \inputparams_i  + 
+\frac{\inputparams_{i+1} - \inputparams_i}{\tau_{i+1} -  \tau_i}(t-\tau_i)$.
 
-In \cite{} {\color{red} TODO cite}, the time instants are fixed and the signal values at these instants are encoded as parameters to be determined. In this work, we extend this framework in two directions. First, the time instants are also parameterized and thus become search variables. This allows to consider larger classes of input signals. Second, the selected input signals should satisfy some given temporal constraints.%, the goal of which is to reduce the search space to the input signals of interest. Indeed, if the specification involves some temporal constraints on the input signals, focusing only on such signals would increase the falsification efficiency. 
+In \cite{} {\color{red} TODO cite}, the time instants are fixed, and the signal values at these instants are the decision variables for the search. In the present work, we build on that method by extending the class of input signals in two ways. First, the time instants are also parameterized and thus become decision variables in the search space. Second, we allow temporal constraints on the inputs, the goal of which, as mentioned in the introduction, is to reduce the search space to the input signals of interest. The idea being that, if the specification involves some temporal constraints on the input signals, focusing only on signals that satisfy the constraints will increase the falsification efficiency. 
 
-A function that maps input parameters to input functions is called {\em parametrization function}. The input parameters are specified by two vectors: (1) the vector of time instant parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \valueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$. Thus a parametrization function has the form $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$, the dynamical system can be rewritten as follows:
+We call a function that maps input parameters to input functions a {\em parametrization function}. The input parameters are put into two parameter vectors: (1) the vector of time instant parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \valueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$. Given a parametrization function $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$, the dynamical system can be described as follows:
 \begin{eqnarray} \label{eq:behaviorfunc}
 y &=& \behaviorfunc(\param),
 \end{eqnarray}
 where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\tau, \inputparams))$.  Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
 
+\paragraph{Generation of timed patterns.} 
+In addition to the coverage of parameter space, we use here a notion of coverage of temporal specifications. Intuitively it measures the degree to which the "good" behaviors satisfying the specification have been explored. Let us now use a timed automaton $\mathcal{A}$ to describe the temporal constraints that the input signals should satisfy \footnote{An STL formalism can be used, but {\color{red}TODO}}.  Let us now use a timed automaton $\mathcal{A}$ that describes the temporal constraints that the input signals should satisfy. The STL formalism can be used as well, but the generation method  was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest. 
 
+\paragraph{Timed Automata.} 
+A timed automaton (TA) is a discrete-state finite automaton equipped with a finite set of real-valued clocks \cite{Alur94}.
+In our setting, the labels of discrete transitions correspond to predicates on signal values.
+A timed word of length $m$ of the timed automaton $\mathcal{A}$ is $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$ where $\delta_i$ are labels of discrete transitions and $\tau_i$ are the time durations between two consecutive transitions; $(\tau_1, \ldots, \tau_m)$ is called a timed vector and $(\delta_1, \ldots, \delta_m)$ a discrete pattern. Each label $\delta_i$ corresponds to a predicate on the real values $\valueparams$ of the signal of the form $\pi_i(\valueparams) \le 0$.
 
+%Timed words provide the timed patterns for the signals satisfying the time constraints described by the automaton. The work \cite{BBBK16} {\color{red}TODO} proposes a sampling method according the uniform distribution for timed words of finite length. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behavior.\footnote{The uniform sampling should not be confused with an intuitive sampling method, called \emph{isotropic}, which at each continuous step makes a uniform choice amongst the possible delays.}
 
-\section{Time pattern coverage guided falsification} \label{sec:specCov}
-We propose a notion of time pattern coverage for input signals. Intuitively it measures the portion of time patterns satisfying the specification that have been explored. We use a timed automaton $\mathcal{A}$ to describe the temporal constraints that the input signals should satisfy \footnote{The STL formalism can be used as well, but the generation method  was first developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest.} 
-
-
-{\bf Recall TA.} Let us first briefly recall timed automata.
-The labels of discrete transitions correspond to the predicates on the signal values.
-
-A timed word of length $m$ of the timed automaton is $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$ where $\delta_i$ are labels of discrete transitions and $\tau_i$ are the time duration between two consecutive transitions; $(\tau_1, \ldots, \tau_m)$ is called its associated timed vector and $(\delta_1, \ldots, \delta_m)$ associated discrete pattern. Each label $\delta_i$ corresponds to a predicate on the real values $\valueparams$ of the signal of the form $\pi_i(\valueparams) \le 0$. %For piecewise constant signals, these predicates are simply interval constraints. For piecewise linear signals, $\pi_i$ are linear constraints on $\valueparams$. 
-
-Timed words provide the timed patterns for the valid input signals that is those satisfying the time constraints. The work \cite{BBBK16} {\color{red}TODO} proposes a method for uniform random sampling of timed words of finite length\footnote{This uniform sampling should not be confused with an intuitive sampling method which at each continuous step makes a uniform choice amongst the possible delays.}. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behaviour. Hence, the coverage of a given set of timed patterns can be characterised by its ``uniformity degree'', that is how well this set fits the uniform distribution. This uniformity degree notion can indeed be formalized using the Kolmogorov-Smirnov test, which is a statistical test to measure how well a sample $S$ of points fits a given distribution described by a cumulative distribution function (CDF) $F$. More concretely, the Kolmogorov-Smirnov statistics is defined by the following value (which is a random variable when the sample is drawn at random):
+Timed words provide the timed patterns for the valid input signals, which are those satisfying the time constraints. The work \cite{BBBK16} {\color{red}TODO} proposes a method for uniform random sampling of timed words of finite length\footnote{This uniform sampling should not be confused with an intuitive sampling method, which at each continuous step makes a uniform choice amongst the possible delays.}. This \emph{uniform} distribution allows estimating the probability of sampling an incorrect behavior. Hence, the coverage of a given set of timed patterns can be characterized by its ``uniformity degree'', mean how well this set fits the uniform distribution. This uniformity degree notion can be formalized using the Kolmogorov-Smirnov test, which is a statistical test to measure how well a sample $S$ of points fits a given distribution described by a cumulative distribution function (CDF) $F$. More concretely, the Kolmogorov-Smirnov statistics is defined by the following value, which is a random variable when the sample is drawn at random:
+%
+%
+%
+%
+%\paragraph{Coverage by measuring uniformity degree using the star-discrepancy of a sample of timed vectors}\label{sec:KS}\label{sec:backward}
+%In addition to uniform generation of timed patterns, it is possible to characterize the ``uniformity degree'' of a given set of timed patterns. This can be done by using the Kolmogorov-Smirnov test, which is a statistical test to measure how well a sample $S$ of points fits a distribution given by a known cumulative distribution function (CDF) $F$. %We point out in this section the link between this test and the star-discrepancy. This link allows us to exploit the backward use of $\CDFunif^{-1}$, from the timed polytope to the unit box. %We exploit the ideas from \cite{rosenblatt1952remarks} that were originally developed for the Kolmogorov-Smirnov test of real valued random variables. 
+%
+%The Kolmogorov-Smirnov statistics is defined by the following value, which is a random variable when the sample is drawn at random:
 $$\KS(F,S)=\sup_{p\in\R^n}|F(p)-\tilde F_S(p)|$$
 where $\tilde F_S$ is the empirical distribution associated with the sample $S$ defined by the CDF 
-$\tilde F_S(p)=|\{p'\in S\mid  p'\leq p\}|/|S|,$ which is the ratio of number of points in $S$ that falls in the box $[-\infty, p_1]\times \ldots\times [-\infty, p_n].$ 
+$\tilde F_S(p)=|\{p'\in S\mid  p'\leq p\}|/|S|,$ which is the ratio of the number of points in $S$ that falls in the box $[-\infty, p_1]\times \ldots\times [-\infty, p_n].$ 
 %When $F_U$ is the CDF associated to $n$ i.i.d. uniform random variables on $[0,1]$ then  $F_U(\vec p)$ is the volume of the box $[\vec 0, \vec p]$, and the KS statistics $\KS(F_U,S)$ becomes 
 %%$$\KS(F_U,S)=\sup_{\vec p\in\R^n}\left|\prod_{i=1..n} p_i- \tilde F_S(\vec p)\right|=D_{\star}(S),$$ which is 
 %nothing else than $D_{\star}(S)$ the \emph{star-discrepancy} of $S$. This connection is known, see e.g.~\cite{liang2001testing} and reference therein. 
+%Given a set of timed patterns with the same pattern (that is with the same sequence of discrete transitions), to measure its uniformity degree, we apply the above notion to the set of their time vectors $\tau = (\tau_1, \ldots, \tau_m)$ with respect to the timed polytope (corresponding to the set of all reachable timed vectors when the timed automaton follows the sequence of discrete transitions). It is worth noting that one can translate the multi-dimensional KS statistics for a sample $S$ that takes values in a timed polytope $\mathcal{P}_{\tau}$ with respect to a CDF $F$  into the KS statistics for the sample $F(S)=\{F(\tau)\mid  \tau \in \mathcal{P}_{\tau}\}$ (resulting from applying $F$ to $S$) with respect to the uniform distribution on the unit box. The latter turns out to be the star-discrepancy of this transformed sample $F(S)$. The measure can also be extended to sets of timed patterns  with different patterns.
 
-We apply this multi-dimensional KS statistics to timed patterns as follows. We first assume that a set of timed patterns of interest has the same discrete pattern (that is with the same sequence of discrete transitions). We consider the associated set $S$ of time vectors $\tau = (\tau_1, \ldots, \tau_m)$ which lie in a timed polytope $\mathcal{P}_{\tau}$ (corresponding to the set of all reachable timed vectors when the timed automaton follows this discrete pattern). The set $S$ can be thought of as a set of points sampled from the timed polytope $\mathcal{P}_{\tau}$ according to some CDF $F$. Note that the uniform random generation method  \cite{BBBK16} indeed guarantees that $F$ is the CDF of the uniform distribution on $\mathcal{P}_{\tau}$. It can be proven that the KS statistics of such a set $S$ is equal to the KS statistics of the set $F(S)=\{F(\tau)\mid  \tau \in \mathcal{P}_{\tau}\}$ (resulting from applying $F$ to $S$) sampled uniformly in the unit box. The latter turns out to be the star-discrepancy of this transformed sample $F(S)$. The star-discrepancy is previously used for coverage measure in \cite{Dang10} and can be evaluated. This analysis can also be extended to sets of timed patterns with different discrete patterns.
+We apply this multi-dimensional KS statistics to timed patterns as follows. We first assume that a set of timed patterns of interest has the same discrete pattern (that is with the same sequence of discrete transitions). We consider the associated set $S$ of timed vectors $\tau = (\tau_1, \ldots, \tau_m)$ which lie in a timed polytope $\mathcal{P}_{\tau}$ (corresponding to the set of all reachable timed vectors when the timed automaton follows this discrete pattern). The set $S$ can be thought of as a set of points sampled from the timed polytope $\mathcal{P}_{\tau}$ according to some CDF $F$. Note that the uniform random generation method  \cite{BBBK16}  that we use guarantees that $F$ is indeed the CDF of the uniform distribution on $\mathcal{P}_{\tau}$. It can be proven that the KS statistics of such a set $S$ is equal to the KS statistics of the set $F(S)=\{F(\tau)\mid  \tau \in \mathcal{P}_{\tau}\}$ (resulting from applying $F$ to obtain $S$) sampled uniformly in the unit box. The latter turns out to be the star-discrepancy of this transformed sample $F(S)$. The star-discrepancy was previously used as the coverage measure in \cite{Dang10} and can be computed. This analysis can also be extended to sets of timed patterns with different discrete patterns.
+
 
 %We can use this notion of "uniformity degree" to measure the coverage of a set of timed patterns. This is particularly useful when a set of timed patterns does not  falsify a property because it indicates the portion of tested timed patterns with respect to all possible timed patterns.
 
@@ -83,14 +96,20 @@ We apply this multi-dimensional KS statistics to timed patterns as follows. We f
 %So in that case $\KS(\CDFunif,S)=\stardisc{\CDFunif(\CDFunif^{-1}(S'))}=\stardisc{S'}$. % and the KS test (that requires the KS statistics to be below a threshold) will pass with high probability (resp.~for sure). 
 
 
-\paragraph{Property falsification using optimization}	
+\paragraph{Property Falsification using Optimization.}	
+
 Having defined all the necessary notions, we can now formally state our falsification problem.
-Given a system model such as (\ref{eq:behaviorfunc}) and a property $\spec$ provided in the form of an STL formula, 
+Given a system model such as (\ref{eq:behaviorfunc}) and a system property $\spec$ provided in the form of an STL formula, 
 falsification is a process for finding a parameter value $\param \in \paramset$
 such that $y=\behaviorfunc(\param)$ does not satisfy $\spec$, which is denoted $\outsig
 \not\models \spec$. Such a behavior $y$ is called a counterexample. 
 Note that a counterexample is identified when 
-$\rho(\spec,\param)<0$. The property falsification task can be formulated as an optimization problem as follows:
+$\rho(\spec,\param)<0$. We call the task of finding a counterexample 
+a {\em falsification problem}. 
+
+%\paragraph{Optimization and Solvers}	
+
+We formulate the property falsification task as an optimization problem as follows.
 \begin{eqnarray} \label{eq:optim1}
 \min_{\param \in \paramset} && \rho(\spec,y) \\ \nonumber
 s.t. && y=\behaviorfunc(\param)
@@ -99,26 +118,26 @@ This optimization problem is challenging for a number of reasons. First, this op
 are not specified explicitly; rather, the constraint enforces that $y$ is the output signal of model $\transfunc$, given parameters $\param$.
 As $\transfunc$ can be a nonlinear hybrid system, for any given $\param$, $y$ can only be determined approximately using numerical simulation. 
 Lastly, the cost function $\rho$ is complex and contains discontinuities.
-This gives rise to a hard problem of determining the gradients of the cost function, which are often required by traditional continuous optimization techniques. 
+This gives rise to the hard problem of determining the gradients of the cost function, which are often required by traditional continuous optimization techniques. 
 For such problems, in general there are no algorithms that can guarantee to find a global optimum \cite{FloudasPardalos2009}, and so we rely on a best effort global optimization techniques. 
 %In case the dynamics are continuous, well-known methods for global optimization are only efficient if the cost functions are convex or have some structural properties. Similarly, existing discrete optimization techniques, often faced with the combinatorial explosion issue, are designed to efficiently address specific classes of problems. 
 
-The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains, such as Simulated Annealing \cite{Kirkpatrick83optimizationby} and CMA-ES \cite{hansen2006eda}. Also, we note that for most problems, we do not need to identify a true optimum; we merely seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
+The cost function in (\ref{eq:optim1}) is not convex and not continuous, and so we do not expect to obtain an optimal answer using existing algorithms. We attempt to solve this problem using an approach, called metaheuristics \cite{dreo:hal-01341683}, which attempt to combine the strengths of existing algorithms for discrete and continuous domains. Examples of metaheuristic methods include Simulated Annealing \cite{Kirkpatrick83optimizationby} and CMA-ES \cite{hansen2006eda}. Also, note that for most falsification problems, we do not need to identify a true optimum; we merely seek to identify an iterative algorithm that can reduce the cost in (\ref{eq:optim1}) so that $\rho(\spec,y)<0$, which corresponds to a counterexample.
 
 %\paragraph{Mapping timed words to real-valued input signals}\label{sec:KS}\label{sec:backward}
 %We now know how to generate a good sample of $N$ timed words of length $m$, each of which is of the form $\gamma = (\delta_1, t_1), \ldots, (\delta_m, \tau_m)$ where $\delta_i$ are labels of discrete transitions. Each label $\delta_i$ corresponds to a range of the real-valued signal values $\param$, or more generally to a constraint $g_i(\param, t) \le 0$ for $t \in [\taut_i, \taut_{i+1})$ and $\param \in \paramset$. For piecewise constant signals, these constraints are simply interval constraints. For piecewise linear signals, $g_i$ are linear constraints on $\param$ and $t$. 
 
-\paragraph{Combining optimization and timed pattern generation} Considering the both time instants and values of input signals as optimization variables is expensive not only because of high dimension but also because, as mentioned earlier, it is difficult to capture and handle time constraints on the input signals in this formulation. An intuitive approach is to first generate a candidate solution and then check whether it satisfies the time constraints. The candidate solution is rejected if it is not valid, that is it does not satisfy the time constraints and a new candidate solution is generated. This method is clearly not efficient especially when the space of valid input signals is small compared to the whole space of input signals. It is thus very desirable to generate only valid candidate solutions. To this end, we propose to combine optimization and timed patterns generation as follows: we generate a number of timed patterns (with good coverage) of the timed automaton and then for each timed pattern (with now fixed time instant parameters) the optimization problem is solved for signal value parameters. More concretely, our approach is sketched as follows.
+\paragraph{Combining optimization and timed patterns generation.} Considering  both time instants and values as optimization variables is expensive not only because of high dimension but also because it is difficult to capture and handle time constraints on the input signals. An intuitive approach is to first generate a candidate solution and then check whether it satisfies the time constraints. The candidate solution is rejected if it is not valid (i.e., if it does not satisfy the temporal constraints), and a new candidate solution is generated. This method is clearly not efficient, especially when the space of valid input signals is small compared to the entire space of input signals. It is thus desirable to generate only valid candidate solutions. To this end, we propose to combine optimization and timed pattern generation: we generate timed patterns from the timed automaton (describing the time constraints) and then for each timed pattern (with now fixed-instant parameters) the optimization problem is solved using only the signal values as decision variables. The approach is described more concretely as follows.
 
-Given a timed word $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$, a real-valued input signal $\inputs$ is generated from $\gamma$ such that $\inputs$ satisfies the following constraints, denoted by $C_{\gamma}(\inputs)$:
-$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \inputparams_i, t \in [\tau_i, \tau_{i+1}), \pi_i(\inputparams)  \le 0.$$
-And we denote this by $(\instantparams, \inputparams) \models C_{\gamma}(\instantparams, \inputparams)$.
+Given a timed word $\gamma = (\delta_1, \tau_1), \ldots, (\delta_m, \tau_m)$, when a real-valued input signal $\inputs$ is generated from $\gamma$ such that $\inputs$ satisfies the following constraints:
+$$\forall i \in \{1, \ldots, m \}: \inputs (t)= \inputparams_i, t \in [\tau_i, \tau_{i+1}), \pi_i(\inputparams)  \le 0,$$
+then we say $(\instantparams, \inputparams) \models C_{\gamma}(\instantparams, \inputparams)$.
 
-The optimization problem becomes parameterized with $\gamma$:
+The optimization problem is then parameterized by $\gamma$ as follows:
 \begin{eqnarray} \label{eq:optim2}
 \min \rho(\spec, \inputs) \\ \nonumber
 s.t. ~\outsig=\behaviorfunc(\param) \\ \nonumber
-(\instantparams, \inputparams) \models C_{\gamma}(\instantparams, \inputparams), \param = (\paramsorig, \instantparams, \inputparams) \in \paramset \nonumber
+(\instantparams, \inputparams) \models C_{\gamma}(\instantparams, \inputparams), \param = (\paramsorig, \instantparams, \inputparams) \in \paramset . \nonumber
 \end{eqnarray}
 Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$. A first {\em abstract} algorithm of our falsification approach is described as follows.
 \begin{algorithm}
@@ -136,11 +155,41 @@ Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$. A first 
 		\State No falsifying behavior found. Report coverage of $\spec$
 \end{algorithmic}
 \end{algorithm}
-The set $\Gamma$ of timed words of (discrete) length $m$ of the timed automaton $\mathcal{A}$ (with good coverage properties) is generated using the method in \cite{Cosmos}. The function $Solve(\mathcal{O}_{\gamma})$ implements a number of black-box optimization techniques using metaheuristics (such as Simulated Annealing, Evolution Strategies, {\it etc.}), to return a best result $\tilde{\rho}$. This function will be elaborated in Section \ref{sec:combination}.
+The set $\Gamma$ of timed words of (discrete) length $m$ of the timed automaton $\mathcal{A}$ is generated using the method in \cite{Cosmos}. The function $Solve(\mathcal{O}_{\gamma})$ implements a number of black-box optimization techniques using metaheuristics (such as Simulated Annealing and Evolution Strategies), to return a best result $\tilde{\rho}$. This function will be elaborated in Section \ref{sec:combination}.
 
-%To improve search efficiency, that is to quickly find a falsifying input signal, the values $\tilde{\rho}$ of the objective function can be exploited. Note that if an order on $\Gamma$ can be defined, the search can follow a gridding structure as done in \cite{Valko2018} (Valko)... {\color{red} [to elaborate]}
+%To improve search efficiency---to quickly find a falsifying input signal---the values $\tilde{\rho}$ of the objective function can be exploited. Note that if an order on $\Gamma$ can be defined, the search can follow a gridding structure as done in \cite{Valko2018} (Valko)... {\color{red} [to elaborate]}
 
 
+%\paragraph{Coverage as Exploration Performance Measure.}	
+%
+%In addition to the cost valuations, based on $\rho$ in (\ref{eq:optim1}),
+%the adaptive search procedure we describe in the sequel utilizes notions of coverage of the parameter space to guide the search.
+%To capture the amount of coverage that we achieve, we use a metric called {\em cell occupancy}. 
+%
+%Note that our set of signals corresponds to a set $\inputparamset$ of parameter vectors defining input signals.
+%Let $\omega=\{ \omega_i | i=1,\ldots,
+%\numpartition \}$ be a partition of $\inputparamset$. For now, we assume that each partition element,
+%which we call a \emph{cell}, is rectangular, with each side of equal
+%length, $\Delta$, called \emph{grid cell size}. A
+%vector that indicates how many points are in each cell is called a
+%\emph{distribution}, $\distribution=(n_1,\ldots,n_\numpartition)$,
+%where each $n_i$ indicates how many points are located in cell $i$.
+%Cell occupancy is based on the relative number of cells occupied by
+%points, compared to the total number of cells. Consider the total
+%number of occupied cells, that is, the number of cells that contain
+%at least one point, i.e., $\occupiedcellcount =  \sum_{i=1}^{\numpartition} %g_i$  
+%where $g_i = 1$ if  $n_i\geq 1$, and $g_i = 0$ otherwise. Then, the proposed %cell occupancy measure is given as
+%\begin{eqnarray*}
+%\celloccupancy(\distribution) & = & \frac{\log \occupiedcellcount}{\log %\numpartition}.
+%\end{eqnarray*}
+%Logarithm functions are used due to the fact that the total number of cells could be very large as compared to the number of occupied cells. The logarithms provide two key features for the cell occupancy measure: (1) they maintain the monotonicity of the measure, and (2) they result in reasonable measure values even for cases where the dimension $\cpdim$ is  large. 
+
+
+%The remainder of the paper is organized as follows. 
+%In Sec. \ref{Solvers} we provide an overview of existing metaheuristic methods that we utilize to implement our approach. 
+%In Sec. \ref{sec:combination}, we describe our approach, which for iteratively selects from a collection of various existing metaheuristic solvers.
+%Section \ref{sec:init} describes how we use information about the progress of the search to initialize the solvers at the start of each iteration. 
+%In Sec. \ref{sec:expres} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model and a diesel engine control model. Before concluding, we position our approach in relation with existing work using the idea of combining heuristics. 
 
 %%% Local Variables:
 %%% mode: latex
