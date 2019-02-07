@@ -39,7 +39,7 @@ systems and are finding application in industry, using tools like
 S-TaLiRo and Breach \cite{TaliroLFS11,BreachCAV10}. 
 
 This CPS falsification approach is faced with the following majors challenges.
-The first challenge is that it often
+First, this approach often
 requires optimization over continuous-time input signal spaces, whereas
 existing optimization solvers expect a finite-dimensional of decision variables. 
 An usual approach, such as the ones taken in \cite{BreachCAV10} and 
@@ -57,7 +57,7 @@ been given to these considerations in the literature, though in
 falsification strategy featuring variable input discretizations is proposed.
 
 The second challenge is to define meaningful coverage measures to quantify how complete the search is. In the context of CPS such coverage measures should apply to continuous
-variables and continuous-time signals. In general coverage measures can be defined with respect to the input space or the behavior space. The latter option is more difficult because the space of all possible behaviors is in general unknown. When an input signal space is paramterized, a coverage measure can be defined on its associated parameter space. Measures like \emph{dispersion} try to capture the size of the empty space between points that have been explored \cite{Esposito04}.
+variables and continuous-time signals. In general coverage measures can be defined with respect to the input space or the behavior space. The latter option is more difficult because the space of all possible behaviors is in general unknown. When an input signal space is parameterized, a coverage measure can be defined on its associated parameter space. Measures like \emph{dispersion} try to capture the size of the empty space between points that have been explored \cite{Esposito04}.
 A related and simple measure, partitions the search space into cells and measures the proportion of cells that are occupied by explored points \cite{Skruch2011}. This method is related to the combinatorial entropy notion from the domain of physics to measure the degree of randomness in a distribution of points \cite{Gabbay06}. The \emph{star discrepancy} measure was developed by the statistical community 
 to measure the degree to which a set of points are equidistributed \cite{Heinrich03}. Besides, coverage measures can be used to make decisions regarding the search strategy. Coverage measures were used to develop CPS falsification and test generation methods that attempt to maximize the coverage of the search space \cite{DangN09,Dreossi2015,CAV2017}, and these methods were capable of reporting the coverage to the user which is important for the confidence level in the test result, especially when no falsifying behavior is found. The effectiveness of coverage measures depends on the ability of specifying efficiently and accurately the feasible parameter space. When the specification imposes on the input signals complex temporal constraints, the resulting parameter space may be difficult to define. 
 
