@@ -15,13 +15,13 @@ classdef MetaFalsifSDT < MetaFalsify
                 Insig_org = load(sigfilename, '-ascii');
                 
                 scaling=1e-6;
-                nb_ctr_pts = 30; %10;
+                nb_ctr_pts = 60; %10;
                 input_ranges = [Insig_org(1:nb_ctr_pts,2)-0.3 Insig_org(1:nb_ctr_pts,2)+0.3];
                 %input_ranges = [0 3];
                 
                 Insig(:,1) = scaling*Insig_org(1:nb_ctr_pts, 1);
                 timepoints = Insig(:,1);
-                simTime = Insig(end,1);
+                simTime = 6e-5;
                 input_signal_names = {'In1'};
                 signal_gen_method = {'linear'};
                 

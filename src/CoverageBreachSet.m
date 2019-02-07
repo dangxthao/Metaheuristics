@@ -335,16 +335,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
             % have a range assocaited with them).
             
             [~, varying_parameter_indices] = this.GetBoundedDomains();
-            varying_parameter_indices = find(varying_parameter_indices);
             
-%  -- Old interface         
-%             varying_parameter_indices = [];
-%             for ip = this.P.DimX+1:numel(this.P.ParamList)
-%                 rg = this.ParamRanges(ip-this.P.DimX,2)-this.ParamRanges(ip-this.P.DimX,1);
-%                 if rg>0
-%                     varying_parameter_indices = [varying_parameter_indices ip];
-%                 end
-%             end
         end
         
         function NewRun(this,param_names,param_values)

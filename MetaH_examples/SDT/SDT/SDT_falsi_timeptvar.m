@@ -5,34 +5,10 @@ warning('OFF', 'ALL')
 
 %% This script set up the falsification problem 
 %% for the SDT model
-
-addpath('./Functions')
-addpath('./ExampleBand-Pass')
-addpath('./ExampleLow-Pass')
-addpath('./periodic.signals')
-addpath('/Users/thaodang/breach-dev')
-
-
-addpath('/Users/thaodang/Metaheuristics/supp_code')
-addpath('/Users/thaodang/Metaheuristics/src')
-addpath('/Users/thaodang/Metaheuristics/breach-dev')
-addpath('.')
-        
-InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
-
-InitBreach
-BP2param
-
-model_name = 'BP2_in';
-fprintf('\n Creating breach interface with simulink model %s\n',model_name)
-
-
-IO_signal_names = {'In1','OutSat'};
+init_SDT;
 
 %% Specifying STL formula
-%fprintf('\n The STL formula is\n ')
-%phi = STL_Formula('notsaturation', 'alw(OutSat[t]<1)');
-    phi = STL_Formula('notsaturation', 'alw(OutSat[t]<1.145)');
+phi = STL_Formula('notsaturation', 'alw(OutSat[t]<1.145)');
 
 %% Set input signals
 
@@ -44,26 +20,18 @@ for sigId = 0:51
         else
                 sigfilename = strcat('s_', num2str(sigId));
         end
-        if (sigId < 10)
-                sigfilename = strcat('s_0', num2str(sigId));
-        else
-                sigfilename = strcat('s_', num2str(sigId));
-        end
 
         Insig_org = load(sigfilename, '-ascii');
         %scaling=0.65e-7; 
-            scaling=1e-6; 
+        scaling=1e-6;
 
 
         nb_ctr_pts = 30; %10;
         input_ranges = [Insig_org(1:nb_ctr_pts,2)-0.3 Insig_org(1:nb_ctr_pts,2)+0.3];
         %input_ranges = [0 3];
 
-
-
         Insig(:,1) = scaling*Insig_org(1:nb_ctr_pts, 1);
         timepoints = Insig(:,1);
-
 
         simTime = Insig(end,1);
         fprintf('\n Simulation time horizon is %d seconds\n',simTime)
@@ -73,10 +41,8 @@ for sigId = 0:51
         input_signal_names = {'In1'};
         signal_gen_method = {'linear'}; 
 
-
         %%%% grid size collumn on the range of each input signal
         gridsize_vector = [ 4  ];
-
 
         %%%% Once the above system specifications and falsification options are given,
         %%%% the following part of the code need not be modified by the user
@@ -84,8 +50,6 @@ for sigId = 0:51
         % specify the simulation time
         %%%MetaObj.SimTimeSetUp(0:1e-9:simTime);
         MetaObj.SimTimeSetUp(0:1e-9:simTime);
-
-
 
         % specify the class of input signals
         MetaObj.InputSignalSetUp(input_signal_names,signal_gen_method,nb_ctr_pts,input_ranges,timepoints);
