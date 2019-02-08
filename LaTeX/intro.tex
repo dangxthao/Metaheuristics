@@ -8,108 +8,135 @@ vital that they behave in a manner consistent with their
 design expectations. Despite this, it is difficult to verify that CPS
 designs meet their requirements for complex applications.
 
-% We address this challenge by presenting a new method to automatically
-% identify incorrect system behaviors.  Our method searches for faulty
-% system behaviors using a metaheuristic falsification approach, which
-% leverages a combination of existing search techniques.  The technique
-% uses notions of behavior robustness, with respect to requirements, in
-% combination with notions of coverage of the search space, to improve
-% the overall search performance.
-
 Property \emph{falsification} has garnered much interest recently as a
 way to perform automatic bug-finding for complex CPS design
-models. Falsification can be thought of as testing where requirements are expressed 
-in a formal specification language such as temporal logic.
-Two such
-languages that are appropriate for CPS applications are metric
-temporal logic (MTL) and signal temporal logic (STL)
-\cite{Koymans1990,MalerN04} for specifying behaviors defined
-using real-valued signals over dense time. A key feature of MTL and
-STL is that they are equipped with \emph{robust} semantics, and for a given behavior, methods exist to efficiently compute a
-real value, called the robustness which quantifies the requirement satisfaction level of the behavior
-\cite{FainekosP06fates,DonzeM10}. A positive robustness value
-indicates the behavior satisfies the requirement; a negative
+models. Falsification can be thought of as testing where requirements
+are expressed in a formal specification language such as temporal
+logic.  Two such languages that are appropriate for CPS applications
+are metric temporal logic (MTL) and signal temporal logic (STL)
+\cite{Koymans1990,MalerN04} for specifying behaviors defined using
+real-valued signals over dense time. A key feature of MTL and STL is
+that they are equipped with \emph{robust} semantics, and for a given
+behavior, methods exist to efficiently compute a real value, called
+the robustness which quantifies the requirement satisfaction level of
+the behavior \cite{FainekosP06fates,DonzeM10}. A positive robustness
+value indicates the behavior satisfies the requirement; a negative
 robustness value indicates the behavior does not satisfy the
-requirement. Falsification procedures use the robustness as the objective function
-for a global optimizer, which seeks a
-behavior with negative robustness value. Thus, the optimizer can
-be used to automatically find behaviors that violate (falsify) the
+requirement. Falsification procedures use the robustness as the
+objective function for a global optimizer, which seeks a behavior with
+negative robustness value. Thus, the optimizer can be used to
+automatically find behaviors that violate (falsify) the
 requirement. Falsification techniques have been applied to many CPS
 systems and are finding application in industry, using tools like
-S-TaLiRo and Breach \cite{TaliroLFS11,BreachCAV10}. 
+S-TaLiRo and Breach \cite{TaliroLFS11,BreachCAV10}.
 
-This CPS falsification approach is faced with the following majors challenges.
-First, this approach often
-requires optimization over continuous-time input signal spaces, whereas
-existing optimization solvers expect a finite-dimensional of decision variables. 
-An usual approach, such as the ones taken in \cite{BreachCAV10} and 
+This CPS falsification approach is faced with the following majors
+challenges.  First, this approach often requires optimization over
+continuous-time input signal spaces, whereas existing optimization
+solvers expect a finite-dimensional of decision variables.  An usual
+approach, such as the ones taken in \cite{BreachCAV10} and
 \cite{Nghiem10}, is to encode input signals spaces of interest using a
 finite number of bounded parameters. For example, for a family of
-piecewise constant signals with fixed time intervals, the
-constant values for the time intervals are parameters treated as the decision variables in the optimization
-problem. One drawback of using such fixed parameterizations 
-is that the falsification performance depends on the selection of parameterizations, 
-which is often based largely on intuition. Another drawback is that, for cases where the
-inputs must satisfy non-trivial constraints, encoding these constraints 
-into bounded domains for parameters can be difficult. Little attention has
-been given to these considerations in the literature, though in 
-\cite{DBLP:conf/atva/DeshmukhJKM15} a
-falsification strategy featuring variable input discretizations is proposed.
+piecewise constant signals with fixed time intervals, the constant
+values for the time intervals are parameters treated as the decision
+variables in the optimization problem. One drawback of using such
+fixed parameterizations is that the falsification performance depends
+on the selection of parameterizations, which is often based largely on
+intuition. Another drawback is that, for cases where the inputs must
+satisfy non-trivial constraints, encoding these constraints into
+bounded domains for parameters can be difficult. Little attention has
+been given to these considerations in the literature, though in
+\cite{DBLP:conf/atva/DeshmukhJKM15} a falsification strategy featuring
+variable input discretizations is proposed.
 
-The second challenge is to define meaningful coverage measures to quantify how complete the search is. In the context of CPS such coverage measures should apply to continuous
-variables and continuous-time signals. In general coverage measures can be defined with respect to the input space or the behavior space. The latter option is more difficult because the space of all possible behaviors is in general unknown. When an input signal space is parameterized, a coverage measure can be defined on its associated parameter space. Measures like \emph{dispersion} try to capture the size of the empty space between points that have been explored \cite{Esposito04}. A related and simple measure, partitions the search space into cells and measures the proportion of cells that are occupied by explored points \cite{Skruch2011}. This method is related to the combinatorial entropy notion from the domain of physics to measure the degree of randomness in a distribution of points \cite{Gabbay06}. The \emph{star discrepancy} measure was developed by the statistical community 
-to measure the degree to which a set of points are equidistributed \cite{Heinrich03}. Besides, coverage measures can be used to make decisions regarding the search strategy. Coverage measures were used to develop CPS falsification and test generation methods that attempt to maximize the coverage of the search space \cite{DangN09,Dreossi2015,CAV2017}, and these methods were capable of reporting the coverage to the user which is important for the confidence level in the test result, especially when no falsifying behavior is found. The effectiveness of coverage measures depends on the ability of specifying efficiently and accurately the feasible parameter space. When the specification imposes on the input signals complex temporal constraints, the resulting parameter space may be difficult to define. 
+The second challenge is to define meaningful coverage measures to
+quantify how complete the search is. In the context of CPS such
+coverage measures should apply to continuous variables and
+continuous-time signals. In general coverage measures can be defined
+with respect to the input space or the behavior space. The latter
+option is more difficult because the space of all possible behaviors
+is in general unknown. When an input signal space is parameterized, a
+coverage measure can be defined on its associated parameter
+space. Measures like \emph{dispersion} try to capture the size of the
+empty space between points that have been explored
+\cite{Esposito04}. A related and simple measure, partitions the search
+space into cells and measures the proportion of cells that are
+occupied by explored points \cite{Skruch2011}. This method is related
+to the combinatorial entropy notion from the domain of physics to
+measure the degree of randomness in a distribution of points
+\cite{Gabbay06}. The \emph{star discrepancy} measure was developed by
+the statistical community to measure the degree to which a set of
+points are equidistributed \cite{Heinrich03}. Besides, coverage
+measures can be used to make decisions regarding the search
+strategy. Coverage measures were used to develop CPS falsification and
+test generation methods that attempt to maximize the coverage of the
+search space \cite{DangN09,Dreossi2015,CAV2017}, and these methods
+were capable of reporting the coverage to the user which is important
+for the confidence level in the test result, especially when no
+falsifying behavior is found. The effectiveness of coverage measures
+depends on the ability of specifying efficiently and accurately the
+feasible parameter space. When the specification imposes on the input
+signals complex temporal constraints, the resulting parameter space
+may be difficult to define.
 
-
-%Another core idea is that, given a collection of traditional search
-%algorithms, we can judiciously switch between algorithms online, if we
-%consider the evolution of both the robustness values and the coverage
-%of the search space.
-
-
-%We introduce a new metaheuristic approach to the search
-%problem, which uses measures of both robustness and coverage to make
-%decisions about how best to guide the search.
-Another crucial factor in the performance of falsification techniques is the efficacy of the global optimization process.
-Global optimization algorithms can be broadly classified into one of two
+A crucial factor in the performance of falsification techniques
+is the efficacy of the global optimization process. Global
+optimization algorithms can be broadly classified into one of two
 categories: exploration-based and exploitation-based \cite{Blum03}.
-Exploration-based methods evaluate points from a widely distributed area 
-of the search space, to identify regions that are most promising with 
-respect to the cost function. Exploitation-based methods, on the other hand, 
-use estimates of the shape of the cost function surface, often locally, to
-identify a candidate direction that is most likely to yield a decrease
-in cost. Each type of method has strengths and weaknesses. Exploration
-methods are not in danger of getting trapped in local minima, but they may 
-be inefficient in terms of identifying appropriate directions to search.  By
-contrast, exploitation methods are designed to efficiently identify
-promising local search directions, but they can get trapped in local optima.
-We present a method that synergizes exploration and 
-exploitation by adaptively switching between the two strategies.
-The tradeoffs between exploitation and exploration have been explored by others, 
-for the purposes of falsification for CPS \cite{Ratschan14}. We present a falsification framework that goes further, by incorporating coverage and robustness together to decide when to change search methodology.
+Exploration-based methods evaluate points from a widely distributed
+area of the search space, to identify regions that are most promising
+with respect to the cost function. Exploitation-based methods, on the
+other hand, use estimates of the shape of the cost function surface,
+often locally, to identify a candidate direction that is most likely
+to yield a decrease in cost. Each type of method has strengths and
+weaknesses. Exploration methods are not in danger of getting trapped
+in local minima, but they may be inefficient in terms of identifying
+appropriate directions to search.  By contrast, exploitation methods
+are designed to efficiently identify promising local search
+directions, but they can get trapped in local optima.  We present a
+method that synergizes exploration and exploitation by adaptively
+switching between the two strategies.  The trade-offs between
+exploitation and exploration have been explored by others, for the
+purposes of falsification for CPS \cite{Ratschan14}. We present a
+falsification framework that goes further, by incorporating coverage
+and robustness together to decide when to change search methodology.
 
-In this paper we address the encoding and coverage challenges, by introducing in the falsification framework a new concept of
-coverage of the specifications involving temporal constraints on the input signal space. Input signal parameterization can be selected in order to achieve
-efficient coverage of the specification. This new concept is built on the approach for uniform
-generation of traces of timed automata which are used to specify temporal constraints \cite{BBBK16}. To improve the optimization efficiency, we propose an iterative procedure that utilizes several
-metaheuristics, that is the search methods that can be applied to
-different problems, in contrast with heuristics which are often
-designed for specific problems. Our procedure can be described as follows. 
-In each iteration, our
-search procedure considers the evolution of both the best-case
-robustness value (the optimization cost) as well as the evolution of a
-coverage measure.  We use the information to make online decisions
-about when and how to switch from one optimization strategy to
-another.  For example, if we are using an exploitation-driven method,
-and we decide that the decrease in robustness has ``stalled" (is not
-decreasing quickly) and the coverage is ``low", we will switch from
-the exploitation-driven method to an alternative exploration-driven
+In this paper we address the encoding and coverage challenges, by
+introducing in the falsification framework a new concept of coverage
+of the specifications involving temporal constraints on the input
+signal space. Input signal parameterization can be selected in order
+to achieve efficient coverage of the specification. This new concept
+is built on the approach for uniform generation of traces of timed
+automata which are used to specify temporal constraints
+\cite{BBBK16}. To improve the optimization efficiency, we propose an
+iterative procedure that utilizes several metaheuristics, that is the
+search methods that can be applied to different problems, in contrast
+with heuristics which are often designed for specific problems. Our
+procedure can be described as follows.  In each iteration, our search
+procedure considers the evolution of both the best-case robustness
+value (the optimization cost) as well as the evolution of a coverage
+measure.  We use the information to make online decisions about when
+and how to switch from one optimization strategy to another.  For
+example, if we are using an exploitation-driven method, and we decide
+that the decrease in robustness has ``stalled" (is not decreasing
+quickly) and the coverage is ``low", we will switch from the
+exploitation-driven method to an alternative exploration-driven
 method.  If, alternatively, we are using an exploration-driven method,
 and we decide that the coverage is relatively ``high" and the
 robustness is near zero, then we will switch to an exploitation-driven
-method, using the current best point as an initial condition. 
-Our falsification framework can outperform existing methods with little user intervention or reliance on intuition. We demonstrate this on several 
-challenging CPS examples.
+method, using the current best point as an initial condition.  Our
+falsification framework can outperform existing methods with little
+user intervention or reliance on intuition. We demonstrate this on
+several challenging CPS examples.
 
-The paper is organized as follows. In Section \ref{sec:prlim} we present some preliminaries to provide basic notions for subsequent developments. In Section \ref{Solvers} we provide an overview of existing metaheuristic methods, which we draw on later to describe our adaptive search technique.
- In Section \ref{sec:combination}, we describe our approach for systematic combination of different metaheuristics. In Section \ref{sec:expres} we demonstrate the efficacy of our approach on several challenging examples, including an automotive transmission model, a diesel engine control model. Before concluding, we position our approach in relation with existing work using the idea of combining heuristics. 
+The paper is organized as follows. In Section \ref{sec:prlim} we
+present some preliminaries to provide basic notions for subsequent
+developments. In Section \ref{Solvers} we provide an overview of
+existing metaheuristic methods, which we draw on later to describe our
+adaptive search technique.  In Section \ref{sec:combination}, we
+describe our approach for systematic combination of different
+metaheuristics. In Section \ref{sec:expres} we demonstrate the
+efficacy of our approach on several challenging examples, including an
+automotive transmission model, a diesel engine control model. Before
+concluding, we position our approach in relation with existing work
+using the idea of combining heuristics.
