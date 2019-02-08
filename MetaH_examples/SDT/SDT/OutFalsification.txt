@@ -1,3 +1,54 @@
 
  *** Running Simulated Annealing
  Time limit of computation is 300 seconds
+
+ This solver time = 63.025550 seconds
+ Best Robustness Value of this call = 0.007646
+ Best Robustness Value so far = 0.007646
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00764618           NaN
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 300 seconds
+
+ This solver time = 62.088933 seconds
+ Best Robustness Value of this call = 0.010957
+ Best Robustness Value so far = 0.007646
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00764618           NaN
+ 2  1    0.00764618           NaN
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 300 seconds
+
+ This solver time = 62.279591 seconds
+ Best Robustness Value of this call = 0.011100
+ Best Robustness Value so far = 0.007646
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Pseudo-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00764618           NaN
+ 2  1    0.00764618           NaN
+ 3  2    0.00764618           NaN
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 3 done
+ *** Running PseudoRandom
+ Time limit of computation is 300 seconds
+nb_samples for PR is 10 
+nb_hits for PR is 20 

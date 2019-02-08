@@ -50,7 +50,17 @@ In this section we illustrate the interest of timed pattern generation with a $\
 %  \includegraphics[width=0.9\textwidth]{figures/DSfig.pdf}
 %  \caption{$\Sigma \Delta$ model with non-idealities \cite{Brigati99}.\label{fig:DeltaSigma}}
 %\end{figure}%\vspace{-1cm}
-As input signals, we consider a class of quasi-periodic signals with uncertain period duration that ranges between $1$ and $6$. The period duration can be scaled to consider the frequency range of interest. The temporal pattern of the considered signals is specified by a timed automaton in Figure \ref{fig:4.5clocks}. We discretise the signal value space and associate each transition label with a signal value range. The transitions should reflect some bounded variability condition. Then the signals are constructed by linear interpolation between the values at time instants of the timed words. The absence of saturation can be expressed as a simple STL property, which states that throughout the simulation duration from $0$ to $T$, the absolute value of the output of the saturation block in the first integrator is always smaller than the saturation voltage value (which is $2$).
+As input signals, we consider a class of quasi-periodic signals with uncertain period drifting duration that ranges between $1$ and $6$. The period duration can be scaled to consider the frequency range of interest. The temporal pattern of the considered signals is specified by a timed automaton in Figure \ref{fig:4.5clocks}. We discretise the signal value space and associate each transition label with a signal value range. The transitions should reflect some bounded variability condition. Then the signals are constructed by linear interpolation between the values at time instants of the timed words. The absence of saturation can be expressed as a simple STL property, which states that throughout the simulation duration from $0$ to $T$, the absolute value of the output of the saturation block in the first integrator is always smaller than the saturation voltage value (which is $2$).
 
-We generate a set of $100$ timed words using uniform sampling \cite{} {\color{red}TODO}. For the optimization part, we use Algorithm \ref{algoSolverCombination} for guided  combination of metaheuristics. 
-This experiment allows observing that combining optimization with timed pattern generation allowed us to falsify the absence of saturation after using 22 generated timed patterns, while {\color{red}TODO}
+We generate a set of $100$ timed words using uniform sampling \cite{} {\color{red}TODO}. 
+
+For the optimization part, we use Algorithm \ref{algoSolverCombination} for guided  combination of metaheuristics. 
+This experiment allows observing that combining optimization with timed pattern generation allowed us to falsify the absence of saturation after using 22 generated timed patterns. For comparison purposes, we designed a custom strategy to encode the timed automata constraint: we created a domain with variable time instants, and for each signal generated, we compute the period drifting and check whether it lies in the given bounds. Over 100 signals generated this way, we reject 37 (see Figure~\ref{fig:reject}. We note that this type of encoding was doable for this example, but can be much more involved for more complex TA and lead to much higher rejection rate, rendering falsification without our approach infeasible. 
+
+\begin{figure}
+  \centering
+  \includegraphics[width=\textwidth]{inputs_reject.png}
+  \caption{Input patterns for the DeltaSigma following the constraint of the timed automata. The figure presents a set of 100 signals generated with a custom method, of which 63 (green solid) satisfy the constraints, and 37 (red, dashed) do not.}
+  \label{fig:reject}
+\end{figure}
+

@@ -352,39 +352,45 @@ classdef BreachRequirement < BreachTraceSystem
             if ischar(signals)
                 signals = {signals};
             end
-            idxB = zeros(1, numel(signals)); ifoundB = zeros(1, numel(signals));
-            [idx, ifound] = FindSignalsIdx@BreachSet(this, signals);   %
-            
-            if any(~ifound)   % if not a signal of the requirement, look into BrSet (system) signals
-                idx_not_found = find(~ifound);
-                for isig = 1:numel(idx_not_found)
-                    s0 = signals{idx_not_found(isig)};
-                    aliases = {s0};  % compute all aliases for s
-                    s = s0;
-                    while (this.sigMap.isKey(s))
-                        s = this.sigMap(s);
-                        aliases = union(aliases, {s} );
-                    end
-                    s = s0;
-                    while (this.sigMapInv.isKey(s))
-                        s = this.sigMapInv(s);
-                        aliases = union(aliases, {s} );
-                    end
-                    [idx_s, ifound_s] = FindParam(this.P, aliases);
-                    if any(ifound_s) % one alias is the one !
-                        idx(idx_not_found(isig)) = idx_s(find(ifound_s, 1));
-                        ifound(idx_not_found(isig)) = 1;
-                    elseif (~isempty(this.BrSet))
-                        [idx_sB, ifB] = FindSignalsIdx(this.BrSet, aliases);
-                        if (any(ifB))
-                            idxB(idx_not_found(isig)) = idx_sB(find(ifB, 1));
-                            ifoundB(idx_not_found(isig)) = 1;
+            if isempty(signals)
+                idx = [];
+                ifound = [];
+                idxB = [];
+                ifoundB = [];
+            else                
+                idxB = zeros(1, numel(signals)); ifoundB = zeros(1, numel(signals));
+                [idx, ifound] = FindSignalsIdx@BreachSet(this, signals);   %
+                
+                if any(~ifound)   % if not a signal of the requirement, look into BrSet (system) signals
+                    idx_not_found = find(~ifound);
+                    for isig = 1:numel(idx_not_found)
+                        s0 = signals{idx_not_found(isig)};
+                        aliases = {s0};  % compute all aliases for s
+                        s = s0;
+                        while (this.sigMap.isKey(s))
+                            s = this.sigMap(s);
+                            aliases = union(aliases, {s} );
+                        end
+                        s = s0;
+                        while (this.sigMapInv.isKey(s))
+                            s = this.sigMapInv(s);
+                            aliases = union(aliases, {s} );
+                        end
+                        [idx_s, ifound_s] = FindParam(this.P, aliases);
+                        if any(ifound_s) % one alias is the one !
+                            idx(idx_not_found(isig)) = idx_s(find(ifound_s, 1));
+                            ifound(idx_not_found(isig)) = 1;
+                        elseif (~isempty(this.BrSet))
+                            [idx_sB, ifB] = FindSignalsIdx(this.BrSet, aliases);
+                            if (any(ifB))
+                                idxB(idx_not_found(isig)) = idx_sB(find(ifB, 1));
+                                ifoundB(idx_not_found(isig)) = 1;
+                            end
                         end
                     end
                 end
             end
         end
-        
         function [X, idxR] = GetSignalValues(this,varargin)
             % GetSignalValues if not found, look into BrSet
             nb_traj = 0;
@@ -809,30 +815,30 @@ classdef BreachRequirement < BreachTraceSystem
             end
             
             % got all sigs_in which are not sigs out
-            [~, found] = this.FindSignalsIdx(all_sigs_in);
-            all_sigs_in = all_sigs_in(found==0);
-            
-            if size(all_sigs_in,1)>1
-                all_sigs_in = all_sigs_in';
-            end
-            
-            reps_sigs_in = all_sigs_in(1);
-            aliases = this.getAliases(all_sigs_in{1});
-            for is = 1:numel(all_sigs_in)
-                if ~ismember(all_sigs_in{is}, aliases)
-                    reps_sigs_in= union(reps_sigs_in, all_sigs_in(is));
-                    aliases = union(aliases, this.getAliases(all_sigs_in(is)));
+            if ~isempty(all_sigs_in)
+                [~, found] = this.FindSignalsIdx(all_sigs_in);
+                all_sigs_in = all_sigs_in(found==0);
+                
+                if size(all_sigs_in,1)>1
+                    all_sigs_in = all_sigs_in';
+                end
+                
+                reps_sigs_in = all_sigs_in(1);
+                aliases = this.getAliases(all_sigs_in{1});
+                for is = 1:numel(all_sigs_in)
+                    if ~ismember(all_sigs_in{is}, aliases)
+                        reps_sigs_in= union(reps_sigs_in, all_sigs_in(is));
+                        aliases = union(aliases, this.getAliases(all_sigs_in(is)));
+                    end
+                end                
+                
+                for is = 1:numel(reps_sigs_in) % remove postprocess_out
+                    s  = this.get_signal_attributes(reps_sigs_in{is});
+                    if ~ismember('postprocess_out', s)
+                        sigs_in=union(sigs_in, reps_sigs_in{is});
+                    end
                 end
             end
-            
-            
-            for is = 1:numel(reps_sigs_in) % remove postprocess_out
-                s  = this.get_signal_attributes(reps_sigs_in{is});
-                if ~ismember('postprocess_out', s)
-                    sigs_in=union(sigs_in, reps_sigs_in{is});
-                end
-            end
-            
             
         end
         

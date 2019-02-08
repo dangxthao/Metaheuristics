@@ -19,8 +19,6 @@ addpath('/Users/thaodang/Metaheuristics/breach-dev')
 addpath('.')
         
 InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
-
-InitBreach
 BP2param
 
 model_name = 'BP2_in';
