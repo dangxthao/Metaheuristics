@@ -133,7 +133,7 @@ Let us denote the above optimization problem by $\mathcal{O}_{\gamma}$. A first 
 	        \ForAll{$\gamma \in \Gamma$} 
 		\State $\tilde{\rho} = Solve(\mathcal{O}_{\gamma})$
 		\If{$\tilde{\rho} \le 0$}
-		  \State Exit	
+		  \State Report the falsifying behavior. Exit
 		\EndIf
 		\EndFor
 		\State No falsifying behavior found. Report coverage of $\spec$
