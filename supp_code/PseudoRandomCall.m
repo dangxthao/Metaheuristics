@@ -31,8 +31,7 @@ param_names = CBS.P.ParamList(1,ip);
 param_ranges = [CBS.LowerLeftCorner(),CBS.UpperRightCorner()];  
 StatFalsObj.nominal_ranges = param_ranges;
             
-[StatFalsObj,list,falsified,nb,falsi_point] = StatFalsObj.PseudoRandSamp(CBS,param_names,...
-  param_ranges,phi,nb_samples,time_lim,nb_hits);
+[StatFalsObj,list,falsified,nb,falsi_point] = StatFalsObj.PseudoRandSamp(CBS,param_names,param_ranges,phi,nb_samples,time_lim,nb_hits);
 
 if nb>0
    StatFalsObj.new_samples=list;
