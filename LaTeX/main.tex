@@ -13,7 +13,7 @@
 \usepackage{graphics,color,url}
 %\usepackage[colorlinks=true, allcolors=blue]{hyperref}
 \usepackage{array}
-
+\usepackage{hyphenat}
 %\usepackage{amsmath,amsthm, amssymb,eufrak}
 \usepackage{amsmath,amssymb,eufrak}
 \usepackage{enumitem}
@@ -33,6 +33,17 @@
 \newcommand{\commentout}[1]{}
 
 \input{macros}
+
+\newcommand{\Loc}{Q}	% Discrete Locations
+\newcommand{\Edg}{\Delta}	% Discrete Transitions
+\newcommand{\edg}{\delta}
+\newcommand{\Alphabet}{\Sigma} % Alphabet
+\newcommand{\InitLoc}{q_{0}} % Initial Locations
+\newcommand{\Clocks}{X}	
+\newcommand{\reset}{r}	
+\newcommand{\guard}{\psi}	
+\newcommand{\Inv}{Inv}	
+
 %\input{defs}
 \newcommand{\lt}{<}
 \newcommand{\rt}{>}
