@@ -49,7 +49,7 @@ uniformly spaced control points.
 %% maximum time of $5000$s.
 
 
-\subsubsection*{{\em Automatic transmission.}} \label{sec:autotrans}
+\subsubsection*{{\em Automatic Transmission.}} \label{sec:autotrans}
 This benchmark model of an Automatic Transmission control
 system appeared in~\cite{DBLP:conf/cpsweek/HoxhaAF14}\footnote{The model
 and property description of this benchmark is available at \url{http://cps-vo.org/node/12116}}.  The system has
@@ -97,12 +97,12 @@ $10$ dimensional search space.
 
 \subsubsection*{{\em Diesel Engine Model}} \label{sec:diesel} 
 Lastly, we describe a diesel engine airpath model.
-The system models the dynamics of the air entering the intake manifold of a diesel automotive engine, along with an exhaust gas recirculation (EGR) system that cycles a portion of the exhaust gases back into the intake system. A model predictive controller (MPC) regulates the intake manifold pressure (MAP) and the EGR. The model is implemented in Simulink\textsuperscript{\textregistered} and contains over 2,500 blocks. % and is a modified version of the systems described in \cite{jin-tcad15}.
+The system models the dynamics of the air entering the intake manifold of a diesel automotive engine, along with an exhaust gas recirculation (EGR) system that cycles a portion of the exhaust gases back into the intake system. A model predictive controller (MPC) regulates the intake manifold pressure (MAP) and the EGR. The model is implemented in Simulink\textsuperscript{\textregistered} and contains over 2,500 blocks and is a modified version of the systems described in \cite{jin-tcad15}.
 The specification is that, after the system has been given some time to reach steady-state operation, the error between the actual and reference MAP should be less than a given number of units.
 This corresponds to the following STL property: $\phi=\G_{[\tau,T]}e<c$, where $e$ is the MAP error, and $\tau$, $T$, and $c$, are constants. Specific values are suppressed for proprietary reasons. Compared to the previous work \cite{Dreossi2015}, the new algorithm allows falsifying a much larger bound. 
 
 
-\subsubsection*{{\em Results}}
+\subsubsection*{{\em Results for the automative control models}}
 The results are presented in Table~\ref{tab:results} and Table~\ref{tab:SeedResults}.  
 %We note that for any fixed seed, used for the stochastic aspects of our algorithm, these results are reproducible. 
 As one can see from the tables, our combined metaheuristics algorithm successfully found a counterexample in
