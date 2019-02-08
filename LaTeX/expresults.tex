@@ -13,10 +13,9 @@
 
 In our experiments, we compare the performance of a MATLAB
 implementation of the combined metaheuristics algorithm with traditional falsification algorithms. Our implementation uses
-the robustness evaluation function together with the following solvers CMA-ES, Simulated Annealing, and Global
-Nelder-Mead algorithm implementations integrated in
-Breach~\cite{DBLP:conf/cav/Donze10}. 
-Our experiments were performed on a computer with 1.4GHz processor with 4GB RAM, running 
+the robustness evaluation function together with the following solvers, which are integrated into Breach~\cite{DBLP:conf/cav/Donze10}: CMA-ES, Simulated Annealing, and Global
+Nelder-Mead. 
+Our experiments were performed on a computer with a 1.4GHz processor with 4GB RAM, running 
 MATLAB R2015 64-bit version. 
 In the following we first describe the models and the input and parameter settings of the benchmarks. Then we present the experimental results obtained using the new algorithm in comparison with the traditional search techniques used alone. Also, we compare it with a method combining
 the CMA-ES and classification \cite{CAV2017}, where in each iteration the visited points are classified in order to identify promising regions.
@@ -96,23 +95,27 @@ $10$ dimensional search space.
 %results are presented in Table~\ref{tab:results}.  We note that for
 %any fixed seed for random sampling, these results are reproducible.
 
+\subsubsection*{{\em Diesel Engine Model}} \label{sec:diesel} 
+Lastly, we describe a diesel engine airpath model.
+The system models the dynamics of the air entering the intake manifold of a diesel automotive engine, along with an exhaust gas recirculation (EGR) system that cycles a portion of the exhaust gases back into the intake system. A model predictive controller (MPC) regulates the intake manifold pressure (MAP) and the EGR. The model is implemented in Simulink\textsuperscript{\textregistered} and contains over 2,500 blocks and is a modified version of the systems described in \cite{jin-tcad15}.
 
-\subsubsection*{{\em Diesel model.}} \label{sec:diesel} 
-The third examples is an industrial closed-loop Simulink model of a prototype airpath controller for a diesel engine. The model is large, with more than 3000 blocks, more than 20 lookup tables and function blocks containing customized Matlab functions and legacy code. Moreover, more than half of these lookup tables are high dimen- sional (greater than one dimension). For this case study, we choose a safety property specifying upper bounds on the overshoot of a particular signal. This is represented by the following STL formula:  $\phi = \G_{[5,10]} (Out1[t] < 41.1)$ where $Out1$ is an output signal. Compared to the previous work \cite{Dreossi2015}, the new algorithm allows falsifying a much larger bound. 
+The specification is that, after the system has been given some time to reach steady-state operation, the error between the actual and reference MAP should be less than a given number of units.
+This corresponds to the following STL property: $\phi=\G_{[\tau,T]}e<c$, where $e$ is the MAP error, and $\tau$, $T$, and $c$, are constants. Specific values are suppressed for proprietary reasons. Compared to the previous work \cite{Dreossi2015}, the new algorithm allows falsifying a much larger bound. 
 
 
-\subsubsection*{{\em Results.}} 
-The results are presented in Table~\ref{tab:results} and Table~\ref{tab:SeedResults}.  We note that for
-any fixed seed, that is the index for a sequence of random numbers in MATLAB for random sampling, these results are reproducible. 
+\subsection{Results} 
+The results are presented in Table~\ref{tab:results} and Table~\ref{tab:SeedResults}.  
+%We note that for any fixed seed, used for the stochastic aspects of our algorithm, these results are reproducible. 
+>>>>>>> 239d45b6d1685d45f01a8201101dcc0f5c24e6bf
 As one can see from the tables, our combined metaheuristics algorithm successfully found a counterexample in
-less than the time-out limit for all the considered benchmarks and almost for all the seeds. 
+less than the time-out limit for all the considered benchmarks and for almost all the seeds. 
 The other methods either were not successful in finding a falsifier within the time-out limit or 
 took more computation time. Indeed the metaheuristics used alone, in particular Simulated Annealing 
 and Global Nelder-Mead, got stuck around local optima for these examples.
 
 
 \begin{table}[ht]
-\caption{Experimental results on the benchmarks with seed 5000}
+\caption{Experimental results on the benchmarks with seed 5000.}
 %\vspace{-0.5em}
 %\vspace{-1.5em}
 \label{tab:results}
@@ -147,8 +150,16 @@ CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996    \\
 \hline
 \end{tabular}
 \end{center}
+<<<<<<< HEAD
 \caption{Experimental results on the benchmarks with seed 5000. T.O.($T$): Exceeded indicated time out limit which is $T$ seconds.
 Property for the PTC model $\phi = \G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$. Property for the Automatic Transmission model $\phi =  \G(w[t] < 2520) \land  \F_{[0,10]}(v[t] > 50)$. Property for the Diesel Engine model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
+=======
+{\small T.O.(T): Exceeded indicated time out limit which is $T$ seconds.\\
+Property for the PTC model $\phi = \G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$. \\
+Property for the Automatic Transmission model $\phi =  \G(w[t] < 2520) \land  \F_{[0,10]}(v[t] > 50)$. \\
+Property for the Diesel Engine model $\phi=\G_{[\tau,T]}e<c$.  
+%$\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
+>>>>>>> 239d45b6d1685d45f01a8201101dcc0f5c24e6bf
 %\emph{Seed}: Index for a sequence of random numbers in MATLAB. \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.
 }
 %\vspace{-4mm}%Put here to reduce too much white space after your table 
