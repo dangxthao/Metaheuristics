@@ -97,16 +97,14 @@ $10$ dimensional search space.
 
 \subsubsection*{{\em Diesel Engine Model}} \label{sec:diesel} 
 Lastly, we describe a diesel engine airpath model.
-The system models the dynamics of the air entering the intake manifold of a diesel automotive engine, along with an exhaust gas recirculation (EGR) system that cycles a portion of the exhaust gases back into the intake system. A model predictive controller (MPC) regulates the intake manifold pressure (MAP) and the EGR. The model is implemented in Simulink\textsuperscript{\textregistered} and contains over 2,500 blocks and is a modified version of the systems described in \cite{jin-tcad15}.
-
+The system models the dynamics of the air entering the intake manifold of a diesel automotive engine, along with an exhaust gas recirculation (EGR) system that cycles a portion of the exhaust gases back into the intake system. A model predictive controller (MPC) regulates the intake manifold pressure (MAP) and the EGR. The model is implemented in Simulink\textsuperscript{\textregistered} and contains over 2,500 blocks. % and is a modified version of the systems described in \cite{jin-tcad15}.
 The specification is that, after the system has been given some time to reach steady-state operation, the error between the actual and reference MAP should be less than a given number of units.
 This corresponds to the following STL property: $\phi=\G_{[\tau,T]}e<c$, where $e$ is the MAP error, and $\tau$, $T$, and $c$, are constants. Specific values are suppressed for proprietary reasons. Compared to the previous work \cite{Dreossi2015}, the new algorithm allows falsifying a much larger bound. 
 
 
-\subsection{Results} 
+\subsubsection*{{\em Results}}
 The results are presented in Table~\ref{tab:results} and Table~\ref{tab:SeedResults}.  
 %We note that for any fixed seed, used for the stochastic aspects of our algorithm, these results are reproducible. 
->>>>>>> 239d45b6d1685d45f01a8201101dcc0f5c24e6bf
 As one can see from the tables, our combined metaheuristics algorithm successfully found a counterexample in
 less than the time-out limit for all the considered benchmarks and for almost all the seeds. 
 The other methods either were not successful in finding a falsifier within the time-out limit or 
@@ -115,7 +113,6 @@ and Global Nelder-Mead, got stuck around local optima for these examples.
 
 
 \begin{table}[ht]
-\caption{Experimental results on the benchmarks with seed 5000.}
 %\vspace{-0.5em}
 %\vspace{-1.5em}
 \label{tab:results}
@@ -150,16 +147,8 @@ CMA-ES  \cite{CAV2017} & 2891  & 2891  & 996    \\
 \hline
 \end{tabular}
 \end{center}
-<<<<<<< HEAD
 \caption{Experimental results on the benchmarks with seed 5000. T.O.($T$): Exceeded indicated time out limit which is $T$ seconds.
 Property for the PTC model $\phi = \G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$. Property for the Automatic Transmission model $\phi =  \G(w[t] < 2520) \land  \F_{[0,10]}(v[t] > 50)$. Property for the Diesel Engine model   $\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
-=======
-{\small T.O.(T): Exceeded indicated time out limit which is $T$ seconds.\\
-Property for the PTC model $\phi = \G_{[5,50]}( (\eta[t] < 0.05) \land ( \eta[t] > - 0.05 ))$. \\
-Property for the Automatic Transmission model $\phi =  \G(w[t] < 2520) \land  \F_{[0,10]}(v[t] > 50)$. \\
-Property for the Diesel Engine model $\phi=\G_{[\tau,T]}e<c$.  
-%$\phi = \G_{[5,10]} (Out1[t] < 41.1)$. 
->>>>>>> 239d45b6d1685d45f01a8201101dcc0f5c24e6bf
 %\emph{Seed}: Index for a sequence of random numbers in MATLAB. \emph{Solver}: Algorithm used for falsification. \emph{Computation time}: Amount of time (in seconds) until falsification or default stopping after the time limit in parentheses. Computation time is reported for a computer with 1.4GHz processor and 4GB RAM, running MATLAB R2015 64-bit version. \emph{Falsification}: Boolean variable indicating whether the algorithm could falsify the property.
 }
 %\vspace{-4mm}%Put here to reduce too much white space after your table 
