@@ -69,21 +69,27 @@ end
 %% Timeless
 
 Mt = MetaFalsifSDT(0,false);
-Bt = Mt.Br;
+Bt = Mt.Br.copy;
 
-Bt.QuasiRandomSample(100);
+Bt.QuasiRandomSample(60);
 Bt.SimInputsOnly = true;
 Bt.Sim();
 figure;
-Bt.PlotSignals('In1', [], {'b'});
+Bt.PlotSignals('In1', [], {'--r'});
+
+
 R = R0.copy();
 R.Eval(Bt)
 
 val = min(R.traces_vals,[], 2)';
 ipos = find(val>0);
-
+%%
 Bok = Bt.ExtractSubset(ipos);
-Bok.PlotSignals('In1',[], {'g'});
+Bok.PlotSignals('In1',[], {'g', 'LineWidth', 2});
+fig_resize(gcf,2,1)
+%%
+save2pdf('inputs_reject.pdf');
+%%
 BreachSamplesPlot(R);
 
 %% 
