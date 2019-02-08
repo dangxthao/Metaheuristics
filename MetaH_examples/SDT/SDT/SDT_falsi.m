@@ -44,7 +44,7 @@ for sigId = 0:51
         scaling=1e-6;
 
         nb_ctr_pts = 30; %10;
-        input_ranges = [Insig_org(1:nb_ctr_pts,2)-0.3 Insig_org(1:nb_ctr_pts,2)+0.3];
+        input_ranges = [Insig_org(1:nb_ctr_pts,2)-0.1 Insig_org(1:nb_ctr_pts,2)+0.1];
         %input_ranges = [0 3];
 
 
