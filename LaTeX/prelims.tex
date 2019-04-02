@@ -1,41 +1,6 @@
 \section{Preliminaries} \label{sec:prlim}
-\paragraph{Signal temporal logic.} 
 
-We assume that the correct or expected behaviors for system (\ref{eq:behaviorfunc}) are provided in an unambiguous form that can be efficiently measured and quantified. For this purpose, we use the signal temporal logic (STL) language to define the system specifications.
-STL is a modal logic that is well-defined over discrete or real-valued signals and discrete or continuous time \cite{MalerN04}.
-STL is appropriate for specifying correct behavior for CPSs, as it can be defined over the real-valued, continuous-time signals that characterize CPS behaviors. 
-
-We present an overview of STL and refer the reader to \cite{MalerN04} for a detailed presentation.
-An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
-Atomic predicates are defined over signal values and have the form $ f(\outsig(t))\sim 0$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
-Temporal operators ``always'' ($\G$), ``eventually'' ($\F$), and ``until'' ($\U$) have the usual meaning and are scoped using intervals of the form $(a,b)$, $(a,b]$, $[a,b)$, $[a,b]$, or $(a,\infty)$, where 
-$a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language.
-\begin{equation}~\label{eqn:stl-gen}
-\spec ~ := ~ \true \; | \; f(\outsig(t))\sim 0 \; | \; \neg \spec \; | \;
-\spec_1 \wedge \spec_2 \; | \; \spec_1 \U_I \spec_2:~~\sim \in \{ <,\leq,>,\geq,=,\neq \}
-\end{equation}
-The $\F$ operator is defined as $\F_I \spec \triangleq \true \U_I \spec$, and the $\G$ operator is defined as $\G_I \spec \triangleq \neg (\F _I \neg \spec)$. When omitted, the interval $I$ is taken  to be $[0,\infty)$. The semantics are described informally as follows. The signal $\outsig$ satisfies $f(\outsig)> 0$ at time $t$ if $f(\outsig(t))>0$. It satisfies $\spec = \G_{(0,1]}(f(\outsig)=0)$ if for all time $0< t \leq 1$, $f(\outsig(t))=0$. The signal satisfies $\spec= \F_{[1,2)}(f(\outsig)<0)$ iff there exists a time $t$ such that $1\leq t < 2$ and $f(\outsig(t))<0$. The two-dimensional signal $\outsig=(\outsig_1,\outsig_2)$ satisfies the formula $\spec=(\outsig_1>0)\U_{[2.8,4.5]}(\outsig_2<0)$ iff there is some time $t$ where $2.8 \leq t \leq 4.5$, $\outsig_2(t)<0$, and $\forall t'$ in $[2.8,t)$, $\outsig_1(t')>0$. 
-
-Given a signal $\outsig$ and an STL formula $\spec$, we use computationally efficient methods to determine \emph{how well} $\outsig$ satisfies $\spec$.
-The method uses the quantitative semantics for STL, which 
-is defined formally in \cite{DonzeM10}. The
-quantitative semantics defines a function $\rho$ such that a positive sign of
-$\rho(\spec,\outsig,t)$ indicates that $(\outsig,t)$ satisfies
-$\spec$, and its absolute value estimates the \emph{robustness} of
-this satisfaction. %If $\phi$ is an inequality of the form
-%$f(\outsig)>b$, then its robustness is $\rho(\spec,\outsig,t) = f(\outsig(t))-b$.  
-%When $t$ is omitted, we assume $t=0$ (i.e., $\rho(\spec,\outsig)=\rho(\spec,\outsig,0)$ ).
-%For the conjunction of two
-%formulas $\spec := \spec_1 \wedge \spec_2$, we have
-%$\rho(\spec,\outsig)=\min \left( \rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$,
-%while for the disjunction $\spec := \spec_1 \vee \spec_2$, we have
-%$\rho(\spec,\outsig)=\max\left(\rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$.
-%For a formula with until operator as $\spec := \spec_1 \U_I \spec_2$,
-%the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
-%  I}\left(\min\left(\rho(\spec_2,\outsig,t^\prime),\min_{t^{\prime\prime}\in
-%  [t,t^\prime]}\left(\rho(\spec_1,\outsig,t^{\prime\prime})\right)\right)\right).$
-
-\paragraph{Input signal parametrization.} We consider dynamical system models, represented by the following mapping:
+\paragraph{Model and input parameterization.} We consider dynamical system models, represented by the following mapping:
 \begin{eqnarray}
 \outsig = \transfunc (\paramsorig, \inputs),
 \end{eqnarray}
@@ -50,15 +15,51 @@ can be uniquely characterized by a set of $m$ parameters, whose valuation $\inpu
 
 In most existing work, the time instants are fixed, and the signal values at these instants are the decision variables for the search. In the present work, we build on that method by extending the class of input signals in two ways. First, the time instants are also parameterized and thus become decision variables in the search space. Second, we allow temporal constraints on the inputs, the goal of which, as mentioned in the introduction, is to reduce the search space to the input signals of interest. The idea being that, if the specification involves some temporal constraints on the input signals, focusing only on signals that satisfy the constraints will increase the falsification efficiency. 
 
-We call a function that maps input parameters to input functions a {\em parametrization function}. The input parameters are put into two parameter vectors: (1) the vector of time instant parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \valueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$. Given a parametrization function $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$, the dynamical system can be described as follows:
+We call a function that maps input parameters to input functions a {\em parameterization function}. The input parameters are put into two parameter vectors: (1) the vector of time instant parameters $\instantparams = (\tau_1,\ldots, \tau_m)$ taking values in $\instantparamset=\timeinterval^m$, and (2) the vector of value parameters $\valueparams= (\inputparams_1, \ldots, \valueparams_m)$ taking values in $\inputparamset$. We define an augmented set of parameters $\param = (\paramsorig, \instantparams, \valueparams)$, where $p \in \paramset = \paramsorigset \times \instantparamset  \times \inputparamset$. Given a parameterization function $\inputgenerator: \instantparamset \times \valueparamset \rightarrow \inputset$, the dynamical system can be described as follows:
 \begin{eqnarray} \label{eq:behaviorfunc}
 y &=& \behaviorfunc(\param),
 \end{eqnarray}
 where $\behaviorfunc(\param) = \transfunc (\paramsorig, \inputgenerator(\tau, \inputparams))$.  Note that $\inputgenerator$ is absorbed into the definition of $\behaviorfunc$.
 
+\paragraph{Signal temporal logic.} 
+
+We assume that the correct or expected behaviors for system (\ref{eq:behaviorfunc}) are provided in an unambiguous form that can be efficiently measured and quantified. For this purpose, we use the signal temporal logic (STL) language to define the system specifications.
+STL is a modal logic that is well-defined over discrete or real-valued signals and discrete or continuous time \cite{MalerN04}, which makes it appropriate for specifying correct behaviors for CPS.
+
+We present an overview of STL and refer the reader to \cite{MalerN04} for a detailed presentation.
+An STL formula $\spec$ consists of atomic predicates along with logical and temporal connectives.
+Atomic predicates are defined over signal values and have the form $f(\outsig(t))\sim 0$, where $f$ is a scalar-valued function over the signal $y$ evaluated at time $t$, and $\sim \in \{ <,\leq, >, \geq, =, \neq \}$.
+Temporal operators ``always'' ($\G$), ``eventually'' ($\F$), and ``until'' ($\U$) have the usual meaning and are scoped using intervals of the form $(a,b)$, $(a,b]$, $[a,b)$, $[a,b]$, or $(a,\infty)$, where 
+$a,b\in \real_{\geq 0}$ and $a<b$. If $I$ is a time interval, then the following grammar defines the STL language.
+\begin{equation}~\label{eqn:stl-gen}
+\spec ~ := ~ \true \; | \; f(\outsig(t))\sim 0 \; | \; \neg \spec \; | \;
+\spec_1 \wedge \spec_2 \; | \; \spec_1 \U_I \spec_2:~~\sim \in \{ <,\leq,>,\geq,=,\neq \}
+\end{equation}
+The $\F$ operator is defined as $\F_I \spec \triangleq \true \U_I \spec$, and the $\G$ operator is defined as $\G_I \spec \triangleq \neg (\F _I \neg \spec)$. When omitted, the interval $I$ is taken  to be $[0,\infty)$. The semantics are described informally as follows. The signal $\outsig$ satisfies $f(\outsig)> 0$ at time $t$ if $f(\outsig(t))>0$. It satisfies $\spec = \G_{(0,1]}(f(\outsig)=0)$ if for all time $0< t \leq 1$, $f(\outsig(t))=0$. The signal satisfies $\spec= \F_{[1,2)}(f(\outsig)<0)$ iff there exists a time $t$ such that $1\leq t < 2$ and $f(\outsig(t))<0$. The two-dimensional signal $\outsig=(\outsig_1,\outsig_2)$ satisfies the formula $\spec=(\outsig_1>0)\U_{[2.8,4.5]}(\outsig_2<0)$ iff there is some time $t$ where $2.8 \leq t \leq 4.5$, $\outsig_2(t)<0$, and $\forall t'$ in $[2.8,t)$, $\outsig_1(t')>0$. 
+
+Given a signal $\outsig$ and an STL formula $\spec$, we use computationally efficient methods to determine \emph{how well} $\outsig$ satisfies $\spec$.
+The method uses the quantitative semantics for STL, which 
+is defined formally in \cite{DonzeM10}. The
+quantitative semantics defines a function $\rho$ such that a positive sign of
+$\rho(\spec,\outsig,t)$ indicates that $(\outsig,t)$ satisfies
+$\spec$, and its absolute value estimates the \emph{robustness} of
+this satisfaction.
+% If $\phi$ is an inequality of the form
+%$f(\outsig)>b$, then its robustness is $\rho(\spec,\outsig,t) = f(\outsig(t))-b$.  
+%When $t$ is omitted, we assume $t=0$ (i.e., $\rho(\spec,\outsig)=\rho(\spec,\outsig,0)$ ).
+%For the conjunction of two
+%formulas $\spec := \spec_1 \wedge \spec_2$, we have
+%$\rho(\spec,\outsig)=\min \left( \rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$,
+%while for the disjunction $\spec := \spec_1 \vee \spec_2$, we have
+%$\rho(\spec,\outsig)=\max\left(\rho(\spec_1,\outsig),\rho(\spec_2,\outsig)\right)$.
+%For a formula with until operator as $\spec := \spec_1 \U_I \spec_2$,
+%the robustness is computed as $\rho(\spec,\outsig) = \max_{t^\prime\in
+%  I}\left(\min\left(\rho(\spec_2,\outsig,t^\prime),\min_{t^{\prime\prime}\in
+%  [t,t^\prime]}\left(\rho(\spec_1,\outsig,t^{\prime\prime})\right)\right)\right).$
+
 
 \section{Timed pattern coverage guided falsification} \label{sec:specCov}
-We use timed automata  to describe the temporal constraints that the input signals should satisfy \footnote{The STL formalism can be used as well, but the generation method was developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest.}, thus intuitively timed pattern coverage measures the portion of all possible timed patterns of the input signals satisfying the specification that have been explored. Timed patterns in the context of timed automata can be defined using timed words. Let us first briefly recall timed automata. A \emph{timed automaton} $\mathcal{A} = (\Loc, \Clocks, \InitLoc, \Alphabet, \Edg, \Inv)$ is a tuple where $\Loc$ is a finite set of locations; $\Clocks$ is a finite set of clocks; $\InitLoc \in \Loc$ is the initial location; $\Edg$ is a finite set of transitions. Each transition is the form $\delta = (q,\guard,a, \reset,q')$ where $q, q' \in \Loc$ are the source and destination locations; $\guard$ is the guard, and $\alpha$ is a label; $\reset$ is the reset map; $\Inv$ associates with each location $q$ a conjunction of clock constraints, called the invariant of $q$. A state of $\mathcal{A}$ is a pair $(q,x)$ where $q \in \Loc$ and $x$ is a clock valuation. The initial state of $\mathcal{A}$ is $(\InitLoc, x_0)$. The transitions of the automaton are of two types: timed transitions and discrete transitions. Timed transitions correspond to the evolution of the clocks within a location as long as the clock valuation satisfies the invariant of the location. Concerning discrete transitions, for $\alpha \in \Alphabet$, if the transition $\edg = (q,\guard,\alpha,\reset,q')$ is enabled at the state $(q, x)$ (that is $x$ satisfies the guard $G$), the discrete transition from $q$ to $q'$ can take place (if the clock valuation after resetting satisfies the invariant of $q'$). A run is an alternating sequence $(\InitLoc,x_0)\xrightarrow{\delta_1,\tau_1}(q_1,x_1)\ldots \xrightarrow{\delta_n,\tau_m}(q_m,x_m)$ of states and timed transitions with the following updating rules: $q_{i}$ is the successors of $q_{i-1}$ by $\delta_i$, the vector $x_{i-1}+\tau$ must satisfy the guard of $\delta_i$ and $x_i$ is updated by applying the reset map to $(x_{i-1}+\tau)$. In our formalism, the labels of discrete transitions correspond to the predicates on the signal values. A timed word of length $m$ is $\gamma = (a_1, \tau_1), \ldots, (a_m, \tau_m)$ where $a_i$ are labels of discrete transitions and $\tau_i$ are the time durations between two consecutive transitions; $(\tau_1, \ldots, \tau_m)$ is called a timed vector and $(a_1, \ldots, a_m)$ discrete pattern. Each label $a_i$ corresponds to a predicate on the real values $\valueparams$ of the signal of the form $\pi_i(\valueparams) \le 0$. 
+We use timed automata  to describe the temporal constraints that the input signals should satisfy \footnote{The STL formalism can be used as well, but the generation method we describe next was developed for timed automata; hence, for simplicity of explanation we assume that we are given a timed automaton that is equivalent to the precondition on the input signals in the STL specification of interest.}, thus intuitively timed pattern coverage measures the portion of all possible timed patterns of the input signals satisfying the specification that have been explored. Timed patterns in the context of timed automata can be defined using timed words. Let us first briefly recall timed automata. A \emph{timed automaton} $\mathcal{A} = (\Loc, \Clocks, \InitLoc, \Alphabet, \Edg, \Inv)$ is a tuple where $\Loc$ is a finite set of locations; $\Clocks$ is a finite set of clocks; $\InitLoc \in \Loc$ is the initial location; $\Edg$ is a finite set of transitions. Each transition is the form $\delta = (q,\guard,a, \reset,q')$ where $q, q' \in \Loc$ are the source and destination locations; $\guard$ is the guard, and $\alpha$ is a label; $\reset$ is the reset map; $\Inv$ associates with each location $q$ a conjunction of clock constraints, called the invariant of $q$. A state of $\mathcal{A}$ is a pair $(q,x)$ where $q \in \Loc$ and $x$ is a clock valuation. The initial state of $\mathcal{A}$ is $(\InitLoc, x_0)$. The transitions of the automaton are of two types: timed transitions and discrete transitions. Timed transitions correspond to the evolution of the clocks within a location as long as the clock valuation satisfies the invariant of the location. Concerning discrete transitions, for $\alpha \in \Alphabet$, if the transition $\edg = (q,\guard,\alpha,\reset,q')$ is enabled at the state $(q, x)$ (that is $x$ satisfies the guard $G$), the discrete transition from $q$ to $q'$ can take place (if the clock valuation after resetting satisfies the invariant of $q'$). A run is an alternating sequence $(\InitLoc,x_0)\xrightarrow{\delta_1,\tau_1}(q_1,x_1)\ldots \xrightarrow{\delta_n,\tau_m}(q_m,x_m)$ of states and timed transitions with the following updating rules: $q_{i}$ is the successors of $q_{i-1}$ by $\delta_i$, the vector $x_{i-1}+\tau$ must satisfy the guard of $\delta_i$ and $x_i$ is updated by applying the reset map to $(x_{i-1}+\tau)$. In our formalism, the labels of discrete transitions correspond to the predicates on the signal values. A timed word of length $m$ is $\gamma = (a_1, \tau_1), \ldots, (a_m, \tau_m)$ where $a_i$ are labels of discrete transitions and $\tau_i$ are the time durations between two consecutive transitions; $(\tau_1, \ldots, \tau_m)$ is called a timed vector and $(a_1, \ldots, a_m)$ discrete pattern. Each label $a_i$ corresponds to a predicate on the real values $\valueparams$ of the signal of the form $\pi_i(\valueparams) \le 0$. 
 
 Timed words together with the predicates associated to the transition labels provide the timed patterns for the valid input signals that is those satisfying the time constraints. The work \cite{BBBK16} proposes a method for uniform random sampling of timed words of finite length. This \emph{uniform} distribution allows estimating the probability of sampling a falsifying behaviour. Hence, the coverage of a given set of timed patterns can be characterised by its ``uniformity degree'', that is how well this set fits the uniform distribution. This uniformity degree notion can be formalized using the Kolmogorov-Smirnov test, which is a statistical test to measure how well a sample $S$ of points fits a given distribution described by a cumulative distribution function (CDF) $F$. More concretely, the Kolmogorov-Smirnov (KS) statistics is defined by the following value (which is a random variable when the sample is drawn at random):
 $$\KS(F,S)=\sup_{p\in\R^n}|F(p)-\tilde F_S(p)|$$

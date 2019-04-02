@@ -61,16 +61,24 @@
 %\setlength{\topsep}{1pt}
 %\setlength{\partopsep}{1pt}
 \textwidth=13.5cm %\textheight=5cm
+\addtolength{\topmargin}{-0.25in}
+
 	
 %\titlespacing*{\section}{1pt}{*0.8}{*0.8}
 %\titlespacing*{\subsection}{1pt}{*0.8}{*0.8}
 %\titlespacing*{\subsubsection}{1pt}{*0.3}{*0.3}
 %\titlespacing*{\section}{1pt}{1.1\baselineskip}{\baselineskip}
 
-\setlength{\abovecaptionskip}{0ex}
- \setlength{\belowcaptionskip}{0ex}
- \setlength{\floatsep}{0ex}
- \setlength{\textfloatsep}{0ex}
+\setlength{\abovecaptionskip}{1ex}
+\setlength{\belowcaptionskip}{1ex}
+\setlength{\floatsep}{1ex}
+\setlength{\textfloatsep}{1ex}
+
+%\addtolength{\abovedisplayskip}{-5mm}
+%\addtolength{\belowdisplayskip}{-5mm}
+
+\renewcommand{\baselinestretch}{.97}
+
  
 
 %\input{defs}
@@ -141,6 +149,7 @@
 \input{related}
 \input{conclusion}
 
-\bibliographystyle{plain}
+\scriptsize
+\bibliographystyle{short}
 \bibliography{bibliography} 
 \end{document}
