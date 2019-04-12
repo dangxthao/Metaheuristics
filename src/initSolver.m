@@ -225,8 +225,5 @@ xbest_vec= [];
     
     end %end of switch
     
-    
-%     disp('Initial point :');
-%     x0
-
+ 
     
