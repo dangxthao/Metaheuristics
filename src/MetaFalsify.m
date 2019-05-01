@@ -432,7 +432,6 @@ classdef MetaFalsify < handle
         
         %% Combined metaheuristics main algo
         function [this,falsified,total_nb_sim,falsi_point] = MetaCall(this)
-            
             % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL(Br, PHI, NB_SAMPLES, HITS)
             % FUNCTION: Call the metaheuristics to optimize the
             % robustness values
@@ -732,19 +731,19 @@ classdef MetaFalsify < handle
                 end   % end of switch
                 
                 
-                %%%%% Updating visited points in the current CoverageBreachSet Br
+                %% Updating visited points in the current CoverageBreachSet Br
                 this.Br = CoverageBreachSet_Add_Pts(this.Br, new_pts);
                 
                 
-                %%%%% Updating SolverInfo to store xlog, xbest, valbest
-                %%%%% updating xlog of the current solver
+                %% Updating SolverInfo to store xlog, xbest, valbest
+                %% updating xlog of the current solver
                 if ( ~isempty( SolverInfo(solver_index+1).Xlog ) )
                     SolverInfo(solver_index+1).Xlog=[SolverInfo(solver_index+1).Xlog, new_pts];
                 else
                     SolverInfo(solver_index+1).Xlog=new_pts;
                 end
                 
-                %%%%% get the new xbest of the current solver
+                %% get the new xbest of the current solver
                 if (solver_index==0) %%PR solver stores results in StatFalsObj
                     new_xbest = (StatFalsObj.lower_bounds.pts(new_best_id,:))';
                 else
@@ -763,7 +762,7 @@ classdef MetaFalsify < handle
                     SolverInfo(solver_index+1).Valbest=new_obj_best;
                     SolverInfo(solver_index+1).Xbest=new_xbest;
                 end
-                %%%% End of updating SolverInfo
+                %% End of updating SolverInfo
                 
                 time_solver = toc(timervar_solver);
                 fprintf(fileID,'\n This solver time = %f seconds',time_solver);
@@ -777,7 +776,7 @@ classdef MetaFalsify < handle
                     fprintf(fileID,'\n Exit from Solver %d ', solver_index);
                     comptime = toc(TotCompTime);
                     fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                    error('Falisifier found! Exit normally');
+                    error('Falsifier found! Exit normally');
                 end
                 
                 total_nb_sim = total_nb_sim+size(new_pts,2); % update total nb simulations
@@ -908,7 +907,7 @@ classdef MetaFalsify < handle
                         fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
                         solver_index = 1;
                         round_count = round_count + 1;
-                        
+                         
                         rob_stagnant
                         
                         if rob_stagnant

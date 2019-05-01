@@ -64,6 +64,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
     %                       always lie on vertices of the "eps" grid. This
     %                       should only be called once, at the beginning of
     %                       the analysis.
+    
     %       NewRun - Takes a set of parameter values, runs a simulation
     %                using the given values, and adds the new parameter to
     %                the hash maps. Takes as input a cell array containing 
@@ -97,7 +98,7 @@ classdef CoverageBreachSet < BreachSimulinkSystem
     %       VaryingParamList - Returns the indices of the system parameters
     %                          that are allowed to vary.
     %
-    %       LowerLeftCorner - Returns the corrdinate of the lower left
+    %       LowerLeftCorner - Returns the coordinate of the lower left
     %                         corner of the parameter space.
     %
     %See also BreachSimulinkSystem, BreachOpenSystem, signal_gen

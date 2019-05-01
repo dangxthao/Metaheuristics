@@ -1,13 +1,12 @@
-Bripple =  BreachSignalGen(fun_signal_gen());
-Bripple.dt_default =1; 
-Bripple.SetParamRanges({'x1', 'x2'}, [0 1]);
-B = Bripple.copy();
-B.GridSample(50);
+init_instance;
 
 
 %% plotting the function
+Bgrid = Bripple.copy();
+Bgrid.GridSample(50);
 Rgrid = BreachRequirement('y[t]>-2');
-Rgrid.Eval(B);
+Rgrid.Eval(Bgrid);
+
 %%
 x1 = Rgrid.GetParam('x1')';
 x2 = Rgrid.GetParam('x2')';
