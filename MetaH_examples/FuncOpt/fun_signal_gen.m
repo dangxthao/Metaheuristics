@@ -6,9 +6,12 @@ classdef fun_signal_gen < signal_gen
     
    methods
        
-       function this = fun_signal_gen(varargin)
+       function this = fun_signal_gen(f)
            this.signals = {'y'};
-           this.fun = @this.ripple_fun;
+           if nargin<1
+             f = 'ripple';
+           end
+           this.fun = eval(['@this.' f ]);
            this.params = {'x1', 'x2'};
            this.p0 = [0  0];
        end
@@ -23,14 +26,14 @@ classdef fun_signal_gen < signal_gen
    
    methods (Static)
     
-      function y = ripple_fun(X)
+      function y = ripple(X)
           x1 = X(1);
           x2 = X(2);
           res1 = - exp( - 2*log(2)*((x1 - 0.1)/0.8)^2 ) * ((sin(5*pi*x1))^6 + 0.1*( cos(500*pi*x1))^2 );
           y = res1 - exp( - 2*log(2)*((x2 - 0.1)/0.8)^2 ) * (( sin(5*pi*x2))^6 + 0.1*(cos(500*pi*x2))^2 );
       end
        
-      function y = holder_fun(X)
+      function y = holder(X)
           x1 = X(1);
           x2 = X(2);
          y = -(x2 + 47) * sin(sqrt(abs(x2 + x1 / 2.0 + 47))) - x1 * sin(sqrt(abs(x1 - (x2 + 47)))); 
