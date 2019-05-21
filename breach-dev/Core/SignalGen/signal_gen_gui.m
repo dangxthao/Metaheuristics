@@ -76,6 +76,8 @@ handles.select_cells = [];
 if isa(varargin{1}, 'BreachOpenSystem')
     handles.B = varargin{1};
     handles.IG = handles.B.InputGenerator.copy();
+    %recover domains
+    handles.IG.Domains = handles.B.GetDomain(handles.IG.P.ParamList);    
     signal_names = handles.B.Sys.InputList;
 elseif isstruct(varargin{1})||ischar(varargin{1})  % configuration struct
     handles.B = [];
@@ -86,7 +88,6 @@ elseif isstruct(varargin{1})||ischar(varargin{1})  % configuration struct
     end
 end
 set(handles.popupmenu_signal_name, 'String', signal_names);
-
 
 %
 signal_types= {
@@ -153,11 +154,9 @@ update_config(handles);
 
 % Init plot
 update_plot(handles);
-%fill_uitable_params(handles.uitable_params, signal_gens{1}.params, signal_gens{1}.p0, signal_gens{1}.params_domain);
 
 % Update handles structure
 guidata(hObject, handles);
-%uiwait(handles.main);
 
 function st = dbl2str(x)
 st = num2str(x, '%0.5g');
@@ -165,15 +164,15 @@ st = num2str(x, '%0.5g');
 function time_string = get_time_string(time)
 if ischar(time)
     time_string = time;
-elseif isnumeric()
+elseif isnumeric(time)
     if isscalar(time)
         time_string = ['[0 ' dbl2str(time) ']'];
     elseif numel(time)==2
         time_string = ['[' dbl2str(time(1)) ' ' dbl2str(time(2)) ']'];
-    elseif max(diff(diff(time)))<100*eps
+    elseif max(diff(diff(time)))<1000*eps
         time_string = ['0:' dbl2str(time(2)-time(1)) ':' dbl2str(time(end))];
     else
-        time_string = num2str(time);
+        time_string = ['[' num2str(time) ']'] ;
     end
 end
 
@@ -320,6 +319,17 @@ function uitable_params_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
+
+try
+    e = str2num(eventdata.NewData);
+    assert(isnumeric(e));
+    assert(size(e, 1)==1);
+catch
+    if ~isempty(eventdata.NewData)
+        warndlg(sprintf('Invalid value(s): %s', eventdata.NewData));
+    end
+end
+
 sg = get_current_sg(handles);
 [sg.params, sg.p0, sg.params_domain] = read_uitable_params(hObject);
 
@@ -421,7 +431,7 @@ sig_name = sig_names{popup_sel_index};
 
 % fetch current generator
 sg = handles.signal_gen_map(sig_name);
-
+cla;
 % compute and plot signal
 time = evalin('base',handles.time);
 sg.plot(time);
@@ -429,6 +439,9 @@ sg.plot(time);
 title(sig_name, 'Interpreter', 'None');
 grid on;
 set(gca, 'FontSize',8)
+
+% compute enveloppe
+sg.plot_enveloppe(sig_name,time);
 
 update_uitable(handles);
 

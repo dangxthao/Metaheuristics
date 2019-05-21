@@ -20,8 +20,7 @@ classdef fixed_cp_signal_gen < signal_gen
     methods
         
         function this = fixed_cp_signal_gen(signals, cp, method,p0)
-            
-            
+                        
             if nargin == 1
                 cp = 1;
                 method = 'previous';
@@ -92,8 +91,6 @@ classdef fixed_cp_signal_gen < signal_gen
                         t_cp = linspace(time(1), time(end), this.num_cp(i_cp))';
                         if numel(t_cp) == 1
                             x = cp_values(1)*ones(numel(time),1);
-%                        elseif numel(t_cp)==2
-%                           x = cp_values(1)*ones(numel(time),1);
                         else
                             x = interp1(t_cp, cp_values, time', meth, 'extrap');
                         end
@@ -139,5 +136,8 @@ classdef fixed_cp_signal_gen < signal_gen
             plot(t_cp,x_cp, 'or');
             hold off;
         end
+        
+        
+        
     end
 end

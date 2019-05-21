@@ -30,10 +30,10 @@ for itfo = 1:numel(formulas)
 %        monitor = formula;
 %   end
 %   if ~isa(monitor, 'param_constraint_monitor')
-        if isa(monitor,'stl_monitor')
-            find_template();
-        end
-        signals = union(signals, monitor.signals, 'stable');
+%        if isa(monitor,'stl_monitor')
+%            find_template();
+%        end
+    signals = union(signals, monitor.signals, 'stable');
 %   end
     monitors = [monitors {monitor}];
 end
@@ -48,8 +48,8 @@ end
                 else
                     monitor = alw_monitor(formula);
                 end
-            case {'ev', 'eventually'}
-                monitor  = ev_monitor(formula);
+%            case {'ev', 'eventually'}
+%                monitor  = ev_monitor(formula);
 %             case {'until'}
 %             otherwise  % default to top alw if horizon is 0
 %                hor = get_horizon(formula);

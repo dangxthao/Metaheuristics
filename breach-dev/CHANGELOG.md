@@ -1,5 +1,40 @@
+# Release 1.5.2
+
+- minor fix for maxstep/minstep detection causing crash with some solver configuration (Simulink)
+
+# Release 1.5.1
+
+- better detection of maximum and minimum step sizes when interfacing
+  a model 
+- some cleaning in Examples folder 
+
+## Bugfixes
+- fixed bug in SetInputGenGui 
+- fixed bug whereas time was sometimes not set properly with SetTime
+- fixed crash when minimum step size is bigger than eps, used for
+  detecting logged signals when creating interface
+- fixed bug causing BreachSimulinkSystem to fail when a logged object
+  is not a simple signal 
+- fixed bug when sampling 1D grids using legacy Refine 
+- fixed typo bug in InstallBreach
+
 # Release 1.5.0
-TBD
+
+- from_file_signal_gen can have an initialization script 
+- mixed integer optimization support
+- signal_gen_gui more robust 
+- param_gen framework: arbitrary parameter transformation 
+- better backward compatibility between BreachRequirement and STL_Formula 
+- BreachSamplesPlot and BreachSignalsPlot improved
+- BreachSimulinkSystem now look at all scalar parameters in the base
+  workspace for potential tunable parameters, regardless if they are
+  detected in the model
+- STL formulas with no signals now are accepted (constraints on parameters)
+
+## Bugfixes
+- spike and exponential signal generators fixed
+- fixed an issue with aliases not being always found 
+- fixed duplicates in signals map
 
 # Release 1.4.3
 
@@ -11,7 +46,6 @@ TBD
 # Release 1.4.2 
 
 - Improved display values for multi-objective optimization
-
 
 # Release 1.4.1
 

@@ -29,8 +29,9 @@ classdef BreachProblem < BreachStatus
     %                     help to know available options (E.g., for matlab solvers, this is
     %                     often set using the optimset command).
     %   max_time       -  maximum wall-time budget allocated to optimization
-    %   max_obj_eval   -  maximum number of objective function evaluation (
-    %   often translates into number of simulations of system under test)
+    %   max_obj_eval   -  maximum number of objective function evaluation 
+    %                     (often translates into number of simulations of 
+    %                      system under test)
     %   log_traces     -  (default=true) logs all traces computed during optimization                 
     %   T_spec         -  time 
     % 
@@ -48,17 +49,19 @@ classdef BreachProblem < BreachStatus
     %                     and returns these options.
     %   solve           - calls the solver 
     %   GetLog          - returns a BreachRequirement object with logged
-    %   traces
+    %                     traces
     %   GetBest         - returns a BreachRequirement object with the best
-    %   trace (worst satisfaction in case of falsification) 
+    %                     trace (worst satisfaction in case of falsification) 
     %
     % See also FalsificationProblem, ParamSynthProblem, ReqMiningProblem
+    %
     
     %% Properties 
     properties
         objective
         x0
-        solver= 'global_nelder_mead'   % default solver name
+        %solver= 'global_nelder_mead'   % default solver name
+        solver= 'meta'   % default solver name
         solver_options    % solver options
         Spec              % BreachRequirement object reset to R0 for each objective evaluation
         T_Spec=0
@@ -70,11 +73,11 @@ classdef BreachProblem < BreachStatus
     % properties related to the function to minimize
     properties
         BrSet
-        BrSys         % BreachSystem reset for each objective evaluation
-        BrSet_Best   
-        BrSet_Logged
+        BrSys         % BreachSystem - reset for each objective evaluation
+        BrSet_Best    
+        BrSet_Logged   
         R0            % BreachRequirement object initial 
-        R_log    % BreachRequirement object logging requirement evaluations during solving 
+        R_log         % BreachRequirement object logging requirement evaluations during solving 
         
         params
         domains
@@ -95,13 +98,13 @@ classdef BreachProblem < BreachStatus
     % misc options
     properties
         display = 'on'
-        freq_update = 10 
+        freq_update = 2 
         use_parallel = 0
         max_time = inf
         time_start = tic
         time_spent = 0
         nb_obj_eval = 0
-        max_obj_eval = 100
+        max_obj_eval = 1000
         mixed_integer_optim_solvers = {'ga'};
     end
     
@@ -123,9 +126,9 @@ classdef BreachProblem < BreachStatus
         
         solvers_others = ...
             {'fmincon', ...
-            'simulannealbnd', ...
-            'optimtool',...
-            'ga',...
+             'simulannealbnd', ...
+             'optimtool',...
+             'ga',...
             };
         
         if ~exist('verbose')||(verbose~=0)
@@ -156,27 +159,28 @@ classdef BreachProblem < BreachStatus
         %% Constructor
         function this = BreachProblem(BrSet, phi, params, ranges)
             
-            if ~isa(phi, 'BreachRequirement')
-                phi = BreachRequirement(phi);
+            if nargin>0
+                if ~isa(phi, 'BreachRequirement')
+                    phi = BreachRequirement(phi);
+                end
+                
+                this.R0 = phi.copy();
+                this.Spec = phi;
+                
+                switch nargin
+                    case 2
+                        this.ResetObjective(BrSet);
+                    case 3
+                        this.ResetObjective(BrSet, params);
+                    case 4
+                        this.ResetObjective(BrSet, params, ranges);
+                end
+                % setup default solver
+                this.setup_solver();
+                
+                % reset display
+                rfprintf_reset();
             end
-            
-            this.R0 = phi.copy(); 
-            this.Spec = phi;
-            
-            switch nargin 
-                case 2
-                    this.ResetObjective(BrSet);
-                case 3
-                    this.ResetObjective(BrSet, params);
-                case 4
-                    this.ResetObjective(BrSet, params, ranges);
-            end
-            % setup default solver
-            this.setup_solver();
-            
-            % reset display
-            rfprintf_reset();
-            
         end
         
         function Reset_x0(this)
@@ -209,7 +213,8 @@ classdef BreachProblem < BreachStatus
                   
             % Parameter ranges
             if ~exist('params','var')
-                params = this.BrSet.GetBoundedDomains();
+                [params, ipr] = this.BrSet.GetBoundedDomains();
+                params = params(ipr>this.BrSet.P.DimX);
             else
                 if ischar(params)
                     params = {params};
@@ -293,6 +298,24 @@ classdef BreachProblem < BreachStatus
             this.solver_options = solver_opt;
         end
         
+        function solver_opt = setup_quasi_random(this, varargin)
+            solver_opt = struct('method', 'halton',...
+                'quasi_rand_seed', 1,...
+                'num_quasi_rand_samples', 100 ...   % arbitrary - should be dim-dependant?  
+            );
+            solver_opt= varargin2struct(solver_opt, varargin{:});
+        
+            this.solver = 'quasi_random';
+            this.solver_options = solver_opt; 
+        end
+         
+        function solver_opt = setup_corners(this)
+            solver_opt = struct('num_corners', 100 ...   % arbitrary - should  be dim-dependant?  
+            );
+            this.solver = 'corners';
+            this.solver_options = solver_opt; 
+        end
+ 
         function solver_opt = setup_optimtool(this)
             solver_opt = optimset('Display', 'iter');
             this.display = 'off';
@@ -303,7 +326,9 @@ classdef BreachProblem < BreachStatus
         end
         
         function solver_opt = setup_fmincon(this)
-            disp('Setting options for fmincon solver');
+            if this.verbose>=1
+                disp('Setting options for fmincon solver');
+            end
             solver_opt = optimoptions('fmincon', 'Display', 'iter');
             this.display = 'off';
             if this.max_obj_eval < inf
@@ -392,6 +417,15 @@ classdef BreachProblem < BreachStatus
                     
                 case 'basic'
                     res = this.solve_basic();
+                
+                case 'quasi_random'
+                    res = this.solve_quasi_random();
+    
+                case 'corners'
+                    res = this.solve_corners();
+                    
+                case 'nelder_mead'
+                    res = this.solve_nelder_mead();
                     
                 case 'global_nelder_mead'
                     res = this.solve_global_nelder_mead();
@@ -407,7 +441,10 @@ classdef BreachProblem < BreachStatus
                     
                     [x, fval, counteval, stopflag, out, bestever] = cmaes(this.objective, this.x0', [], this.solver_options);
                     res = struct('x',x, 'fval',fval, 'counteval', counteval,  'stopflag', stopflag, 'out', out, 'bestever', bestever);
-                    
+                    this.add_res(res);
+
+                case 'meta'
+                    res = this.solve_meta();                
                 case 'ga'
                     res = solve_ga(this, problem);
                     
@@ -419,7 +456,7 @@ classdef BreachProblem < BreachStatus
                             problem.x0 = this.generate_new_x0;
                         end
                     end
-                    
+                    this.add_res(res);                    
                 case 'fminsearch'
                     while ~this.stopping
                         if this.use_parallel
@@ -442,6 +479,8 @@ classdef BreachProblem < BreachStatus
                             end
                         end
                     end
+                    this.add_res(res);
+    
                 case 'simulannealbnd'
                     if this.use_parallel
                         num_works = this.BrSys.Sys.Parallel;
@@ -456,9 +495,9 @@ classdef BreachProblem < BreachStatus
                         end
                     else
                         [x,fval,exitflag,output] = feval(this.solver, problem);
-                        res = struct('x',x,'fval',fval, 'exitflag', exitflag, 'output', output);
+                        res = struct('x',x,'fval',fval, 'exitflag', exitflag, 'output', output);                        
                     end
-                    
+                    this.add_res(res);
                 case 'optimtool'
                     problem.solver = 'fmincon';
                     optimtool(problem);
@@ -467,12 +506,13 @@ classdef BreachProblem < BreachStatus
 
                 case 'binsearch'
                     res = solve_binsearch(this);
+                    this.add_res(res);
 
                 otherwise
                     res = feval(this.solver, problem);
+                    this.add_res(res);
                     
             end
-            this.res = res;
             this.DispResultMsg(); 
         
             %% Saving run in cache folder
@@ -499,6 +539,7 @@ classdef BreachProblem < BreachStatus
             BrQ.SetParamRanges(this.params, [this.lb this.ub])
             BrC = BrQ.copy();
             nb_corners = this.solver_options.nb_max_corners;
+            qseed = this.solver_options.quasi_rand_seed;
             nb_samples = this.solver_options.nb_new_trials;
             step = this.solver_options.start_at_trial;
             
@@ -514,7 +555,7 @@ classdef BreachProblem < BreachStatus
             else
                 qnb_samples = nb_samples+qstep;
                 if qnb_samples>0  % needs to finish corners plus some
-                    BrQ.QuasiRandomSample(qnb_samples);
+                    BrQ.QuasiRandomSample(qnb_samples, qseed);
                     XQ = BrQ.GetParam(this.params);
                     X0 = [XC(:,step+1:end) XQ];
                 else % more corners than samples anyway
@@ -609,7 +650,6 @@ classdef BreachProblem < BreachStatus
             % this.setup_solver();
             % TODO: review when needed on solver-by-solver basis - maybe
             % warning in order ?
-            
             
         end
         
@@ -727,8 +767,8 @@ classdef BreachProblem < BreachStatus
                     this.BrSet_Logged = this.BrSys.copy();
                     this.R_log = this.Spec.copy();
                 else
-                    this.BrSet_Logged.Concat(this.BrSys);
-                    this.R_log.Concat(this.Spec);
+                    this.BrSet_Logged.Concat(this.BrSys, true); % fast concat
+                    this.R_log.Concat(this.Spec, true);
                 end
                 this.Spec = this.R0.copy();
             end
@@ -744,11 +784,11 @@ classdef BreachProblem < BreachStatus
             % Timing and num_eval       
             this.nb_obj_eval= numel(this.obj_log(1,:));
             this.time_spent = toc(this.time_start);
-           
+            
         end
         
         function DispResultMsg(this)
-       
+       if ~strcmp(this.display, 'off')
             % display status of last eval if not already done
             if rem(this.nb_obj_eval,this.freq_update)
                 this.display_status();
@@ -760,7 +800,7 @@ classdef BreachProblem < BreachStatus
             end
             
             if this.nb_obj_eval > this.max_obj_eval
-                fprintf('\n Stopped after max_obj_eval was reached (maximum number of objective function evaluation.\n' );
+                fprintf('\n Stopped after max_obj_eval was reached (maximum number of objective function evaluations).\n' );
             end
             
             if numel(this.res) > 1 && this.use_parallel
@@ -777,20 +817,23 @@ classdef BreachProblem < BreachStatus
             end
 
             this.Display_Best_Results(this.obj_best, this.x_best);
-            
+        end
         end
         
         function Display_Best_Results(this, best_fval, param_values)
             fprintf('\n ---- Best value %g found with\n', min(best_fval));
-            
+            this.Display_X(param_values);
+        end
+
+        function Display_X(this, param_values)
             for ip = 1:numel(this.params)
-                % check the enum_idx variable and restore the params
                 value = param_values(ip);
                 fprintf( '        %s = %g\n', this.params{ip},value)
             end
             fprintf('\n');
         end
-             
+
+        
         function [BrOut, Berr, BbadU] = GetBrSet_Logged(this)
             % GetBrSet_Logged gets BreachSet object containing parameters and traces computed during optimization
             BrOut = this.BrSet_Logged;
@@ -896,8 +939,20 @@ classdef BreachProblem < BreachStatus
                 BrOut.Eval(B);
             end
         end
-                
-        
+ 
+        function add_res(this,res)
+        % appends new optimization result
+            if isempty(this.res)
+                this.res = res;
+            elseif isstruct(this.res)
+                res_list = {this.res};
+                this.res = res_list;
+            else
+                this.res{end+1} = res; 
+            end
+        end
     end
+    
+    
     
 end

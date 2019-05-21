@@ -61,6 +61,26 @@ classdef signal_gen <handle
             plot(time, x); 
         end
         
+        function plot_enveloppe(this, signal, time)
+            S = BreachSignalGen(this);                        
+            dom = S.GetBoundedDomains();
+            if ~isempty(dom)
+                S.CornerSample(2);
+                S.Sim(time);
+                hold on;
+                
+                vcell = S.GetSignalValues(signal);
+                vbot =vcell{1};
+                vtop = vcell{2};
+                
+                plot(time, vbot, 'k', 'LineWidth', 1.5);
+                plot(time, vtop, 'k', 'LineWidth', 1.5);
+                t2 = [time, fliplr(time)];
+                inBetween = [vbot, fliplr(vtop)];
+                f = fill(t2, inBetween, 'k', 'FaceAlpha', 0.2);
+            end
+        end                               
+        
    end
     
 end
