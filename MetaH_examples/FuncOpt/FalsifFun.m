@@ -2,7 +2,7 @@ init_instance;
 
 
 %% plotting the function
-Bgrid = Bripple.copy();
+Bgrid = B_ripple.copy();
 Bgrid.GridSample(50);
 Rgrid = BreachRequirement('y[t]>-2');
 Rgrid.Eval(Bgrid);
@@ -17,7 +17,7 @@ surf(x1q,x2q,vq)
 
 %% Falsification problem 
 R = BreachRequirement('y[t]>-2.2');
-Pb = FalsificationProblem(Bripple,R);
+Pb = FalsificationProblem(B_ripple,R);
 Pb.setup_global_nelder_mead();
 Pb.max_obj_eval = 1000;
 Pb.solve();
