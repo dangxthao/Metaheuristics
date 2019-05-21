@@ -1,4 +1,6 @@
 addpath ../../src
+addpath ../../breach-dev
+InitBreach 
 
 B_ripple =  BreachSignalGen(fun_signal_gen());
 B_ripple.dt_default =1; 
