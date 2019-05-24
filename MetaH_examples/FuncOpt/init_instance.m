@@ -24,7 +24,6 @@ B_ackley2.dt_default =1;
 B_ackley2.SetParamRanges({'x1', 'x2'}, [-32 32]);
 
 
-R_ackley3 = BreachRequirement('y[t]>-200');
 B_ackley3 = BreachSignalGen(fun_signal_gen('ackley2'));
 B_ackley3.dt_default =1; 
 B_ackley3.SetParamRanges({'x1', 'x2'}, [-32 32]);

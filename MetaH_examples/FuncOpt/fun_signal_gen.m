@@ -42,7 +42,7 @@ classdef fun_signal_gen < signal_gen
       function y = ackley2(X)
           x1 = X(1);
           x2 = X(2);
-           y = - 200*exp(-0.02*sqrt(x1*x1+ x2*x2)); 
+           y = -200*exp(-0.02*sqrt(x1*x1+ x2*x2)); 
       end
       
       function y = ackley3(X)

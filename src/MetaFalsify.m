@@ -519,41 +519,59 @@ classdef MetaFalsify < handle
                 
                 switch solver_index
                     
-                    case 0 % pseudo-random sampling
+                    case 0 % quasi-random sampling
                         
-                        fprintf(1,'\n *** Running PseudoRandom');
-                        fprintf(fileID,'\n *** Running PseudoRandom');
+                        fprintf(1,'\n *** Running QuasiRandom');
+                        fprintf(fileID,'\n *** Running QuasiRandom');
                         
                         time_lim = this.solver_time(1,solver_index +1); %100; %500;
-                        
-                        nb_samples = 10;
-                        nb_hits = 20;
+                        eval_lim = this.max_obj_eval(1,solver_index +1);
+%                         nb_samples = 10;
+%                         nb_hits = 20;
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
                         fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
-                        fprintf(1, 'nb_samples for PR is %d seconds\n',nb_samples);
-                        fprintf(fileID, 'nb_samples for PR is %d \n',nb_samples);
-                        fprintf(1, 'nb_hits for PR %d \n',nb_hits);
-                        fprintf(fileID, 'nb_hits for PR is %d \n',nb_hits);
+%                         fprintf(1, 'nb_samples for PR is %d seconds\n',nb_samples);
+%                         fprintf(fileID, 'nb_samples for PR is %d \n',nb_samples);
+%                         fprintf(1, 'nb_hits for PR %d \n',nb_hits);
+%                         fprintf(fileID, 'nb_hits for PR is %d \n',nb_hits);
+                        
+                        fprintf(1, '\n Max eval number is %d seconds\n',eval_lim);
+                        fprintf(fileID, '\n Max eval number is %d seconds\n',eval_lim);
+%                      
                         
                         
-                        StatFalsObj=PseudoRandomCall(StatFalsObj,CBS,this.R,nb_samples,time_lim,nb_hits);
+                        CBS.QuasiRandomSample(this.max_obj_eval(1,solver_index +1));
+                        falsif_pb = FalsificationProblem(CBS, this.R);
+                        falsif_pb.setup_init();
+                        falsif_pb.max_obj_eval = this.max_obj_eval(1,solver_index +1);
+                        falsif_pb.max_time = this.solver_time(1,solver_index +1); 
+                        falsif_pb.solve();
                         
                         
-                        new_samples.pts
-                        
-                        % adding new points to Br
-                        new_pts = transpose(StatFalsObj.new_samples.pts); % column vectors of newly simulated points.
-                        %Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                         % adding new points to xlog
-                        %Xlog.xlogPR = [Xlog.xlogPR, new_pts];
-                        
-                        time_solver = toc(timervar_solver);
-                        
-                        fprintf(1,'\n PseudoRandom time = %f seconds',time_solver);
-                        fprintf(fileID,'\n PseudoRandom time = %f seconds',time_solver);
+                        new_pts = falsif_pb.X_log % column vectors of newly simulated points.
+                        %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
+                        %                     Xlog.xlogCMAES = [Xlog.xlogCMAES, new_pts];
                         
                         % adding new points to xbest
-                        [new_obj_best,new_best_id]=min(StatFalsObj.lower_bounds.vals);
+                        new_obj_best = falsif_pb.obj_best;
+                        
+                        
+%                         StatFalsObj=PseudoRandomCall(StatFalsObj,CBS,this.R,nb_samples,time_lim,nb_hits);
+%                         
+%                         % adding new points to Br
+%                         new_pts = transpose(StatFalsObj.new_samples.pts); % column vectors of newly simulated points.
+%                         %Br = CoverageBreachSet_Add_Pts(Br, new_pts);
+%                         % adding new points to xlog
+%                         %Xlog.xlogPR = [Xlog.xlogPR, new_pts];
+%                         
+%                         time_solver = toc(timervar_solver);
+%                         
+%                         fprintf(1,'\n PseudoRandom time = %f seconds',time_solver);
+%                         fprintf(fileID,'\n PseudoRandom time = %f seconds',time_solver);
+%                         
+%                         % adding new points to xbest
+%                         [new_obj_best,new_best_id]=min(StatFalsObj.lower_bounds.vals);
                                                 
                         %%%%%%%%%
                     case 1 % CMAES
@@ -564,7 +582,7 @@ classdef MetaFalsify < handle
                         if (call_count==1)
                             time_lim = this.solver_time(1,solver_index +1); %2000; %2000 %800
                         else
-                            time_lim = this.solver_time(1,solver_index +1); 2000; %500 %2000 %400
+                            time_lim = this.solver_time(1,solver_index +1); %2000; %500 %2000 %400
                         end
                         
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
@@ -761,7 +779,8 @@ classdef MetaFalsify < handle
                 
                 %% get the new xbest of the current solver
                 if (solver_index==0) %%PR solver stores results in StatFalsObj
-                    new_xbest = (StatFalsObj.lower_bounds.pts(new_best_id,:))';
+                    %new_xbest = (StatFalsObj.lower_bounds.pts(new_best_id,:))';
+                    new_xbest = falsif_pb.x_best;
                 else
                     new_xbest = falsif_pb.x_best;
                 end
