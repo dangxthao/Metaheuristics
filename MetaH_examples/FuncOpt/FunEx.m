@@ -3,12 +3,11 @@ init_instance;
 
 
 %% plotting the function
-Bgrid = B_ripple.copy();
-Bgrid.GridSample(50);
-Rgrid = BreachRequirement('y[t]>-10');
-Rgrid.Eval(Bgrid);
+% Bgrid = B_ripple.copy();
+% Bgrid.GridSample(50);
+% Rgrid = BreachRequirement('y[t]>-10');
+% Rgrid.Eval(Bgrid);
 
-%%
 % x1 = Rgrid.GetParam('x1')';
 % x2 = Rgrid.GetParam('x2')';
 % v = Rgrid.traces_vals';
@@ -16,11 +15,14 @@ Rgrid.Eval(Bgrid);
 % vq = griddata(x1,x2,v,x1q,x2q);
 % surf(x1q,x2q,vq)
 
+
 %% Falsification problem 
-R = BreachRequirement('y[t]>-200');
-B = B_ackley2.copy();
+R = BreachRequirement('y[t]>-219');
+%B = B_ackley2.copy();
+B = B_ackley3.copy();
+
 %Pb = FalsificationProblem(B_ripple,R);
-Pb = FalsificationProblem(B_ackley2,R);
+Pb = FalsificationProblem(B, R);
 Pb.StopAtFalse = 1;
 % Pb
 % 

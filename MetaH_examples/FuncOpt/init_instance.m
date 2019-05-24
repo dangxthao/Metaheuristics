@@ -18,9 +18,13 @@ Pb_holder = FalsificationProblem(B_holder,R_holder);
 Pb_holder.StopAtFalse=0;
 
 
-R_ackley2 = BreachRequirement('y[t]>-210');
+R_ackley2 = BreachRequirement('y[t]>-200');
 B_ackley2 = BreachSignalGen(fun_signal_gen('ackley2'));
 B_ackley2.dt_default =1; 
 B_ackley2.SetParamRanges({'x1', 'x2'}, [-32 32]);
-Pb_ackley2 = FalsificationProblem(B_ackley2,R_ackley2);
-Pb_ackley2.StopAtFalse=0;
+
+
+R_ackley3 = BreachRequirement('y[t]>-200');
+B_ackley3 = BreachSignalGen(fun_signal_gen('ackley2'));
+B_ackley3.dt_default =1; 
+B_ackley3.SetParamRanges({'x1', 'x2'}, [-32 32]);

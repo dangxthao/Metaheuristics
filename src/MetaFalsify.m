@@ -62,21 +62,21 @@ classdef MetaFalsify < handle
     
     methods
         %% Simple constructor
-%         function this = MetaFalsify(model_name,IO_signal_names)
-%             if nargin == 2
-%                 this.CoverageBreachSetCreation(model_name,IO_signal_names);
-%             else
-%                 this.CoverageBreachSetCreation(model_name);                
-%             end
-%         end 
-        
-        
+                
         function this = MetaFalsify(Br, R, Pbs)
             this.Br = Br.copy();
             this.R = R;
             this.Pbs = Pbs.copy();
         end 
         
+        
+        function this = MetaFalsifyCreate(model_name,IO_signal_names)
+            if nargin == 2
+                this.CoverageBreachSetCreation(model_name,IO_signal_names);
+            else
+                this.CoverageBreachSetCreation(model_name);                
+            end
+        end   
         
         function this = CoverageBreachSetCreation(this,model_name,IO_signal_names)
             
@@ -538,6 +538,8 @@ classdef MetaFalsify < handle
                         
                         StatFalsObj=PseudoRandomCall(StatFalsObj,CBS,this.R,nb_samples,time_lim,nb_hits);
                         
+                        
+                        new_samples.pts
                         
                         % adding new points to Br
                         new_pts = transpose(StatFalsObj.new_samples.pts); % column vectors of newly simulated points.
