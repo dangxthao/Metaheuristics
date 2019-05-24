@@ -17,7 +17,7 @@ init_instance;
 
 
 %% Falsification problem 
-R = BreachRequirement('y[t]>-1');
+R = BreachRequirement('y[t]>-0.003791');
 %B = B_ackley2.copy();
 %B = B_ackley3.copy(); %%-186.4112, exact -195
 %B = B_ackley4.copy(); %% Min found -3.9173, exact ?3.917275
@@ -27,13 +27,20 @@ R = BreachRequirement('y[t]>-1');
 %B = B_brentfcn.copy(); %found 0 exact e^(-200)
 %B = B_bukinn6fcn.copy(); %found 0.02546057, exact 0
 %B = B_crossintrayfcn.copy(); %found -2.0626 min ?2.06261218
-B = B_easomfcn.copy(); %exact -1
-
-%Pb = FalsificationProblem(B_ripple,R);
+%B = B_easomfcn.copy(); %found 1, exact -1 ****** DIFFICULT
+%B = B_holdertablefcn.copy(); %found -19.1553 min -19.2085
+%B = B_levin13fcn.copy(); %found 0.00000000   min 0
+%B = B_TesttubeHolder.copy(); %found -2.0100 min ?10.872300 ****** DIFFICULT
+%B = B_Trefethen.copy(); %found  -1.3547 min ?3.30686865 ****** DIFFICULT
+%B= B_WWavy.copy(); %found 0.50000000  min 0
+B= B_Zettl.copy(); %found ?0.003791  min ?0.003791
+        
+          
+          
 Pb = FalsificationProblem(B, R);
-Pb.StopAtFalse = 1;
-% Pb
-% 
+Pb.StopAtFalse = 0;
+
+
 % Pb.max_obj_eval = 50000;
 % %Pb.setup_solver('cmaes');
 % Pb.setup_solver('simulannealbnd');

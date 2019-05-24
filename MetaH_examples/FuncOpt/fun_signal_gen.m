@@ -168,7 +168,7 @@ classdef fun_signal_gen < signal_gen
           %[-5 10], min ?0.003791
         x1 = x(1);
         x2 = x(2);
-        y = (x1+x1 + x2*x2 - 2*x1)^2 + 0.25*x1;
+        y = (x1*x1 + x2*x2 - 2*x1)^2 + 0.25*x1;
       end
    end
 end

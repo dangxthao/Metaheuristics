@@ -55,8 +55,37 @@ InitBreach
 % B_crossintrayfcn.dt_default =1; 
 % B_crossintrayfcn.SetParamRanges({'x1', 'x2'}, [-10 10]);
 
-B_easomfcn = BreachSignalGen(fun_signal_gen('easomfcn'));
-B_easomfcn.dt_default =1; 
-B_easomfcn.SetParamRanges({'x1', 'x2'}, [-100 100]);
+% B_easomfcn = BreachSignalGen(fun_signal_gen('easomfcn'));
+% B_easomfcn.dt_default =1; 
+% B_easomfcn.SetParamRanges({'x1', 'x2'}, [-100 100]);
 
-          
+% B_holdertablefcn = BreachSignalGen(fun_signal_gen('holdertablefcn'));
+% B_holdertablefcn.dt_default =1; 
+% B_holdertablefcn.SetParamRanges({'x1', 'x2'}, [-10 10]);
+
+% B_levin13fcn = BreachSignalGen(fun_signal_gen('levin13fcn'));
+% B_levin13fcn.dt_default =1; 
+% B_levin13fcn.SetParamRanges({'x1', 'x2'}, [-10 10]);
+
+% B_SchafferF6 = BreachSignalGen(fun_signal_gen('SchafferF6'));
+% B_SchafferF6.dt_default =1; 
+% B_SchafferF6.SetParamRanges({'x1', 'x2'}, [-100 100]);
+
+% B_TesttubeHolder = BreachSignalGen(fun_signal_gen('TesttubeHolder'));
+% B_TesttubeHolder.dt_default =1; 
+% B_TesttubeHolder.SetParamRanges({'x1', 'x2'}, [-10 10]);
+% 
+
+% B_Trefethen = BreachSignalGen(fun_signal_gen('Trefethen'));
+% B_Trefethen.dt_default =1; 
+% B_Trefethen.SetParamRanges({'x1', 'x2'}, [-10 10]);
+
+% B_WWavy = BreachSignalGen(fun_signal_gen('WWavy'));
+% B_WWavy.dt_default =1; 
+% B_WWavy.SetParamRanges({'x1', 'x2'}, [-pi pi]);
+
+B_Zettl = BreachSignalGen(fun_signal_gen('Zettl'));
+B_Zettl.dt_default =1; 
+B_Zettl.SetParamRanges({'x1', 'x2'}, [-5 10]);
+
+

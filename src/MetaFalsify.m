@@ -975,8 +975,10 @@ classdef MetaFalsify < handle
             fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
             fprintf(1,'\n Exit! TOTAL Computation time = %f seconds \n',comptime );
             
-            plot(coverage_graph_data, 'Coverage');
-            plot(robustness_graph_data, 'Robustness');
+            figure('Name','Coverage');
+            plot(coverage_graph_data);
+            figure('Name','Robustness');
+            plot(robustness_graph_data);
         end %end function
         
         
