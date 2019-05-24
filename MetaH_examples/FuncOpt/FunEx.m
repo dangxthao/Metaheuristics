@@ -17,9 +17,17 @@ init_instance;
 
 
 %% Falsification problem 
-R = BreachRequirement('y[t]>-219');
+R = BreachRequirement('y[t]>-1');
 %B = B_ackley2.copy();
-B = B_ackley3.copy();
+%B = B_ackley3.copy(); %%-186.4112, exact -195
+%B = B_ackley4.copy(); %% Min found -3.9173, exact ?3.917275
+%B = B_beale.copy(); %found 0.00000027, exact 0 at (3,0.5)
+%B = B_bohachevskyn1fcn.copy(); %found 0, exact 0
+%B = B_booth.copy(); %found 0.00005306, exact 0
+%B = B_brentfcn.copy(); %found 0 exact e^(-200)
+%B = B_bukinn6fcn.copy(); %found 0.02546057, exact 0
+%B = B_crossintrayfcn.copy(); %found -2.0626 min ?2.06261218
+B = B_easomfcn.copy(); %exact -1
 
 %Pb = FalsificationProblem(B_ripple,R);
 Pb = FalsificationProblem(B, R);
@@ -78,7 +86,7 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     MetaObj.cov_monitoring_win = 1;
 
     %%% Options for picking initial conditions
-    MetaObj.re_init_strategy = 0; %2; 
+    MetaObj.re_init_strategy = 2; %2; 
     % re_init_strategy=0 to pick randomly from the whole space
     % re_init_strategy=1 to pick randomly from xlog
     % re_init_strategy=2 to pick randomly from xbest
@@ -95,8 +103,8 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     
     MetaObj.start_solver_index = 0; %3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
     
-    MetaObj.solver_time =  [500 1000 1000 2000];
-    MetaObj.max_obj_eval = [1000 2000 2000 1000];
+    MetaObj.solver_time =  [1000 1000 100 200];
+    MetaObj.max_obj_eval = [1000 2000 200 100];
     MetaObj.seed = 100;
     
     
