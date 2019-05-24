@@ -78,7 +78,7 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     MetaObj.cov_monitoring_win = 1;
 
     %%% Options for picking initial conditions
-    MetaObj.re_init_strategy = 1; %2; 
+    MetaObj.re_init_strategy = 0; %2; 
     % re_init_strategy=0 to pick randomly from the whole space
     % re_init_strategy=1 to pick randomly from xlog
     % re_init_strategy=2 to pick randomly from xbest
@@ -91,12 +91,12 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     MetaObj.num_solvers=4; 
     
     %% limit on nb of solver calls
-    MetaObj.nb_solver_calls = 1  %1 %30
+    MetaObj.nb_solver_calls = 10  %1 %30
     
     MetaObj.start_solver_index = 0; %3; %1; %PR 0, cmaes 1, SA 2, GNM 3 
     
-    MetaObj.solver_time =  [5000000 1000 1000 2000];
-    MetaObj.max_obj_eval = [1000000 2000 2000 1000];
+    MetaObj.solver_time =  [500 1000 1000 2000];
+    MetaObj.max_obj_eval = [1000 2000 2000 1000];
     MetaObj.seed = 100;
     
     
