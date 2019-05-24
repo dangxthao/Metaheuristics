@@ -62,13 +62,21 @@ classdef MetaFalsify < handle
     
     methods
         %% Simple constructor
-        function this = MetaFalsify(model_name,IO_signal_names)
-            if nargin == 2
-                this.CoverageBreachSetCreation(model_name,IO_signal_names);
-            else
-                this.CoverageBreachSetCreation(model_name);                
-            end
-        end        
+%         function this = MetaFalsify(model_name,IO_signal_names)
+%             if nargin == 2
+%                 this.CoverageBreachSetCreation(model_name,IO_signal_names);
+%             else
+%                 this.CoverageBreachSetCreation(model_name);                
+%             end
+%         end 
+        
+        
+        function this = MetaFalsify(Br, R, Pbs)
+            this.Br = Br.copy();
+            this.R = R;
+            this.Pbs = Pbs.copy();
+        end 
+        
         
         function this = CoverageBreachSetCreation(this,model_name,IO_signal_names)
             
@@ -502,7 +510,9 @@ classdef MetaFalsify < handle
                 
                 %% Initialize the falsification problem with the system and the requirement
                 falsif_pb = FalsificationProblem(CBS, this.R);
-                                
+                %falsif_pb = this.Pbs %%%Thao temporily set this
+                falsif_pb.StopAtFalse = 0;
+                
                 %% start counting computation time for each solver
                 timervar_solver = tic;                                
                 StatFalsObj = StatFalsify();
@@ -598,7 +608,11 @@ classdef MetaFalsify < handle
                         %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
                         %                     Xlog.xlogCMAES = [Xlog.xlogCMAES, new_pts];
                         
+                        new_pts
+                        
+                        
                         % adding new points to xbest
+                        
                         new_obj_best = falsif_pb.obj_best;
                         
                         %%%%%%%%%%
