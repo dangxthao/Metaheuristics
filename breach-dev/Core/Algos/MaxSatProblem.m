@@ -17,8 +17,7 @@ classdef MaxSatProblem < BreachProblem
         BrSet_True
         X_true
         StopAtTrue=false
-    end
-    
+    end    
     
     methods
         function this = MaxSatProblem(BrSys, phi, params, ranges)
@@ -39,22 +38,32 @@ classdef MaxSatProblem < BreachProblem
             this = this@BreachProblem(super_args{:});
         end
         
-        function obj = objective_fn(this,x)
+        function [obj, cval] = objective_fn(this,x)
+
+            % For falsification, default objective_fn is simply robust satisfaction of the least
+            this.Spec = this.R0.copy();
             this.robust_fn(x);
             robs = this.Spec.traces_vals;
             if (~isempty(this.Spec.traces_vals_precond))
+                precond_robs = robs;
                 for itr = 1:size(this.Spec.traces_vals_precond,1)
-                    precond_rob = min(this.Spec.traces_vals_precond(itr,:));
-                    if  precond_rob<0
-                        robs(itr,:)= -precond_rob;
+                    precond_robs(itr) = min(this.Spec.traces_vals_precond(itr,:));
+                    if  precond_robs(itr)<0
+                        robs(itr,:)= -precond_robs(itr);
                     end
                 end
             end
-            
+            robs = -robs;
             NaN_idx = isnan(robs); % if rob is undefined, make it inf to ignore it
             robs(NaN_idx) = -inf;
-            obj = -min(robs,[],1)';
-        
+            obj = max(robs,[],1)';
+            cval = inf;
+            if (~isempty(this.Spec.traces_vals_precond))
+                NaN_idx = isnan(precond_robs); % if rob is undefined, make it inf to ignore it
+                precond_robs(NaN_idx) = inf;
+                cval = min(precond_robs,[],1)';
+            end
+
         end
         
         function ResetObjective(this, varargin)
@@ -72,7 +81,7 @@ classdef MaxSatProblem < BreachProblem
         end
         
         % Logging
-        function LogX(this, x, fval)
+        function LogX(this, x, fval, cval)
             
             %  Logging satisfying parameters and traces
             [~, i_true] = find(fval>0);
@@ -88,7 +97,7 @@ classdef MaxSatProblem < BreachProblem
             end
             
             % Logging default stuff
-            this.LogX@BreachProblem(x, fval);
+            this.LogX@BreachProblem(x, fval,cval);
             
         end
         

@@ -3,19 +3,12 @@ function solver_opt = setup_ga(this)
 % 
 
 this.solver= 'ga';
-this.display = 'off'; % use ga display by default
-
-solver_opt = gaoptimset('TimeLimit',this.max_time,... 
-    'Display', 'iter');
+solver_opt = gaoptimset('TimeLimit',this.max_time, 'Display','off');
 
 if numel(this.params) <= 5 
     pop_size = 50;
 else
     pop_size = 200;
-end
-
-if this.max_obj_eval<inf
-    solver_opt = gaoptimset(solver_opt, 'Generations', ceil(this.max_obj_eval/pop_size), 'PopulationSize', pop_size); 
 end
 
 if isa(this, 'FalsificationProblem')

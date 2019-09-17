@@ -18,6 +18,7 @@ classdef BreachOpenSystem < BreachSystem
         InputMap       % Maps input signals to idx in the input generator
         InputGenerator % BreachSystem responsible for generating inputs
         use_precomputed_inputs = false % if true, will fetch traces in InputGenerator
+        SimInputsOnly=false          % if true, will not run Simulink or other model        
     end
     
     methods
@@ -88,6 +89,9 @@ classdef BreachOpenSystem < BreachSystem
                 PropParams = this.P.ParamList(this.P.DimP+1:end);
                 PropParamsValues = GetParam(this.P, PropParams);
             end
+            PlantParams = this.GetPlantParamList();
+            PlantParamsValues=  this.GetParam(PlantParams);
+            
             
             inputs = this.Sys.InputList;
             
@@ -195,10 +199,7 @@ classdef BreachOpenSystem < BreachSystem
             this.P = CreateParamSet(this.Sys);
             this.P.epsi(:,:) = 0;
             
-            % Restore property parameter
-            if ~isempty(PropParams)
-                this.P = SetParam(this.P, PropParams, PropParamsValues);
-            end
+            
             % Sets the new input function for ComputeTraj
             % FIXME?: tilde?
             this.Sys.init_u = @(~, pts, tspan) (InitU(this,pts,tspan));
@@ -212,7 +213,7 @@ classdef BreachOpenSystem < BreachSystem
                     this.SetDomain(parami, IGdomains(ip));
                 end
             end
-            
+
             % Copy or init ParamSrc
             
             %% Init param sources, if not done already
@@ -229,7 +230,19 @@ classdef BreachOpenSystem < BreachSystem
             if opt.SetInputGenTime
                 this.SetTime(IG.GetTime());
             end
+
             
+            % Restore env and prop parameters
+            if ~isempty(PropParams)
+                this.SetParam(PropParams, PropParamsValues, true);
+            end
+            
+            if ~isempty(PlantParams)
+               this.SetParam(PlantParams, PlantParamsValues);
+            end
+            
+            % Final checkin 
+            this.CheckinDomain();
             
         end
         
@@ -319,8 +332,56 @@ classdef BreachOpenSystem < BreachSystem
             end
         end
         
-        function hsi = SetInputGenGUI(this)
-            hsi= signal_gen_gui(this);
+        function SetDomainCfg(this, cfg)           
+            IG = this.InputGenerator;
+            for ip = 1:numel(cfg.params) 
+              p  = cfg.params{ip};
+              typ = cfg.types{ip};
+              dom = cfg.domains{ip};
+              if isempty(dom)
+                  dom = [];
+              elseif ischar(dom)
+                  dom = str2num(dom); %#ok<ST2NM>
+              elseif iscell(dom)
+                 dom = cell2mat(dom);
+              end
+              
+              if isfield(cfg,'values')
+                  val = cfg.values{ip};
+                  if ischar(val)
+                      val = str2num(val);
+                  end
+              else
+                  val = this.GetParam(p);
+              end
+             
+              
+              this.SetDomain(p,typ,dom);               
+              this.SetParam(p, val);
+              [~, found] = FindParam(IG.P, p);
+              if found                                                                                          
+                  IG.SetDomain(p,typ,dom);
+                  IG.SetParam(p, val);
+                  if isa(IG, 'BreachSignalGen') % update individual signal_gen as well
+                     for isg = 1:numel(IG.signalGenerators)   
+                       sg = IG.signalGenerators{isg};
+                       idxp = find(strcmp(p, sg.params),1);
+                       if ~isempty(idxp)
+                          dom = this.GetDomain(p);
+                          sg.params_domain(idxp) =dom;  
+                          sg.p0(idxp) = dom.checkin(val(1));                          
+                       end
+                     end
+                  
+                  end                                    
+              end
+            end            
+        end
+        
+        
+        
+        function hsi = SetInputGenGUI(varargin)
+            hsi= signal_gen_gui(varargin{:});
         end
         
         function idx = GetInputSignalsIdx(this)
@@ -337,6 +398,10 @@ classdef BreachOpenSystem < BreachSystem
                 end
             else
                 st = sprintf([st '---  SIGNALS  --- (%d traces)\n'], numel(this.P.traj));
+                if isempty(this.SignalRanges)
+                    this.UpdateSignalRanges();
+                end
+                
                 for isig = 1:this.Sys.DimX
                     st = sprintf([st '%s %s in  [%g, %g]\n'], this.Sys.ParamList{isig}, this.get_signal_attributes_string(this.P.ParamList{isig}),this.SignalRanges(isig,1),this.SignalRanges(isig,2));
                 end

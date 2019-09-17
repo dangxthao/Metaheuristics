@@ -80,24 +80,7 @@ classdef FalsificationProblem < BreachProblem
             this.obj_best = inf;
         end
         
-        function obj = objective_fn(this,x)
-            % For falsification, default objective_fn is simply robust satisfaction of the least
-            this.robust_fn(x);
-            robs = this.Spec.traces_vals;
-            if (~isempty(this.Spec.traces_vals_precond))
-                for itr = 1:size(this.Spec.traces_vals_precond,1)
-                    precond_rob = min(this.Spec.traces_vals_precond(itr,:));
-                    if  precond_rob<0
-                        robs(itr,:)= -precond_rob;
-                    end
-                end
-            end
-            NaN_idx = isnan(robs); % if rob is undefined, make it inf to ignore it
-            robs(NaN_idx) = inf;
-            obj = min(robs,[],1)';
             
-        end     
-        
         function set_IO_robustness_mode(this, mode, cap)
             switch mode
                 case 'default'
@@ -169,11 +152,11 @@ classdef FalsificationProblem < BreachProblem
         
         
         % Logging
-        function LogX(this, x, fval)
+        function LogX(this, x, fval, cval)
         % LogX  log variable parameter value tested by optimizers
        
             % Logging default stuff
-            this.LogX@BreachProblem(x, fval);
+            this.LogX@BreachProblem(x, fval, cval);
             % this.Rio_Mode_log = [ this.Rio_Mode_log this.Rio_Mode ];  % not sure what this is useful for
             
             %  Logging falsifying parameters found
