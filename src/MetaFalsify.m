@@ -165,8 +165,8 @@ classdef MetaFalsify < handle
                 starttime=zeros(nb_ctr_pts,1);
                 endtime=timepoints(size(timepoints,1))*ones(nb_ctr_pts,1);
                 
-                %time_ranges = [starttime endtime];
-                time_ranges = [1e-6 3e-6];
+                time_ranges = [starttime endtime];
+                %time_ranges = [1e-6 3e-6]; Thao
                 this.Br.SetParamRanges(signal_dt, time_ranges);
             end
             
