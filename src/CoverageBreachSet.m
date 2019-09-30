@@ -105,25 +105,25 @@ classdef CoverageBreachSet < BreachSimulinkSystem
     
     properties
         % Gridsize is a vector that contains one value for each dimension,
-        % where each value corresponds to the length of a grid element in
+        % where each value corresponds to the size of a grid cell in
         % the corresponding dimension. The eps value for each
         % dimension corresponds to the smallest distance allowed
         % between any two points in the parameter space.
-        epsgridsize = [];
+        %%%%Thao 29/09/2019 epsgridsize = [];
         
         % Gridsize is a vector that contains one value for each dimension,
         % where each value corresponds to the length of a grid element in
         % the corresponding dimension. The delta value for each
         % dimension corresponds to the grid element size that is used to
         % measure the cell count and entropy coverage measures.
-        deltagridsize = [];
+        %%%%Thao 29/09/2019 deltagridsize = [];
         
         % The following flag determines whether all points should be
         % shifted to the center of the appropriate grid element. If the
         % flag is set, then this class will assume that only one point
         % should occupy any given grid element, and that point will be in
         % the center of the grid element.
-        snap_to_grid = false;
+        %%%%Thao 29/09/2019  snap_to_grid = false;
         
         % Will use containers for now. This will be an efficient
         % representation to a.) allow the query of any cell and b.) know
@@ -133,8 +133,8 @@ classdef CoverageBreachSet < BreachSimulinkSystem
         % In the future, we can switch this for BDDs. A BDD representation
         % will allow us to do things like use an SMT query to determine
         % whether points in a region (hyperbox) are populated.
-        EpsGridMapObj = containers.Map('UniformValues',false);
-        DeltaGridMapObj = containers.Map('KeyType','char','ValueType','int32');
+        %%%%Thao 29/09/2019 EpsGridMapObj = containers.Map('UniformValues',false);
+        %%%%Thao 29/09/2019 DeltaGridMapObj = containers.Map('KeyType','char','ValueType','int32');
     end
     
     methods
