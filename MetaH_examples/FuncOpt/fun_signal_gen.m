@@ -61,6 +61,12 @@ classdef fun_signal_gen < signal_gen
           end 
       end
       
+      function y = AluffiPentini(X)
+          x1 = X(1);
+          x2 = X(2);
+          y = 0.25*x1^4 - 0.5*x1^2+0.1*x1+0.5*x2^2;
+      end
+      
       function y = beale(X)
          x1 = X(1);
          x2 = X(2);

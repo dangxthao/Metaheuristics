@@ -29,6 +29,12 @@ InitBreach
 % B_ackley4 = BreachSignalGen(fun_signal_gen('ackley4'));
 % B_ackley4.dt_default =1; 
 % B_ackley4.SetParamRanges({'x1', 'x2'}, [-35 35]);
+
+
+B_AluffiPentini = BreachSignalGen(fun_signal_gen('AluffiPentini'));
+B_AluffiPentini.dt_default =1; 
+B_AluffiPentini.SetParamRanges({'x1', 'x2'}, [-10 10]);
+
 % 
 % B_beale = BreachSignalGen(fun_signal_gen('beale'));
 % B_beale.dt_default =1; 
@@ -74,7 +80,7 @@ InitBreach
 % B_TesttubeHolder = BreachSignalGen(fun_signal_gen('TesttubeHolder'));
 % B_TesttubeHolder.dt_default =1; 
 % B_TesttubeHolder.SetParamRanges({'x1', 'x2'}, [-10 10]);
-% 
+
 
 % B_Trefethen = BreachSignalGen(fun_signal_gen('Trefethen'));
 % B_Trefethen.dt_default =1; 
@@ -84,8 +90,8 @@ InitBreach
 % B_WWavy.dt_default =1; 
 % B_WWavy.SetParamRanges({'x1', 'x2'}, [-pi pi]);
 
-B_Zettl = BreachSignalGen(fun_signal_gen('Zettl'));
-B_Zettl.dt_default =1; 
-B_Zettl.SetParamRanges({'x1', 'x2'}, [-5 10]);
+% B_Zettl = BreachSignalGen(fun_signal_gen('Zettl'));
+% B_Zettl.dt_default =1; 
+% B_Zettl.SetParamRanges({'x1', 'x2'}, [-5 10]);
 
 

@@ -48,7 +48,7 @@ classdef MetaFalsify < handle
         % re_init_num_xbest: window of choice from xbest, for picking initial point
         re_init_num_xbest = 1;
         
-        % num_solvers=nb of solvers other than pseudorandom sampling
+        % num_solvers=nb of solvers other than random sampling
         % TODO add solver_list, and init num_solver as numel(solver_list)
         num_solvers = 4;
         
@@ -63,24 +63,24 @@ classdef MetaFalsify < handle
     methods
         %% Simple constructor
                 
-        function this = MetaFalsify(Br, R, Pbs)
+        function this = MetaFalsifyCreate(Br, R, Pbs)
             this.Br = Br.copy();
             this.R = R;
             this.Pbs = Pbs.copy();
         end 
         
         
-        function this = MetaFalsifyCreate(model_name,IO_signal_names)
+        function this = MetaFalsify(model_name,IO_signal_names)
             if nargin == 2
-                this.CoverageBreachSetCreation(model_name,IO_signal_names);
+                this.BreachSetCreation(model_name,IO_signal_names);
             else
-                this.CoverageBreachSetCreation(model_name);                
+                this.BreachSetCreation(model_name);                
             end
         end   
         
-        function this = CoverageBreachSetCreation(this,model_name,IO_signal_names)
-            
-            this.Br = CoverageBreachSet(model_name,{});
+        function this = BreachSetCreation(this,model_name,IO_signal_names)
+            model_name
+            this.Br = BreachSimulinkSystem(model_name,{},[],IO_signal_names);        
             this.IO_signal_names=IO_signal_names;
             this.model_name=model_name;
             
@@ -811,7 +811,7 @@ classdef MetaFalsify < handle
                     fprintf(fileID,'\n Exit from Solver %d ', solver_index);
                     comptime = toc(TotCompTime);
                     fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                    error('Falsifier found! Exit normally');
+                    %error('Falsifier found! Exit normally');
                 end
                 
                 total_nb_sim = total_nb_sim+size(new_pts,2); % update total nb simulations
@@ -828,7 +828,7 @@ classdef MetaFalsify < handle
                     
                     comptime = toc(TotCompTime);
                     fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                    error('Falisifier found! Exit normally');
+                    %error('Falisifier found! Exit normally');
                 end
                 
                 
@@ -869,7 +869,11 @@ classdef MetaFalsify < handle
                 % the coverage graph is monotonic, we check the evolution of coverage
                 % for non-increase by this.cov_epsilon
                 % recompute current coverage
-                current_coverage_value = this.Br.ComputeLogCellOccupancyCoverage;
+                disp('Current coverage');
+                current_coverage_value = this.Br.ComputeLogCellOccupancyCoverage
+               
+                
+                
                 % update coverage graph data
                 coverage_graph_data= ...
                     [coverage_graph_data; [total_nb_sim current_coverage_value]];
@@ -879,8 +883,8 @@ classdef MetaFalsify < handle
                 
                 fprintf(1,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
                 fprintf(fileID,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
-                fprintf(1,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
-                fprintf(fileID,'\nPseudo-random (0), CMA-ES (1), SA (2), GNM (3)');
+                fprintf(1,'\nQuasi-random (0), CMA-ES (1), SA (2), GNM (3)');
+                fprintf(fileID,'\nQuasi-random (0), CMA-ES (1), SA (2), GNM (3)');
                 for iii  = 1:call_count
                     fprintf(1,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
                         robustness_graph_data(iii,2),coverage_graph_data(iii,2));
@@ -928,14 +932,14 @@ classdef MetaFalsify < handle
                     PR_duration=0;
                     
                     if (prev_solver_index==0)
-                        this.re_init_strategy = 1 %pick from xlog, if previously pseudorandon
+                        this.re_init_strategy = 1 %pick from xlog, if previously randon
                     end
                     
                     solver_index = prev_solver_index + 1;
                     
-                    if (solver_index==3)
-                        solver_index=4; %skip SA, %GNM
-                    end
+                    %if (solver_index==3)
+                    %    solver_index=4; %skip SA, %GNM
+                    %end
                     
                     if (solver_index>(this.num_solvers-1))
                         fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
@@ -959,7 +963,7 @@ classdef MetaFalsify < handle
                     end %end if (solver_index>(this.num_solvers-1))
                     
                 else %if local optima stuck
-                    solver_index=0; %use pseudorandom sampling to increase coverage
+                    solver_index=0; %use random sampling to increase coverage
                     PR_duration=PR_duration+1;
                     
                     cov_monitoring_length=PR_duration;
@@ -976,9 +980,9 @@ classdef MetaFalsify < handle
             fprintf(1,'\n Exit! TOTAL Computation time = %f seconds \n',comptime );
             
             figure('Name','Coverage');
-            plot(coverage_graph_data);
+            plot(coverage_graph_data(:,2));
             figure('Name','Robustness');
-            plot(robustness_graph_data);
+            plot(robustness_graph_data(:,2));
         end %end function
         
         
