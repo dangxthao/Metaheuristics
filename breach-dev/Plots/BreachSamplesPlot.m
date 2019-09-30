@@ -598,7 +598,13 @@ classdef BreachSamplesPlot < handle
                     
                     txt{end+1} = '--------------';
                     for irr = 1:numel(this.summary.requirements.names)
-                        txt{end+1} = [this.summary.requirements.names{irr} ':' num2str(this.summary.requirements.rob(i_pts_req, irr))];
+                        txt{end+1} = [this.summary.requirements.names{irr} ':' num2str(this.summary.requirements.rob(i_pts_req, irr))];                        
+                        if isfield(this.summary.requirements, 'rob_vac')
+                            rob_vac = this.summary.requirements.rob(i_pts_req, irr);
+                            if ~isnan(rob_vac)
+                                txt{end+1} = [this.summary.requirements.names{irr} ' vacuity:' num2str(rob_vac)];                            
+                            end
+                        end
                     end
                 else
                     txt{1} = ['Sample idx:' num2str(i_pts_req)];

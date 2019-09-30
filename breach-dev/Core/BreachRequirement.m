@@ -10,6 +10,7 @@ classdef BreachRequirement < BreachTraceSystem
         precond_monitors
         signals_in
         traces_vals_precond % results for individual traces & precond_monitors
+        traces_vals_vac  % input vacuity, if avail
         traces_vals % results for individual traces & req_monitors
         val         % summary evaluation for all traces & req_monitors
     end
@@ -166,48 +167,32 @@ classdef BreachRequirement < BreachTraceSystem
             this.BrSet =[];
         end
         
-        function [global_val, traces_vals, traces_vals_precond] = Eval(this, varargin)
+        function [global_val, traces_vals, traces_vals_precond, traces_vals_vac] = Eval(this, varargin)
             % BreachRequirement.Eval returns evaluation of the requirement -
             % compute it for all traces available and returns min (implicit
             % conjunction)
             
             % Collect traces from context and eval them
-            [traces_vals, traces_vals_precond] = this.evalAllTraces(varargin{:});
+            [traces_vals, traces_vals_precond, traces_vals_vac] = this.evalAllTraces(varargin{:});
             
             % A BreachRequirement must return a single value
             global_val = min(min(traces_vals));
             global_precond_val = min(min(traces_vals_precond));
             this.val = min([global_val,-global_precond_val]);
         end
-        
-        function [global_val, traces_vals, traces_vals_precond] = Eval_IO(this, inout, relabs, varargin)
-            % BreachRequirement.Eval_IO returns IO-aware evaluation of the requirement -
-            % compute it for all traces available and returns min (implicit
-            % conjunction)
-            
-            % Collect traces from context and eval them
-            [traces_vals, traces_vals_precond] = this.evalAllTracesIO(inout, relabs, varargin{:});
-            this.traces_vals = traces_vals;
-            this.traces_vals_precond = traces_vals_precond;
-            
-            % A BreachRequirement must return a single value
-            global_val = min(min(traces_vals));
-            global_precond_val = min(min(traces_vals_precond));
-            this.val = min([global_val,-global_precond_val]);
-        end
-        
-        function [traces_vals, traces_vals_precond] =evalAllTraces(this,varargin)
+                
+        function [traces_vals, traces_vals_precond, traces_vals_vac] =evalAllTraces(this,varargin)
             % BreachRequirement.evalAllTraces collect traces and apply
             % evalTrace
             this.getBrSet(varargin{:});
             num_traj = numel(this.P.traj);
             traces_vals = nan(num_traj, numel(this.req_monitors));
+            traces_vals_vac = nan(num_traj, numel(this.req_monitors));                    
             traces_vals_precond = nan(num_traj, numel(this.precond_monitors));
             
             % eval pre conditions
             if ~isempty(this.precond_monitors)
                 for it = 1:num_traj
-                    time = this.P.traj{it}.time;
                     for ipre = 1:numel(this.precond_monitors)
                         req = this.precond_monitors{ipre};
                         traces_vals_precond(it, ipre)  = eval_req(this,req,it);
@@ -223,7 +208,7 @@ classdef BreachRequirement < BreachTraceSystem
                     time = this.P.traj{it}.time;
                     for ipre = 1:numel(this.req_monitors)
                         req = this.req_monitors{ipre};
-                        traces_vals(it, ipre)  = eval_req(this,req,it);
+                        [traces_vals(it, ipre) traces_vals_vac(it, ipre)]  = eval_req(this,req,it);
                     end
                 end
             end
@@ -301,6 +286,7 @@ classdef BreachRequirement < BreachTraceSystem
             if summary.num_traces_evaluated>0
                 summary.val = this.val;
                 summary.requirements.rob = this.traces_vals;
+                summary.requirements.rob_vac = this.traces_vals_vac;
                 summary.requirements.sat = this.traces_vals >=0;
                 summary.num_requirements = size(this.traces_vals,2);
                 if summary.num_requirements == 1
@@ -324,7 +310,6 @@ classdef BreachRequirement < BreachTraceSystem
             if isa(this.BrSet, 'BreachImportData')
                 summary.file_names = this.BrSet.signalGenerators{1}.file_list;
             end
-            
             
         end
         
@@ -983,6 +968,7 @@ classdef BreachRequirement < BreachTraceSystem
             if this.use_parallel
                 B.SetupParallel();
             end
+            
             B.Sim();
             this.BrSet = B;
             
@@ -1018,44 +1004,9 @@ classdef BreachRequirement < BreachTraceSystem
             
         end
  
-        function [traces_vals, traces_vals_precond] =evalAllTracesIO(this,inout,relabs,varargin)
-            % BreachRequirement.evalAllTraces collect traces and apply
-            % evalTrace
-            this.getBrSet(varargin{:});            
-            for i_req = 1:numel(this.req_monitors)
-                this.req_monitors{i_req}.set_mode(inout,relabs);
-            end
+        function  [val, val_vac] = eval_req(this, req, it)
+            val_vac = NaN;
             
-            num_traj = numel(this.BrSet.P.traj);
-            traces_vals = nan(num_traj, numel(this.req_monitors));        
-            traces_vals_precond = nan(num_traj, numel(this.precond_monitors));        
-            % eval pre conditions
-            if ~isempty(this.precond_monitors)
-                for it = 1:num_traj
-                    for ipre = 1:numel(this.precond_monitors)
-                        req = this.precond_monitors{ipre};
-                        traces_vals_precond(it, ipre)  = this.eval_req(req,it);
-                    end
-                end
-            end
-            
-            % eval requirement 
-            for it = 1:num_traj
-                if any(traces_vals_precond(it,:)<0)
-                    traces_vals(it, :) = NaN;
-                else
-                    for ipre = 1:numel(this.req_monitors)
-                        req = this.req_monitors{ipre};
-                        traces_vals(it, ipre)  = this.eval_req(req,it);
-                    end
-                end
-            end
-            this.traces_vals_precond = traces_vals_precond;
-            this.traces_vals = traces_vals;
-
-        end
-
-        function  val = eval_req(this, req, it)
             time = this.P.traj{it}.time;                        
             idx_sig_req = FindParam(this.P, req.signals);
             idx_par_req = FindParam(this.P, req.params);
@@ -1080,11 +1031,11 @@ classdef BreachRequirement < BreachTraceSystem
                 Xin = this.GetSignalValues(req.signals_in, it);
             end
             if ~isempty(idx_sig_req)
-                [val , this.P.traj{it}.time, Xout] ...
+                [val , this.P.traj{it}.time, Xout, val_vac] ...
                     = this.evalRequirement(req, time, Xin, p_in);
                 this.P.traj{it}.X( idx_sig_req,:) = Xout;
             else
-                val  = this.evalRequirement(req, time, Xin, p_in);
+                [val, ~, ~, val_vac]  = this.evalRequirement(req, time, Xin, p_in);
             end
         end
         
@@ -1093,10 +1044,18 @@ classdef BreachRequirement < BreachTraceSystem
             [time , Xout] = pp.computeSignals(time, Xin, pin);
         end
         
-        function [val, time, Xout] = evalRequirement(this, req, time, Xin, pin)
+        function [val, time, Xout, val_vac] = evalRequirement(this, req, time, Xin, pin)
             % evalRequirement eval one requirement (usually one STL formula
             % monitor) on one trace, i.e., writes related signals and returns evaluations
+                    
             [val, time,  Xout] = req.eval(time, Xin, pin);
+            if req.set_mode('in', 'abs') 
+                val_vac = req.eval(time, Xin, pin);
+                req.set_mode('out', 'rel');
+            else
+               val_vac = NaN; 
+            end
+            
         end
         
         function setTraces(this, trajs_req)
