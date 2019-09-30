@@ -3,15 +3,19 @@
 
 close all
 clear all
-warning('off', 'ALL')
+dbstop error
 
-addpath('/Users/thaodang/Metaheuristics/supp_code')
+if 0
+warning('off', 'ALL')
 addpath('/Users/thaodang/Metaheuristics/src')
 addpath('/Users/thaodang/Metaheuristics/breach-dev')
 addpath('.')
         
 InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
-
+else
+    addpath('../../src');
+    InitBreach
+end
 
 model_name = 'KD_cl_harness_forthao';
 load('expcon.mat')

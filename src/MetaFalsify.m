@@ -108,6 +108,7 @@ classdef MetaFalsify < handle
             Input_Gen.method = signal_gen_method; %{'previous','previous'};
             this.Br.SetInputGen(Input_Gen);
             
+            
             signal_u = [];
             for ii=1:nb_signals
                 %signal_types(ii,1)
@@ -124,8 +125,9 @@ classdef MetaFalsify < handle
                 end
                 %signal_uii
                 signal_u = [ signal_u, signal_uii ];
-            end
-            %signal_u
+                this.Br.SetParamRanges(signal_uii,input_ranges(ii, :));
+
+            end           
             
             
             %%%% signal_gen_method = {'linear','linear'};
@@ -153,7 +155,6 @@ classdef MetaFalsify < handle
             %
             
             %this.Br.SetParamRanges(signal_u,range_matrix);
-            this.Br.SetParamRanges(signal_u,input_ranges);
             
             if ~exist('timeFixed','var')
                 timeFixed = true;
