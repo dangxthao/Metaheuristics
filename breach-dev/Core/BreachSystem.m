@@ -51,7 +51,7 @@ classdef BreachSystem < BreachSet
                         this.Sys = inSys;
                         this.P = CreateParamSet(this.Sys);
                     else
-                        error('BreachObject with one argument assumes that the argument is a system structure.')
+                        error('BreachSystem constructor with one argument assumes that the argument is a system structure.')
                     end
                 otherwise % creates an extern system
                     if ~(exist(varargin{1})==4) % tests if the first argument is a Simulink model
@@ -221,7 +221,10 @@ classdef BreachSystem < BreachSet
             end
             this.P = ComputeTraj(this.Sys, this.P, tspan);
             this.CheckinDomainTraj();
-            this.dispTraceStatus();
+            
+            if this.verbose>=1
+                this.dispTraceStatus();
+            end
         end
         
         %% Signals Enveloppe
@@ -248,15 +251,21 @@ classdef BreachSystem < BreachSet
         function phi = AddSpec(this, varargin)
             % AddSpec Adds a specification
             global BreachGlobOpt
-            if isa(varargin{1},'STL_Formula')
-                phi = varargin{1};
-                phi_id = get_id(phi);
-            elseif ischar(varargin{1})
+            
+            f = varargin{1};
+            
+            if isa(f,'STL_Formula')
+                phi = f;
+                phi_id = get_id(phi);            
+            elseif ischar(f)&&BreachGlobOpt.STLDB.isKey(f)
+                phi_id =f;
+                phi = BreachGlobOpt.STLDB(f);                        
+            elseif ischar(f)
                 phi_id = MakeUniqueID([this.Sys.name '_spec'],  BreachGlobOpt.STLDB.keys);
-                phi = STL_Formula(phi_id, varargin{1});
-            elseif isa(varargin{1}, 'BreachRequirement')
-                phi_id = varargin{1}.req_monitors{1}.name;
-                phi = varargin{1};
+                phi = STL_Formula(phi_id, f);
+            elseif isa(f, 'BreachRequirement')
+                phi_id = f.req_monitors{1}.name;
+                phi = f; 
             else
                 error('Argument not a formula.');
             end
@@ -998,7 +1007,16 @@ classdef BreachSystem < BreachSet
             end
         end
         
-        %% GUI
+        function assignin_ws_p0(this)
+            ip = 0;
+            for p = this.Sys.ParamList
+                ip = ip+1;
+                assignin('base', p{1}, this.Sys.p(ip));
+            end       
+        end
+        
+        
+       %% GUI
         function new_phi  = AddSpecGUI(this)
             signals = this.Sys.ParamList(1:this.Sys.DimX);
             new_phi = STL_TemplateGUI('varargin', signals);
@@ -1037,6 +1055,9 @@ classdef BreachSystem < BreachSet
             
             BreachTrajGui(this,args);
         end
+        
+        
+        
         
         %% Experimental
         function report = Analysis(this)

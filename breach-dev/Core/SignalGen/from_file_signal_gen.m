@@ -80,7 +80,7 @@ classdef from_file_signal_gen < signal_gen
             
             
             this.params = {'file_idx'};
-            if exist('p0', 'var')
+            if exist('p0', 'var')&&~isempty(p0)
                 this.p0 = p0;
                 read_p0 = false;
             else
@@ -276,6 +276,8 @@ classdef from_file_signal_gen < signal_gen
              for i = 1:numel(this.signals)
                  sgs{i} = this.copy();
                  sgs{i}.signals = {this.signals{i}};
+                 sgs{i}.var_name = this.signals{i};
+                 sgs{i}.sg_name = this.signals{i};
              end
         end
         

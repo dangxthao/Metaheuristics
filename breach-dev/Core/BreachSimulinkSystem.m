@@ -33,10 +33,9 @@ classdef BreachSimulinkSystem < BreachOpenSystem
         FindTables = false
         FindStruct = false
         MaxNumTabParam
-        SimCmdArgs = {}       % argument list passed to sim command
+        SimCmdArgs = {}              % argument list passed to sim command
         InputSrc                     % for each input, we match an input port or base workspace (0)
         MdlVars                      % List of variables used by the model
-        SimInputsOnly=false % if true, will not run Simulink model
         SimInModelsDataFolder=false
         StopAtSimulinkError=false
         mdl
@@ -49,8 +48,8 @@ classdef BreachSimulinkSystem < BreachOpenSystem
         function this = BreachSimulinkSystem(mdl_name, params, p0, signals, inputfn, varargin)
             InitBreach();
             
-            if nargin==0
-                return;
+            if nargin ==0
+                    return;                   
             end
             
             if exist('p0', 'var')&&iscell(p0)
@@ -66,11 +65,38 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             end
             this.mdl.name = mdl_name;
             this.mdl.path = which(mdl_name);
-            this.mdl.date =  datestr(now,'ddmmyy-HHMM');
             this.mdl.file_info = dir(this.mdl.path);
             this.mdl.mdl_breach_path = BreachGetModelsDataPath();
-            this.ParamSrc = containers.Map();
             
+            %% Try reusing previous interface 
+            switch nargin %try reusing previous interface
+                case 1
+                    BrHash = DataHash(this.mdl);
+                case 2  
+                    BrHash = DataHash({this.mdl, params});
+                case 3  
+                    BrHash = DataHash({this.mdl, params,p0});
+                case 4
+                    BrHash = DataHash({this.mdl, params,p0,signals});
+                case 5
+                    BrHash = DataHash({this.mdl, params,p0,signals,inputfn});
+                otherwise
+                    BrHash = DataHash([{this.mdl, params,p0, signals,inputfn} varargin]);
+            end
+            global BreachGlobOpt;
+            if isfield(BreachGlobOpt, 'BrMap')                
+                if BreachGlobOpt.BrMap.isKey(BrHash)
+                    B_ = BreachGlobOpt.BrMap(BrHash);
+                    this = B_.copy();
+                    this.mdl.date =  datestr(now,'ddmmyy-HHMM');
+                    return;
+                end
+            else 
+                BreachGlobOpt.BrMap = containers.Map();               
+            end
+            
+            this.mdl.date =  datestr(now,'ddmmyy-HHMM');                                                
+            this.ParamSrc = containers.Map();            
             this.SetupOptions(varargin{:})
             
             switch nargin
@@ -114,6 +140,9 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             if isempty(this.InputGenerator)
                 this.InputGenerator = BreachSignalGen(constant_signal_gen({}));
             end
+            
+            %%            
+            BreachGlobOpt.BrMap(BrHash) = this.copy();
             
         end
         
@@ -508,6 +537,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             Sys.name = Sys.mdl;  % not great..
             
             this.Sys = Sys;
+            this.P = CreateParamSet(Sys);
             
             % Initializes InputMap and input generator
             this.InputMap = containers.Map();
@@ -761,8 +791,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
                 assignin('base','t__',U.t);
                 assignin('base', 'u__',U.u);
             end
-            
-            
+                        
             %
             % TODO: fix support for signal builder using a proper
             % BreachParam
@@ -774,8 +803,7 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             %        signalbuilder(sb, 'activegroup', pts(ipts));
             %    end
             %end
-            %
-            
+            %            
             
             assignin('base','tspan',tspan);
             if numel(tspan)>2
@@ -1093,6 +1121,12 @@ classdef BreachSimulinkSystem < BreachOpenSystem
             caching_folder_name = [CacheRoot filesep mdl_hash];
         end
         
+        function hash = get_hash(this)
+            st.signals = this.GetSignalsList();
+            st.params = this.GetParamList();
+            
+        end
+            
         %% Export result
         function [summary, traces] = ExportTracesToStruct(this,i_traces, varargin)
             % BreachSimulinkSystem.ExportTracesToStruct

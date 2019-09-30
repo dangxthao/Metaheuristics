@@ -40,6 +40,7 @@ classdef BreachSet < BreachStatus
         log_folder
         sigMap 
         sigMapInv
+        AliasMap
     end
     
     properties  %  coverage stuff
@@ -96,7 +97,7 @@ classdef BreachSet < BreachStatus
             
             this.sigMap = containers.Map();
             this.sigMapInv = containers.Map();
-            
+            this.AliasMap = containers.Map(); 
             switch nargin
                 case 0
                     return;
@@ -131,12 +132,14 @@ classdef BreachSet < BreachStatus
                     param = params{ip};
                     [idx, found] = FindParam(this.P, param);
                     if found==0
-                        error('BreachSet:SetDomain:param_or_signal_not_found', ['Parameter or signal '  param ' not found.']);
+                        warning('BreachSet:SetDomain:param_or_signal_not_found', ['Parameter or signal '  param ' not found.']);
+                        idxs(ip) = 0;
                     end
                     idxs(ip) = idx;
                 end
             end
             
+            params = params(logical(idxs));
             % create domains
             switch nargin
                 case 3
@@ -271,7 +274,7 @@ classdef BreachSet < BreachStatus
         
         %%  Params
         function SetParam(this, params, values, is_spec_param)
-            % BreachSet.SetParam(params, values,  is_spec_param) sets values to
+            % BreachSet.SetParam(params, values [,  is_spec_param]) sets values to
             % parameters listed in params. If the set contains only one sample,
             % creates as many sample as there are values. If the set has
             % several samples and there is only one value, set this value to
@@ -314,7 +317,7 @@ classdef BreachSet < BreachStatus
             
             if ischar(is_spec_param)&&strcmp(is_spec_param, 'combine')
                 if this.hasTraj()
-                    P0 = this.P;
+                    traj= this.P.traj;
                     saved_traj = true;
                  end
                 idx = N2Nn(2, [num_pts num_values]);
@@ -323,12 +326,14 @@ classdef BreachSet < BreachStatus
                 this.P.pts = old_pts(:, idx(1,:));
                 this.P.epsi= repmat(this.P.epsi,1, size(idx, 2));
                 this.P.selected = zeros(1, size(idx, 2));
+                if saved_traj
+                    this.P.traj = traj;
+                end
                 this.P = SetParam(this.P, params, values(:, idx(2,:)));
             else  % legacy, i.e., not combine version
                 if num_values==1 || num_values == num_pts
                     this.P = SetParam(this.P, params, values);
                 elseif num_pts==1    % note in this case, we have to remove traces ( or see if maybe not, )
-                    this.P = Sselect(SPurge(this.P),1);
                     this.P.pts = repmat(this.P.pts,1, size(values, 2));
                     this.P.epsi= repmat(this.P.epsi,1, size(values, 2));
                     this.P.selected = zeros(1, size(values, 2));
@@ -339,12 +344,7 @@ classdef BreachSet < BreachStatus
             end
             
             this.ApplyParamGens(params);
-            
-            % restore traj if needed
-            if saved_traj
-                this.P = Pfix_traj_ref(this.P, P0);
-            end
-            
+                       
         end
         
         function SetParamCfg(this, list_cfg)
@@ -382,6 +382,10 @@ classdef BreachSet < BreachStatus
               
         function SetDomainCfg(this, cfg)
            for ip = 1:numel(cfg.params) 
+              val = cfg.values{ip};
+              if ischar(val)
+                val = str2num(val);
+              end
               typ = cfg.types{ip};
               dom = cfg.domains{ip};
               if isempty(dom)
@@ -391,11 +395,9 @@ classdef BreachSet < BreachStatus
               elseif iscell(dom)
                  dom = cell2mat(dom);
               end
-              
-              this.SetDomain(cfg.params{ip},typ,dom); 
-              
-           end
-            
+              this.SetParam(cfg.params{ip}, val);
+              this.SetDomain(cfg.params{ip},typ,dom);               
+           end            
         end
         
         function SetParamSpec(this, params, values, ignore_sys_param)
@@ -520,7 +522,10 @@ classdef BreachSet < BreachStatus
             for ip = 1:numel(i_params)
                 type = this.Domains(i_params(ip)).type;
                 if isequal(type, 'enum')||isequal(type,'bool')
-                    warning('SetParamRanges:enum_or_bool', 'Use SetDomain for enum or bool types.' );
+                    this.Domains(i_params(ip)).domain = ranges(ip,:);
+                    %warning('SetParamRanges:enum_or_bool', 'Use SetDomain
+                    %for enum or bool types.' ); % Maybe should keep the
+                    %warning 
                 else
                     this.Domains(i_params(ip)) = BreachDomain(type, ranges(ip,:));
                 end
@@ -628,28 +633,21 @@ classdef BreachSet < BreachStatus
                             error('SetSignalMap:wrong_arg', arg_err_msg);
                         end
                         for is = 1:numel(varargin{2})
-                            if ~strcmp(varargin{1}{is},varargin{2}{is})
-                                this.sigMap(varargin{1}{is}) = varargin{2}{is};
-                                this.sigMapInv( varargin{2}{is} ) = varargin{1}{is};
-                            end
+                            sig1 = varargin{1}{is};
+                            sig2 = varargin{2}{is};
+                            add_sigs(sig1, sig2);                            
                         end
                     else
-                        if ischar(varargin{1})&&ischar(varargin{2})
-                            if ~strcmp(varargin{1},varargin{2})
-                                this.sigMap(varargin{1}) = varargin{2};
-                                this.sigMapInv(varargin{2}) = varargin{1};
-                            end
-                        else
-                            error('SetSignalMap:wrong_arg', arg_err_msg);
-                        end
+                        sig1 = varargin{1};
+                        sig2 = varargin{2};
+                        add_sigs(sig1, sig2);                                                
                     end
                 otherwise
                     for is = 1:numel(varargin)/2
                         try
-                            if ~strcmp(varargin{2*is-1},varargin{2*is})
-                                this.sigMap(varargin{2*is-1}) = varargin{2*is};
-                                this.sigMapInv(varargin{2*is}) = varargin{2*is-1};
-                            end
+                            sig1 = varargin{2*is-1};
+                            sig2 = varargin{2*is};
+                            add_sigs(sig1, sig2);                            
                         catch
                             error('SetSignalMap:wrong_arg', arg_err_msg);
                         end
@@ -659,11 +657,50 @@ classdef BreachSet < BreachStatus
             if this.verbose >= 2
                 this.PrintSigMap();
             end
+                        
+            function add_sigs(sig1, sig2)
+                if ischar(sig1)&&ischar(sig2)
+                    if ~strcmp(sig1,sig2)
+                        this.sigMap(sig1) = sig2;
+                        this.sigMapInv(sig2) = sig1;
+                        
+                        % get current aliases for sig1 and sig2
+                        if this.AliasMap.isKey(sig1) 
+                           SIG1 = [{sig1} this.AliasMap(sig1)];
+                        else
+                           SIG1 = {sig1};
+                        end
+                        
+                        if this.AliasMap.isKey(sig2) 
+                           SIG2 = [{sig2} this.AliasMap(sig2)];
+                        else
+                           SIG2 = {sig2};
+                        end
+                                                                        
+                        % add aliases of each other 
+                        if ~this.AliasMap.isKey(sig1)
+                            this.AliasMap(sig1) = SIG2;
+                        else
+                            this.AliasMap(sig1) = unique([this.AliasMap(sig1) SIG2], 'stable');                            
+                        end
+                        if ~this.AliasMap.isKey(sig2)
+                            this.AliasMap(sig2) = SIG1;
+                        else
+                            this.AliasMap(sig2) = unique([this.AliasMap(sig2) SIG1], 'stable');                            
+                        end                                            
+                    end
+                else
+                    error('SetSignalMap:wrong_arg', arg_err_msg);
+                end                            
+            end
             
         end
         
         function ResetSigMap(this)
             this.sigMap = containers.Map();
+            this.sigMapInv = containers.Map();
+            this.AliasMap =containers.Map();
+      
         end
 
         function PrintSigMap(this)
@@ -848,15 +885,20 @@ classdef BreachSet < BreachStatus
             end
             % For all signals, first use sigMap-less search, then check
             % aliases
+            
+            idx = zeros(1, numel(signals));
+            ifound = idx; 
             for isig = 1:numel(signals)
                 sig = signals{isig}; 
                 [idx(isig), ifound(isig)] = FindParam(this.P, sig);
-                aliases_sig = setdiff(this.getAliases(sig), sig);
-                for ais = 1:numel(aliases_sig)
-                    [idx_s, ifound_s] = FindParam(this.P, aliases_sig{ais});
-                    if ifound_s
-                        ifound(isig)=true;
-                        idx(isig)=idx_s;
+                if this.AliasMap.isKey(sig)
+                    aliases_sig = this.AliasMap(sig);
+                    for ais = 1:numel(aliases_sig)
+                        [idx_s, ifound_s] = FindParam(this.P, aliases_sig{ais});
+                        if ifound_s
+                            ifound(isig)=true;
+                            idx(isig)=idx_s;
+                        end
                     end
                 end
             end
@@ -1042,7 +1084,7 @@ classdef BreachSet < BreachStatus
             
             % restore traj if needed
             if saved_traj
-                this.P = Pfix_traj_ref(this.P, P0);
+                this.P = Pimport_traj(this.P, P0);
             end
             
         end
@@ -1380,8 +1422,9 @@ classdef BreachSet < BreachStatus
             params = this.GetParamList();
             cfg.params = params;
             for ip = 1:numel(params)
-                dom = this.GetDomain(params{ip});
-                cfg.types{ip} = dom.type;
+                dom = this.GetDomain(params{ip});                
+                cfg.types{ip} = dom.type;                               
+                cfg.values{ip} = this.GetParam(params{ip},1);
                 if strcmp(dom.type, 'enum')
                     cfg.domains{ip}=dom.enum;
                 else
@@ -1696,16 +1739,20 @@ classdef BreachSet < BreachStatus
                         idx = min(idx,idx_ia ); % find first position in signals an alias appears
                     end
                 end
-                if idx==is % first time we see this guy, take it as rep
-                    sigs.signals_reps{end+1} = sig;
-                    idx = numel(sigs.signals_reps);
-                end
                 
                 if idx==inf
                     warning('BreachSet:GetSignalSignature:not_found', 'Signal or alias %s not found.', sig);
                 end
                 
-                sigs.signals_map_idx(is) = idx; 
+                if idx==is % first time we see this guy, take it as rep
+                    sigs.signals_reps{end+1} = sig;
+                    idx = numel(sigs.signals_reps);
+                    sigs.signals_map_idx(is) = idx;
+                else % idx is smaller than is so signals_map_idx(idx) is defined and correct, not necessarilly equal to idx ...
+                    sigs.signals_map_idx(is) = sigs.signals_map_idx(idx);
+                end
+                
+                
                 dom = this.GetDomain(signals{idx});
                 sigs.signal_types{is}  = dom.type;
                 if isempty(dom.type)  % ? 
@@ -1963,22 +2010,39 @@ classdef BreachSet < BreachStatus
             end
         end
         
-        function st = PrintParams(this)
+        function st = PrintParams(this,params, header)
             st = '';
             nb_pts= this.GetNbParamVectors();
-            if (nb_pts<=1)
-                st = sprintf('-- PARAMETERS --\n');
-                for ip = this.P.DimX+1:numel(this.P.ParamList)
-                    st = sprintf([st '%s=%g       %s\n'],this.P.ParamList{ip},this.P.pts(ip,1), this.Domains(ip).short_disp(1));
-                end
-            else
-                st = sprintf([st '-- PARAMETERS -- (%d vectors):\n'],nb_pts);
-                for ip = this.P.DimX+1:numel(this.P.ParamList)
-                    st = sprintf([st '%s     %s\n'],this.P.ParamList{ip}, this.Domains(ip).short_disp(1));
-                end
+            
+            if ~exist('params','var')
+                params = this.P.DimX+1:numel(this.P.ParamList);
+            elseif ischar(params)||iscell(params)
+                params = FindParam(this.P, params);
             end
             
-            st = sprintf([st ' \n']);
+            if ~exist('header', 'var')
+                header = '-- PARAMETERS --';            
+            end
+                
+            if (nb_pts<=1)
+                if ~isempty(header)
+                    st = [header sprintf('\n')];
+                end
+                for ip = params
+                    st = [st sprintf('%s=%g       %s\n',this.P.ParamList{ip},this.P.pts(ip,1), this.Domains(ip).short_disp(1))];
+                end
+                
+            else
+                if ~isempty(header)
+                    st = [header sprintf(' (%d vectors):\n',nb_pts)];
+                end
+                for ip = params
+                    st = [st sprintf('%s     %s\n',this.P.ParamList{ip}, this.Domains(ip).short_disp(1))];
+                end
+                
+            end
+            
+            st = [st sprintf('\n')];
             
             if nargout==0
                 fprintf(st);
@@ -2052,7 +2116,14 @@ classdef BreachSet < BreachStatus
         function ResetSimulations(this)
             % Removes computed trajectories
             this.P = SPurge(this.P);
+            
+            if size(this.P.pts,2)>1
+                % get rid of redundant pts
+                [~, iu] = unique(this.P.pts','rows');
+                this.P = Sselect(this.P, iu);
+            end
             this.SignalRanges = [];
+            
         end
         
         function ResetSelected(this)
@@ -2061,40 +2132,19 @@ classdef BreachSet < BreachStatus
         end
         
         function aliases = getAliases(this, signals)
+            
             if ischar(signals)
                 signals = {signals};
             end
             
             aliases = signals;
-            sig_queue = signals;
-            
-            while ~isempty(sig_queue)
-                sig = sig_queue{1};
-                sig_queue = sig_queue(2:end);
-                if this.sigMap.isKey(sig)
-                    nu_sig = this.sigMap(sig);
-                    check_nusig()
-                end
-                if this.sigMapInv.isKey(sig)
-                    nu_sig = this.sigMapInv(sig);
-                    check_nusig()
-                end
+            for is = 1:numel(signals)
+               sig = signals{is} ;
+               if this.AliasMap.isKey(sig)
+                   aliases = union(aliases, this.AliasMap(sig),'stable');
+               end              
             end
             
-            % check sigMapInv for double alias
-            for  invkey = this.sigMapInv.keys()
-                sig = this.sigMapInv(invkey{1});
-                if ismember(sig,aliases)
-                    aliases = union(aliases, invkey{1});
-                end
-            end
-            
-            function check_nusig()
-                if ~ismember(nu_sig, aliases)
-                    aliases = [aliases {nu_sig}];
-                    sig_queue = [sig_queue nu_sig];
-                end
-            end
         end
          
     end

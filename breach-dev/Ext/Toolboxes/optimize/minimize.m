@@ -135,6 +135,7 @@
 %
 %
 % Of course, any combination of the above constraints is
+
 % also possible.
 %
 %

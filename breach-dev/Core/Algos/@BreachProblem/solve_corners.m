@@ -12,6 +12,7 @@ X0 = BrC.GetParam(this.params);
 
 if ~strcmp(this.display,'off')
     fprintf('\n Running %g corners\n', size(X0, 2));
+    this.display_status_header();
 end
 
 res = this.FevalInit(X0);

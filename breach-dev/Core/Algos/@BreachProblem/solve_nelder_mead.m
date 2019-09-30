@@ -1,9 +1,10 @@
 function res = solve_nelder_mead(this)
 
+x0 = this.x0;
+    
 % display header
 if ~strcmp(this.display,'off')
     fprintf('\n\n********************************************\nStarting Nelder Mead optimization from x0:\n');
-    x0 = this.x0;
     this.Display_X(x0);
     this.display_status_header();
 end

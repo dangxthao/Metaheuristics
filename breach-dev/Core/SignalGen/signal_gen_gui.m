@@ -22,7 +22,7 @@ function varargout = signal_gen_gui(varargin)
 
 % Edit the above text to modify the response to help signal_gen_gui
 
-% Last Modified by GUIDE v2.5 18-Jan-2019 19:20:15
+% Last Modified by GUIDE v2.5 11-Jun-2019 17:16:21
 
 % Begin initialization code - DO NOT EDIT
 gui_Singleton = 1;
@@ -59,7 +59,7 @@ if ismac
 else
     FONT=10;
     %POS = [50 10 200 50];
-    handles.TBL_SZ = {400 150 150 150 150 150};
+    handles.TBL_SZ = {300 80 80 100 100 100};
 end
 
 hfn = fieldnames(handles);
@@ -71,6 +71,12 @@ end
 %set(handles.main, 'Position',POS);
 
 handles.select_cells = [];
+handles.constraints_map = containers.Map('KeyType', 'int32','ValueType','any');
+
+set(handles.checkbox_enveloppe, 'Value', 0);
+set(handles.text_max_time_enveloppe, 'Visible', 'off');
+set(handles.edit_max_time_enveloppe, 'Visible', 'off');
+handles.max_time_enveloppe = 3;
 
 % get signal names
 if isa(varargin{1}, 'BreachOpenSystem')
@@ -79,13 +85,44 @@ if isa(varargin{1}, 'BreachOpenSystem')
     %recover domains
     handles.IG.Domains = handles.B.GetDomain(handles.IG.P.ParamList);    
     signal_names = handles.B.Sys.InputList;
+    if isstruct(varargin{2})||ischar(varargin{2})
+        cfg_in = varargin{2};
+        % Add reading contraints    
+        if isfield(cfg_in,'constraints_cfg')
+            data = {};
+            for ic = 1:numel(cfg_in.constraints_cfg)
+                f = cfg_in.constraints_cfg{ic};
+                data{ic,1} = f.id;
+                data{ic,2} = f.expr;
+                handles.constraints_map(ic) = struct('id',  f.id, 'expr',f.expr);
+            end
+            if ~isempty(data)
+                set(handles.table_constraints, 'Data', data);
+            end
+        end
+    end
+            
 elseif isstruct(varargin{1})||ischar(varargin{1})  % configuration struct
+    cfg_in = varargin{1};
     handles.B = [];
     handles.IG = ReadInputGenCfg(varargin{1});
     signal_names = handles.IG.GetSignalList();
     if isfield(varargin{1}, 'sim_time')
         handles.time = varargin{1}.sim_time;
     end
+    % Add reading contraints
+    if isfield(cfg_in,'constraints_cfg')
+        data = {};
+        for ic = 1:numel(cfg_in.constraints_in)
+            f = cfg_in.constraints_in{ic};
+            data{ic}{1} = f.id;
+            data{ic}{2} = f.expr; 
+            handles.constraints_map(ic) = struct('id',  f.id, 'expr',f.expr);
+        end
+        if ~isempty(data)
+            set(handles.table_constraints, 'Data', data);
+        end
+    end        
 end
 set(handles.popupmenu_signal_name, 'String', signal_names);
 
@@ -122,9 +159,15 @@ for isig= 1:numel(signal_names)
             end
         else
             sgs = sg.split();
-            for isg =1:numel(sgs)
+            for isg =1:numel(sgs)               
                 if strcmp(sgs{isg}.signals{1}, c)
-                    handles.signal_gen_map(c)= sgs{isg};
+                    sg = sgs{isg};
+                    handles.signal_gen_map(c)= sg;
+                    sg_class = class(sg);
+                    idx = find(strcmp(signal_types, sg_class));
+                    if isig == 1
+                        set(handles.popupmenu_signal_gen_type,'Value', idx);
+                    end
                     break;
                 end
             end
@@ -149,8 +192,14 @@ set( handles.edit_time, 'String', get_time_string(handles.time));
 signal_gens= handles.signal_gen_map.values;
 handles.output = BreachSignalGen(signal_gens);
 
+
 % update config and params
 update_config(handles);
+
+% Update table (fix domains checkin)
+update_uitable(handles);
+sg = get_current_sg(handles);
+[sg.params, sg.p0, sg.params_domain] = read_uitable_params(handles.uitable_params);
 
 % Init plot
 update_plot(handles);
@@ -192,16 +241,44 @@ function popupmenu_signal_gen_type_Callback(hObject, eventdata, handles)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
 
-% get signal name
+% get signal name and current generator
 sig_name = get_current_signal(handles);
+sg = get_current_sg(handles);
 
 % assign new signal generator
 idx = get(hObject,'Value');
 classes = get(hObject,'String');
 class_name = classes{idx};
-try
-    handles.signal_gen_map(sig_name) = eval([class_name '({ sig_name });']);
+ 
+niou_sg =  eval([class_name '({ sig_name });']);
+
+cfg = sg.getSignalGenArgs();
+niou_cfg = niou_sg.getSignalGenArgs();
+
+% restore common generator parameters such as method, number of cp
+cfg_val = {};
+for ic =1:numel(niou_cfg);
+   io = find(strcmp(niou_cfg{ic}, cfg),1);
+    if ~isempty(io) % found in previous signal gen
+        cfg_val{ic} =  sg.(niou_cfg{ic});
+    else
+        cfg_val{ic} =  niou_sg.(niou_cfg{ic});
+    end   
 end
+
+niou_sg =  eval([class_name '({ sig_name }, cfg_val{:});']);
+
+% restore what is possible for p0
+for ip = 1:numel(niou_sg.params)
+    p = niou_sg.params{ip};
+    ipold= find(strcmp(p, sg.params),1);
+    if ~isempty(ipold)
+        niou_sg.p0(ip) = sg.p0(ipold);
+        niou_sg.params_domain(ip) = sg.params_domain(ipold);
+    end
+end
+
+handles.signal_gen_map(sig_name) = niou_sg;
 
 % update config and params
 update_config(handles);
@@ -319,22 +396,15 @@ function uitable_params_CellEditCallback(hObject, eventdata, handles)
 %	Error: error string when failed to convert EditData to appropriate value for Data
 % handles    structure with handles and user data (see GUIDATA)
 
-
-try
-    e = str2num(eventdata.NewData);
-    assert(isnumeric(e));
-    assert(size(e, 1)==1);
+try 
+    sg = get_current_sg(handles);
+    [sg.params, sg.p0, sg.params_domain] = read_uitable_params(hObject);
+    update_plot(handles);
+    guidata(hObject, handles);
 catch
-    if ~isempty(eventdata.NewData)
-        warndlg(sprintf('Invalid value(s): %s', eventdata.NewData));
-    end
+    warndlg('Invalid input', 'Problem');
 end
 
-sg = get_current_sg(handles);
-[sg.params, sg.p0, sg.params_domain] = read_uitable_params(hObject);
-
-update_plot(handles);
-guidata(hObject, handles);
 
 % --- Executes when entered data in editable cell(s) in uitable_config.
 function uitable_config_CellEditCallback(hObject, eventdata, handles)
@@ -367,10 +437,19 @@ try
     sg_name = class(sg);
     sig_name = get_current_signal(handles);
     niou_sg = eval([sg_name '(sig_name, args_val{:});']);
-    if isequal(size(sg.p0),size(niou_sg.p0))
-        niou_sg.p0 = sg.p0;
-    end
     
+    
+    % restore parameter values
+    for ip = 1:numel(niou_sg.params)
+        p = niou_sg.params{ip};
+        ipold= find(strcmp(p, sg.params),1);
+        if ~isempty(ipold)
+            niou_sg.p0(ip) = sg.p0(ipold);
+            niou_sg.params_domain(ip) = sg.params_domain(ipold);            
+        end        
+    end
+                
+    niou_sg.signals_domain = sg.signals_domain;    
     handles.signal_gen_map(sig_name)= niou_sg;
     
     update_config(handles);
@@ -417,12 +496,14 @@ end
 
 set(h_uitable, 'Data', content);
 
-
 function update_plot(handles)
 % hObject    handle to pushbutton1 (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
-axes(handles.axes1);
+a = handles.axes1;
+axes(a);
+set(handles.text_computing, 'visible', 'on');
+drawnow; 
 
 % get current signal name
 popup_sel_index = get(handles.popupmenu_signal_name, 'Value');
@@ -432,18 +513,31 @@ sig_name = sig_names{popup_sel_index};
 % fetch current generator
 sg = handles.signal_gen_map(sig_name);
 cla;
+legend off;
 % compute and plot signal
 time = evalin('base',handles.time);
-sg.plot(time);
+sg.plot(sig_name, time);
 
 title(sig_name, 'Interpreter', 'None');
 grid on;
 set(gca, 'FontSize',8)
 
 % compute enveloppe
-sg.plot_enveloppe(sig_name,time);
-
+if get(handles.checkbox_enveloppe, 'Value')
+    if ~isempty(handles.constraints_map)
+        constraints = handles.constraints_map.values;
+        sg.plot_enveloppe(sig_name,time, 'max_time', handles.max_time_enveloppe, 'constraints', constraints);
+    else
+        sg.plot_enveloppe(sig_name,time, 'max_time', handles.max_time_enveloppe);
+    end
+end
 update_uitable(handles);
+update_constraints_table(handles);
+set(handles.text_computing, 'visible', 'off');
+drawnow; 
+
+
+
 
 function update_uitable(handles)
 sg = get_current_sg(handles);
@@ -518,3 +612,137 @@ guidata(hObject,handles);
 function button_cancel_Callback(hObject, eventdata, handles)
 handles.output.signalGenerators = {};
 close(handles.main);
+
+
+% --- Executes when entered data in editable cell(s) in table_constraints.
+function table_constraints_CellEditCallback(hObject, eventdata, handles)
+% hObject    handle to table_constraints (see GCBO)
+% eventdata  structure with the following fields (see MATLAB.UI.CONTROL.TABLE)
+%	Indices: row and column indices of the cell(s) edited
+%	PreviousData: previous data for the cell(s) edited
+%	EditData: string(s) entered by the user
+%	NewData: EditData or its converted form set on the Data property. Empty if Data was not changed
+%	Error: error string when failed to convert EditData to appropriate value for Data
+% handles    structure with handles and user data (see GUIDATA)
+
+idx = eventdata.Indices;
+data = get(hObject, 'Data');
+if idx(2) == 1
+    id = eventdata.EditData;
+    expr = data{idx(1), 2};
+else
+    id = data{idx(1),1};
+    expr = eventdata.EditData;    
+end
+
+[handles, data, status] = check_constraint(handles, id, expr, data, idx(1));
+if status
+    set(hObject, 'Data', data);
+    update_constraints_table(handles);
+end
+guidata(hObject,handles);
+
+function [handles, data,status] = check_constraint(handles, id, expr, data, irow)
+
+status =1;
+try
+    if ~isempty(id)&&~isempty(expr)
+        phi = STL_Formula(id,expr);
+        [sigs,params] =  STL_ExtractSignals(phi);
+        time = evalin('base',handles.time);
+        S = BreachSignalGen(handles.signal_gen_map.values);
+        Usigs = S.GetSignalList();
+        Uparams = S.GetParamList();
+        
+        undef_sig = setdiff(sigs, Usigs);
+        if ~isempty(undef_sig)
+            errordlg(sprintf('The constraint [ %s ] involves signal %s unrelated to the input signals. Please double-check for potential typo.', expr, undef_sig{1}), 'Error');
+            error('undef_sig');
+        end
+        
+        undef_param = setdiff(params, Uparams);
+        if ~isempty(undef_param)
+            errordlg(sprintf('The constraint [ %s ] is syntactically correct but involve parameter %s unrelated to the input parameters. Please double-check for potential typo.', expr, undef_param{1}), 'Error');
+            error('undef_param');
+        end
+        
+        S.Sim(time);
+        v = S.CheckSpec(phi);
+        data{irow, 3} = v;
+        handles.constraints_map(irow) = struct('id',  id, 'expr',expr);    
+    else
+        if handles.constraints_map.isKey(irow)
+            handles.constraints_map.remove(irow);
+        end
+        data{irow, 3} = [];
+    end
+catch ME
+    status = 0;
+    if ~strcmp(ME.message, 'undef_sig')&&~strcmp(ME.message, 'undef_param')
+        errordlg(sprintf('Error Message: %s', ME2st(ME)), 'Problem with Expression');
+    end
+    data{irow, 3} = NaN;
+    set(handles.table_constraints, 'Data', data);
+end
+
+
+function update_constraints_table(handles)
+    old_data = get(handles.table_constraints,'Data');
+    data = old_data;
+    for irow = 1:size(data, 1)
+        id = old_data{irow,1};
+        expr = data{irow,2};
+        [handles, data] = check_constraint(handles, id, expr, data, irow);
+    end
+    
+    if ~(isempty(data{end,1})&&isempty(data{end,2}))
+        data{end+1,1} = '';
+    end
+    set(handles.table_constraints, 'Data', data);
+    if ~isequal(data, old_data)
+         update_plot(handles);
+    end
+
+
+% --- Executes on button press in checkbox_enveloppe.
+function checkbox_enveloppe_Callback(hObject, eventdata, handles)
+% hObject    handle to checkbox_enveloppe (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+update_plot(handles);
+if get(hObject, 'Value')
+    set(handles.edit_max_time_enveloppe, 'Visible', 'on');
+    set(handles.text_max_time_enveloppe, 'Visible', 'on');
+else
+    set(handles.edit_max_time_enveloppe, 'Visible', 'off');
+    set(handles.text_max_time_enveloppe, 'Visible', 'off');
+end
+
+function edit_max_time_enveloppe_Callback(hObject, eventdata, handles)
+% hObject    handle to edit_max_time_enveloppe (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    structure with handles and user data (see GUIDATA)
+
+% Hints: get(hObject,'String') returns contents of edit_max_time_enveloppe as text
+%        str2double(get(hObject,'String')) returns contents of edit_max_time_enveloppe as a double
+try
+    handles.max_time_enveloppe = str2double(get(hObject,'String'));
+    guidata(hObject, handles);
+    update_plot(handles);
+end
+
+
+
+
+
+% --- Executes during object creation, after setting all properties.
+function edit_max_time_enveloppe_CreateFcn(hObject, eventdata, handles)
+% hObject    handle to edit_max_time_enveloppe (see GCBO)
+% eventdata  reserved - to be defined in a future version of MATLAB
+% handles    empty - handles not created until after all CreateFcns called
+
+% Hint: edit controls usually have a white background on Windows.
+%       See ISPC and COMPUTER.
+if ispc && isequal(get(hObject,'BackgroundColor'), get(0,'defaultUicontrolBackgroundColor'))
+    set(hObject,'BackgroundColor','white');
+end
