@@ -7,13 +7,15 @@ close all
 clear all
 warning('off', 'ALL')
 
-addpath('/Users/thaodang/Metaheuristics/supp_code')
-addpath('/Users/thaodang/Metaheuristics/src')
-addpath('/Users/thaodang/Metaheuristics/breach-dev')
-addpath('.')
-        
-InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
-
+thao =0; 
+if thao
+    addpath('/Users/thaodang/Metaheuristics/src')
+    addpath('/Users/thaodang/Metaheuristics/breach-dev')
+    addpath('.')    
+    InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
+else
+    addpath('../../Metaheuristics/src')
+end
 model_name = 'autotrans_mod04';
 fprintf('\n Creating breach interface with simulink model %s\n',model_name)
 
@@ -49,16 +51,16 @@ signal_gen_method = {'previous','previous'};
 
 
 %%%%
-Insig = load(sigfilename, '-ascii');
-scaling=0.65e-7; 
-    %%Passband 0.4e-7 Oui les deux -- 0.5e-7 Oui les deux -- 
-    %0.6e-7 discrepance 19 Oui, uni NON -- %0.8e-7 NON les deux
-    
-    %%Lowpass
-    %%0.4e-4;
-    
-Insig(:,1) = scaling*In1(:,1);
-time = Insig(:,1);
+% Insig = load(sigfilename, '-ascii');
+% scaling=0.65e-7; 
+%     %%Passband 0.4e-7 Oui les deux -- 0.5e-7 Oui les deux -- 
+%     %0.6e-7 discrepance 19 Oui, uni NON -- %0.8e-7 NON les deux
+%     
+%     %%Lowpass
+%     %%0.4e-4;
+%     
+% Insig(:,1) = scaling*In1(:,1);
+% time = Insig(:,1);
 %%%% signal_gen_method = {'linear','linear'}; 
 %%%% In1_u0 = 
 %%%% In1_dt0 = time(2) - time(1)
