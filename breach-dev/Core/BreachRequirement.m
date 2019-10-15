@@ -115,6 +115,7 @@ classdef BreachRequirement < BreachTraceSystem
             this.P.selected = zeros(1, size(this.P.pts,2));
             this.P = Preset_traj_ref(this.P);
             this.traces_vals_precond = [];
+            this.traces_vals_vac = [];
             this.traces_vals = [];
             this.val = [];            
         end
@@ -208,11 +209,12 @@ classdef BreachRequirement < BreachTraceSystem
                     time = this.P.traj{it}.time;
                     for ipre = 1:numel(this.req_monitors)
                         req = this.req_monitors{ipre};
-                        [traces_vals(it, ipre) traces_vals_vac(it, ipre)]  = eval_req(this,req,it);
+                        [traces_vals(it, ipre), traces_vals_vac(it, ipre)]  = eval_req(this,req,it);
                     end
                 end
             end
             this.traces_vals_precond = traces_vals_precond;
+            this.traces_vals_vac = traces_vals_vac;
             this.traces_vals = traces_vals;
                         
         end
@@ -298,12 +300,22 @@ classdef BreachRequirement < BreachTraceSystem
                 summary.statement = sprintf([summary.statement ', %d traces have violations'], summary.num_traces_violations);
                 summary.num_total_violations =  sum( sum(this.traces_vals<0) );
                 if  summary.num_total_violations == 1
-                    summary.statement = sprintf([summary.statement ', %d requirement violation.' ], summary.num_traces_violations);
+                    summary.statement = sprintf([summary.statement ', %d requirement violation' ], summary.num_traces_violations);
                 elseif summary.num_total_violations >1
-                    summary.statement = sprintf([summary.statement ', %d requirement violations total.' ], summary.num_traces_violations);
+                    summary.statement = sprintf([summary.statement ', %d requirement violations total' ], summary.num_traces_violations);
+                end
+                
+                summary.num_vacuous_sat = sum(sum(summary.requirements.rob == inf));
+                
+                if  summary.num_vacuous_sat == 1
+                    summary.statement = sprintf([summary.statement ', %d vacuous satisfaction.' ], summary.num_vacuous_sat);
+                elseif summary.num_vacuous_sat >1
+                    summary.statement = sprintf([summary.statement ', %d vacuous satisfactions.' ], summary.num_vacuous_sat);
                 else
                     summary.statement = [summary.statement '.'];
                 end
+                
+                
             else
                 summary.statement = [summary.statement '.'];
             end
@@ -652,7 +664,7 @@ classdef BreachRequirement < BreachTraceSystem
                 folder_name = pwd;
             end
             options = struct('FolderName', folder_name, 'ExportToExcel', false, 'ExcelFileName', 'Results.xlsx', ...
-                'IncludeSignals', [],  'IncludeParams', []);
+                'IncludeSignals', [],  'IncludeParams', [], 'AddWorkflowNum',[]);
             options = varargin2struct(options, varargin{:});
             
             try
@@ -681,6 +693,12 @@ classdef BreachRequirement < BreachTraceSystem
             end
             
             summary = this.GetSummary(options.IncludeSignals, options.IncludeParams);
+            if ~isempty(options.AddWorkflowNum);
+                summary.workflow = options.AddWorkflowNum;
+            end
+            
+            
+            
             summary_filename = [folder_name filesep 'summary'];
             tr = this.ExportTraces(options.IncludeSignals, options.IncludeParams, 'WriteToFolder', [folder_name filesep 'traces']);
             summary.traces_list = cell(1,numel(tr));
@@ -810,9 +828,13 @@ classdef BreachRequirement < BreachTraceSystem
                 fast = false;
             end
             this.P = SConcat(this.P, other.P, fast);
+            % wild guess:
+            this.P = SetParam(this.P, this.P.DimX+1,this.P.traj_ref);
             
             this.traces_vals_precond = [this.traces_vals_precond ; other.traces_vals_precond]; 
             this.traces_vals = [this.traces_vals ; other.traces_vals]; 
+            this.traces_vals_vac = [this.traces_vals_vac ; other.traces_vals_vac]; 
+            
             this.val= min([ this.val other.val]);
             
         end
@@ -1097,8 +1119,8 @@ classdef BreachRequirement < BreachTraceSystem
             b = false;
             for ifo = 1:numel(this.req_monitors)
                 if isa(this.req_monitors{ifo}, 'stl_monitor')
-                    if strcmp(sig, [this.req_monitors{ifo}.formula_id '_quant_sat' ])||...
-                            strcmp(sig, [get_id(this.req_monitors{ifo}.formula) ])
+                    if strcmp(sig, [this.req_monitors{ifo}.formula_id '_quant_sat' ])%||... 
+                            %strcmp(sig, [get_id(this.req_monitors{ifo}.formula) ])
                         b = true;
                     end
                 end

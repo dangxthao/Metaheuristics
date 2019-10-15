@@ -85,8 +85,4 @@ else
     P = Preset_traj_ref(P);
 end
 
-% Purge trajectories and properties
-%P = SPurge_props(P);
-%P = SPurge(P);
-
 end

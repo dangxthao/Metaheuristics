@@ -1,0 +1,248 @@
+ptavalue={ "statelist":[
+{
+	"id": 0,
+	"transition":[
+		{"zone": [0 , 0 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,0<x3<4,0<x4<4,x=x1,x=x2,x=x3,x=x4,x1=x2,x1=x3,x1=x4,x2=x3,x2=x4,x3=x4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :1, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "((s=0),{x=0,x1=0,x2=0,x3=0,x4=0,x=x1,x=x2,x=x3,x=x4,x1=x2,x1=x3,x1=x4,x2=x3,x2=x4,x3=x4})", 
+	"redcoord": [[0, 1, 2, 3, 4, 5]]
+},
+{
+	"id": 1,
+	"transition":[
+		{"zone": [0 , 0 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,0<x3<4,0<x4<4,x=x1,-4<x-x2<0,-4<x-x3<0,-4<x-x4<0,-4<x1-x2<0,-4<x1-x3<0,-4<x1-x4<0,x2=x3,x2=x4,x3=x4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :2, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [4 , 5 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,4<x2<8,4<x3<8,4<x4<8,x=x1,-4<x-x2<0,-4<x-x3<0,-4<x-x4<0,-4<x1-x2<0,-4<x1-x3<0,-4<x1-x4<0,x2=x3,x2=x4,x3=x4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :10, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "((s=1),{x=0,x1=0,0<x2<4,0<x3<4,0<x4<4,x=x1,-4<x-x2<0,-4<x-x3<0,-4<x-x4<0,-4<x1-x2<0,-4<x1-x3<0,-4<x1-x4<0,x2=x3,x2=x4,x3=x4})", 
+	"redcoord": [[0, 1, 2], [3, 4, 5]]
+},
+{
+	"id": 2,
+	"transition":[
+		{"zone": [4 , 2 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-4<x-x3<0,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-4<x2-x3<0,-4<x2-x4<0,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :3, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,0<x3<4,0<x4<4,-4<x-x1<0,x=x2,-4<x-x3<0,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-4<x2-x3<0,-4<x2-x4<0,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :8, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [4 , 5 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-4<x-x3<0,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-4<x2-x3<0,-4<x2-x4<0,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :24, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "((s=2),{x=0,0<x1<4,x2=0,0<x3<4,0<x4<4,-4<x-x1<0,x=x2,-4<x-x3<0,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-4<x2-x3<0,-4<x2-x4<0,x3=x4})", 
+	"redcoord": [[0, 1, 3], [2], [4, 5]]
+},
+{
+	"id": 3,
+	"transition":[
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "((s=3),{x=0,4<x1<8,0<x2<4,x3=0,4<x4<8,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 4,
+	"transition":[
+		{"zone": [4 , 4 , 8 , 3], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,4<x3<8,0<x4<4,-12<x-x1<-8,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,8<x1-x4<12,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :5, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 3 , 12 , 2], "zone_string": "[{0<x<4,8<x1<12,8<x2<12,4<x3<8,0<x4<4,-12<x-x1<-8,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,8<x1-x4<12,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :13, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,0<x4<4,-12<x-x1<-8,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,8<x1-x4<12,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :15, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "((s=4),{x=0,8<x1<12,4<x2<8,0<x3<4,x4=0,-12<x-x1<-8,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,8<x1-x4<12,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 5], [2], [3], [4]]
+},
+{
+	"id": 5,
+	"transition":[
+		{"zone": [4 , 5 , 8 , 4], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,4<x4<8,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :6, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,8<x3<12,4<x4<8,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :14, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 3 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,0<x4<4,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :28, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "((s=5),{x=0,x1=0,4<x2<8,4<x3<8,0<x4<4,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 2], [3], [4], [5]]
+},
+{
+	"id": 6,
+	"transition":[
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,8<x4<12,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :7, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :16, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [4 , 2 , 8 , 5], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :27, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "((s=6),{x=0,0<x1<4,x2=0,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 3], [2], [4], [5]]
+},
+{
+	"id": 7,
+	"transition":[
+		{"zone": [8 , 2 , 12 , 5], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [4 , 3 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :21, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "((s=3),{x=0,4<x1<8,0<x2<4,x3=0,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 8,
+	"transition":[],
+	"name": "(CP_7(s=3),{x=0,0<x1<4,0<x2<4,x3=0,0<x4<4,-4<x-x1<0,-4<x-x2<0,x=x3,-4<x-x4<0,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-4<x3-x4<0})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 9,
+	"transition":[
+		{"zone": [8 , 2 , 12 , 5], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [4 , 3 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :21, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_8(s=3),{x=0,4<x1<8,0<x2<4,x3=0,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-12<x-x4<-8,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-12<x3-x4<-8})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 10,
+	"transition":[
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,8<x4<12,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :9, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :12, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [4 , 2 , 8 , 5], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,x3=x4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :23, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "(CP_9(s=2),{x=0,0<x1<4,x2=0,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,x3=x4})", 
+	"redcoord": [[0, 1, 3], [2], [4, 5]]
+},
+{
+	"id": 11,
+	"transition":[
+		{"zone": [4 , 4 , 8 , 3], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,4<x3<8,0<x4<4,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :5, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 3 , 4 , 5], "zone_string": "[{0<x<4,8<x1<12,8<x2<12,4<x3<8,0<x4<4,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :13, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,0<x4<4,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :15, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "(CP_10(s=4),{x=0,4<x1<8,4<x2<8,0<x3<4,x4=0,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 5], [2], [3], [4]]
+},
+{
+	"id": 12,
+	"transition":[
+		{"zone": [4 , 3 , 4 , 4], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :22, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :29, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_11(s=3),{x=0,0<x1<4,0<x2<4,x3=0,4<x4<8,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 13,
+	"transition":[
+		{"zone": [4 , 5 , 8 , 4], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,4<x4<8,x=x1,-12<x-x2<-8,-8<x-x3<-4,-4<x-x4<0,-12<x1-x2<-8,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :6, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 12 , 3], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,8<x3<12,4<x4<8,x=x1,-12<x-x2<-8,-8<x-x3<-4,-4<x-x4<0,-12<x1-x2<-8,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :14, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,0<x4<4,x=x1,-12<x-x2<-8,-8<x-x3<-4,-4<x-x4<0,-12<x1-x2<-8,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :28, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "(CP_12(s=5),{x=0,x1=0,8<x2<12,4<x3<8,0<x4<4,x=x1,-12<x-x2<-8,-8<x-x3<-4,-4<x-x4<0,-12<x1-x2<-8,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 2], [3], [4], [5]]
+},
+{
+	"id": 14,
+	"transition":[
+		{"zone": [8 , 5 , 12 , 4], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,8<x4<12,-4<x-x1<0,x=x2,-12<x-x3<-8,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-12<x2-x3<-8,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :7, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [0 , 0 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-12<x-x3<-8,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-12<x2-x3<-8,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :16, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [4 , 2 , 8 , 5], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-12<x-x3<-8,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-12<x2-x3<-8,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :27, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "(CP_13(s=6),{x=0,0<x1<4,x2=0,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-12<x-x3<-8,-8<x-x4<-4,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-12<x2-x3<-8,-8<x2-x4<-4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 3], [2], [4], [5]]
+},
+{
+	"id": 15,
+	"transition":[
+		{"zone": [8 , 3 , 4 , 5], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,0<x4<4,x=x1,-8<x-x2<-4,-4<x-x3<0,-4<x-x4<0,-8<x1-x2<-4,-4<x1-x3<0,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :18, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [4 , 5 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,4<x4<8,x=x1,-8<x-x2<-4,-4<x-x3<0,-4<x-x4<0,-8<x1-x2<-4,-4<x1-x3<0,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :20, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "(CP_14(s=5),{x=0,x1=0,4<x2<8,0<x3<4,0<x4<4,x=x1,-8<x-x2<-4,-4<x-x3<0,-4<x-x4<0,-8<x1-x2<-4,-4<x1-x3<0,-4<x1-x4<0,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 2], [3], [4], [5]]
+},
+{
+	"id": 16,
+	"transition":[
+		{"zone": [4 , 3 , 4 , 4], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :22, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :29, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_15(s=3),{x=0,0<x1<4,0<x2<4,x3=0,4<x4<8,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 17,
+	"transition":[
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_16(s=3),{x=0,4<x1<8,0<x2<4,x3=0,4<x4<8,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 18,
+	"transition":[
+		{"zone": [8 , 4 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-4<x2-x4<0,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :17, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "(CP_17(s=6),{x=0,0<x1<4,x2=0,4<x3<8,0<x4<4,-4<x-x1<0,x=x2,-8<x-x3<-4,-4<x-x4<0,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-4<x2-x4<0,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 3], [2], [4], [5]]
+},
+{
+	"id": 19,
+	"transition":[
+		{"zone": [8 , 3 , 8 , 4], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,4<x4<8,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :6, "reset" : [0,1,0,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,8<x3<12,4<x4<8,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :14, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "(CP_18(s=5),{x=0,x1=0,4<x2<8,4<x3<8,0<x4<4,x=x1,-8<x-x2<-4,-8<x-x3<-4,-4<x-x4<0,-8<x1-x2<-4,-8<x1-x3<-4,-4<x1-x4<0,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 2], [3], [4], [5]]
+},
+{
+	"id": 20,
+	"transition":[
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,8<x4<12,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :7, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 8 , 5], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :27, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "(CP_19(s=6),{x=0,0<x1<4,x2=0,4<x3<8,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-8<x-x4<-4,0<x1-x2<4,-4<x1-x3<0,-4<x1-x4<0,-8<x2-x3<-4,-8<x2-x4<-4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 3], [2], [4], [5]]
+},
+{
+	"id": 21,
+	"transition":[
+		{"zone": [4 , 4 , 4 , 5], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,4<x3<8,0<x4<4,-8<x-x1<-4,-4<x-x2<0,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :19, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,0<x4<4,-8<x-x1<-4,-4<x-x2<0,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :25, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "(CP_20CP_10(s=4),{x=0,4<x1<8,0<x2<4,0<x3<4,x4=0,-8<x-x1<-4,-4<x-x2<0,-4<x-x3<0,x=x4,0<x1-x2<4,4<x1-x3<8,4<x1-x4<8,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 5], [2], [3], [4]]
+},
+{
+	"id": 22,
+	"transition":[
+		{"zone": [8 , 2 , 8 , 3], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,4<x3<8,0<x4<4,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,0<x1-x3<4,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :5, "reset" : [0,0,1,1,1], "prob":1.0}]}, 
+		{"zone": [8 , 3 , 4 , 5], "zone_string": "[{0<x<4,8<x1<12,8<x2<12,4<x3<8,0<x4<4,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,0<x1-x3<4,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :13, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "(CP_21CP_10(s=4),{x=0,4<x1<8,4<x2<8,0<x3<4,x4=0,-8<x-x1<-4,-8<x-x2<-4,-4<x-x3<0,x=x4,0<x1-x2<4,0<x1-x3<4,4<x1-x4<8,0<x2-x3<4,4<x2-x4<8,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 5], [2], [3], [4]]
+},
+{
+	"id": 23,
+	"transition":[
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [4 , 3 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :21, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_22(s=3),{x=0,4<x1<8,0<x2<4,x3=0,4<x4<8,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 24,
+	"transition":[
+		{"zone": [8 , 5 , 4 , 4], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :22, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_23CP_11(s=3),{x=0,0<x1<4,0<x2<4,x3=0,4<x4<8,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 25,
+	"transition":[
+		{"zone": [8 , 3 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,8<x2<12,4<x3<8,4<x4<8,x=x1,-8<x-x2<-4,-4<x-x3<0,-4<x-x4<0,-8<x1-x2<-4,-4<x1-x3<0,-4<x1-x4<0,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"c", "miniedge": [{ "target" :20, "reset" : [0,1,0,1,1], "prob":1.0}]}],
+	"name": "(CP_24CP_14(s=5),{x=0,x1=0,4<x2<8,0<x3<4,0<x4<4,x=x1,-8<x-x2<-4,-4<x-x3<0,-4<x-x4<0,-8<x1-x2<-4,-4<x1-x3<0,-4<x1-x4<0,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 2], [3], [4], [5]]
+},
+{
+	"id": 26,
+	"transition":[
+		{"zone": [8 , 5 , 4 , 4], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :22, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_25CP_15(s=3),{x=0,0<x1<4,0<x2<4,x3=0,4<x4<8,-4<x-x1<0,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,0<x1-x3<4,-4<x1-x4<0,0<x2-x3<4,-4<x2-x4<0,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 27,
+	"transition":[
+		{"zone": [8 , 2 , 4 , 4], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :4, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [4 , 3 , 8 , 2], "zone_string": "[{0<x<4,4<x1<8,4<x2<8,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :11, "reset" : [0,1,1,1,0], "prob":1.0}]}, 
+		{"zone": [8 , 5 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,0<x3<4,8<x4<12,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4}]", "is_zone_contained": false, "action":"a", "miniedge": [{ "target" :21, "reset" : [0,1,1,1,0], "prob":1.0}]}],
+	"name": "(CP_26CP_16(s=3),{x=0,4<x1<8,0<x2<4,x3=0,4<x4<8,-8<x-x1<-4,-4<x-x2<0,x=x3,-8<x-x4<-4,0<x1-x2<4,4<x1-x3<8,-4<x1-x4<0,0<x2-x3<4,-8<x2-x4<-4,-8<x3-x4<-4})", 
+	"redcoord": [[0, 1, 4], [2], [3], [5]]
+},
+{
+	"id": 28,
+	"transition":[
+		{"zone": [4 , 2 , 4 , 3], "zone_string": "[{0<x<4,4<x1<8,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-4<x-x4<0,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-4<x2-x4<0,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :17, "reset" : [0,1,1,0,1], "prob":1.0}]}, 
+		{"zone": [8 , 4 , 4 , 2], "zone_string": "[{0<x<4,0<x1<4,0<x2<4,8<x3<12,4<x4<8,-4<x-x1<0,x=x2,-8<x-x3<-4,-4<x-x4<0,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-4<x2-x4<0,0<x3-x4<4}]", "is_zone_contained": false, "action":"d", "miniedge": [{ "target" :26, "reset" : [0,1,1,0,1], "prob":1.0}]}],
+	"name": "(CP_27CP_17(s=6),{x=0,0<x1<4,x2=0,4<x3<8,0<x4<4,-4<x-x1<0,x=x2,-8<x-x3<-4,-4<x-x4<0,0<x1-x2<4,-8<x1-x3<-4,-4<x1-x4<0,-8<x2-x3<-4,-4<x2-x4<0,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 3], [2], [4], [5]]
+},
+{
+	"id": 29,
+	"transition":[
+		{"zone": [8 , 2 , 4 , 5], "zone_string": "[{0<x<4,8<x1<12,4<x2<8,4<x3<8,0<x4<4,-8<x-x1<-4,-4<x-x2<0,-4<x-x3<0,x=x4,0<x1-x2<4,0<x1-x3<4,4<x1-x4<8,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4}]", "is_zone_contained": false, "action":"b", "miniedge": [{ "target" :19, "reset" : [0,0,1,1,1], "prob":1.0}]}],
+	"name": "(CP_28CP_20CP_10(s=4),{x=0,4<x1<8,0<x2<4,0<x3<4,x4=0,-8<x-x1<-4,-4<x-x2<0,-4<x-x3<0,x=x4,0<x1-x2<4,0<x1-x3<4,4<x1-x4<8,0<x2-x3<4,0<x2-x4<4,0<x3-x4<4})", 
+	"redcoord": [[0, 1, 5], [2], [3], [4]]
+}],
+"alphabet":["b","c","d","a"],
+"cardclocks":5
+}
