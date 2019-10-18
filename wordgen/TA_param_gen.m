@@ -40,7 +40,7 @@ classdef TA_param_gen < param_gen
             this.domain_out = repmat(BreachDomain(),1,numel(this.params_out));
             
             this.p0  = [.5*ones(num_events,1); ... 
-                         [1 1 0]']; % time_scale, alpha, beta
+                         [1 .5 0]']; % time_scale, alpha, beta
             this.template_out = [repmat('%g ', 1, num_events-1) '%g'];
             
         end
