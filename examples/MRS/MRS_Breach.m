@@ -31,7 +31,7 @@ for ii = 1:9
     input_cp = [input_cp 4];
     input_intp{end+1} = 'previous';
 end
-MRS_input_gen = fixed_cp_signal_gen(input_str, input_cp,input_intp);
+MRS_input_gen = fixed_cp_signal_gen(input_str, input_cp, input_intp);
 MRS_system.SetInputGen(BreachSignalGen({MRS_input_gen}));
 input_param = {};
 input_range = [];
