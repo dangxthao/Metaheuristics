@@ -42,7 +42,6 @@ R.Eval(B);
 F = BreachSamplesPlot(R); 
 
 %% Testing against events
-
 Be = BP2.copy();
 Be.SetInputGen(S);
 Be.SetParamGen(pg);
@@ -54,7 +53,6 @@ ranges = repmat([0,1], numel(params),1);
 
 Be.SetParamRanges(params, ranges);
 Be.SampleDomain(params, 100); % random (pseudo not quasi) sampling of 10
-%Be.QuasiRandomSample(10);
 R = BreachRequirement(phi); 
 R.Eval(Be);
 F = BreachSamplesPlot(R); 
@@ -69,13 +67,15 @@ Bpb.SetTime(time);
 Rpb = BreachRequirement(phi); 
 pb = FalsificationProblem(Bpb, Rpb, params, ranges);
 
+%%
 pb.max_obj_eval=1000;
 pb.solver_options.num_corners = 0; 
 pb.solver_options.num_quasi_rand_samples = 50;
 pb.solve();
+Rpb= pb.GetLog();
 
-
-
-
+%%
+Fpb = BreachSamplesPlot(Rpb); 
+Fpb.set_y_axis('notsaturation');
 
 

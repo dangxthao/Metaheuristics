@@ -23,32 +23,44 @@ num_sim = [];
 falsify = [];
 
 %%
-% % fprintf('non-uniform\n');
-% % 
-% % cp_num = 2;
-% % MD_input_gen = fixed_cp_signal_gen({'In1'}, cp_num, {'previous'});
-% % MD_system.SetInputGen(BreachSignalGen({MD_input_gen}));
-% % input_param = {};
-% % input_range = [];
-% % for ii = 0:cp_num-1
-% %     input_param{end+1} =  ['In1_u' num2str(ii)];
-% %     input_range = [input_range; 0 100];
-% % end
-% % MD_system.SetParamRanges(input_param, input_range);
-% % breach_problem = FalsificationProblem(MD_system, phi);
-% % breach_problem.max_obj_eval = 2000;
-% % breach_problem.max_time = inf;
-% % %breach_problem.setup_solver('fminsearch');
-% % breach_problem.setup_solver('cmaes');
-% % t = clock;
-% % breach_problem.solve();
-% % time_run=[time_run etime(clock,t)];
-% % num_sim = [num_sim breach_problem.nb_obj_eval];
-% % falsify = [falsify breach_problem.obj_best<0];
-% % %%
-% % % fals_example = sitar_problem.GetBrSet_False;
-% % % fals_example.RunGUI
-% % %%
+fprintf('non-uniform\n');
+
+cp_num = 3; %3; %2;
+%MD_input_gen = fixed_cp_signal_gen({'In1'}, cp_num, {'previous'});
+MD_input_gen = var_cp_signal_gen({'In1'}, cp_num, {'previous'});
+MD_system.SetInputGen(BreachSignalGen({MD_input_gen}));
+input_param = {};
+input_range = [];
+
+eps_time = (sim_time/cp_num)*0.4;
+
+for ii = 0:cp_num-1
+    input_param{end+1} =  ['In1_u' num2str(ii)];
+    input_range = [input_range; 0 100];
+    if (ii<(cp_num-1))
+       input_param{end+1} = ['In1_dt' num2str(ii)];
+       if (ii>0) 
+           input_range = [input_range; (ii*sim_time/cp_num -eps_time)  (ii*sim_time/cp_num + eps_time) ];
+       else
+           input_range = [input_range; (ii*sim_time/cp_num)  (ii*sim_time/cp_num + eps_time) ];
+       end
+    end
+end
+MD_system.SetParamRanges(input_param, input_range);
+breach_problem = FalsificationProblem(MD_system, phi);
+breach_problem.max_obj_eval = 2000;
+breach_problem.max_time = inf;
+%breach_problem.setup_solver('fminsearch');
+breach_problem.setup_solver('cmaes');
+t = clock;
+breach_problem.solve();
+time_run=[time_run etime(clock,t)];
+num_sim = [num_sim breach_problem.nb_obj_eval];
+falsify = [falsify breach_problem.obj_best<0];
+%%
+% fals_example = sitar_problem.GetBrSet_False;
+% fals_example.RunGUI
+%%
 % % fprintf('uniform\n');
 % % 
 % % 
@@ -87,8 +99,8 @@ falsify = [];
 % % falsify = [falsify breach_problem_2.obj_best<0];
 % % %%
 % % fprintf('uniform\n');
-
-% % cp_num = 3;
+% % 
+% % cp_num = 4;
 % % MD_system_3 = MD_base.copy();
 % % MD_input_gen_3 = fixed_cp_signal_gen({'In1'}, cp_num, {'previous'});
 % % MD_system_3.SetInputGen(BreachSignalGen({MD_input_gen_3}));
@@ -111,30 +123,30 @@ falsify = [];
 % % time_run=[time_run etime(clock,t)];
 % % num_sim = [num_sim breach_problem_3.nb_obj_eval];
 % % falsify = [falsify breach_problem_3.obj_best<0];
-
-
-fprintf('uniform\n');
-
-cp_num = 8;
-MD_system_4 = MD_base.copy();
-MD_input_gen_4 = fixed_cp_signal_gen({'In1'}, cp_num, {'previous'});
-MD_system_4.SetInputGen(BreachSignalGen({MD_input_gen_4}));
-input_param_4 = {};
-input_range_4 = [];
-for ii = 0:cp_num-1
-    input_param_4{end+1} =  ['In1_u' num2str(ii)];
-    input_range_4 = [input_range_4; 0 100];
-end
-
-MD_system_4.SetInputGen(BreachSignalGen({MD_input_gen_4}));
-MD_system_4.SetParamRanges(input_param_4, input_range_4);
-breach_problem_4 = FalsificationProblem(MD_system_4, phi);
-breach_problem_4.max_obj_eval = 4000;
-breach_problem_4.max_time = inf;
-%breach_problem_2.setup_solver('fminsearch');
-breach_problem_4.setup_solver('cmaes');
-t = clock;
-breach_problem_4.solve();
-time_run=[time_run etime(clock,t)];
-num_sim = [num_sim breach_problem_4.nb_obj_eval];
-falsify = [falsify breach_problem_4.obj_best<0];
+% % 
+% % %%
+% % fprintf('uniform\n');
+% % 
+% % cp_num = 8;
+% % MD_system_4 = MD_base.copy();
+% % MD_input_gen_4 = fixed_cp_signal_gen({'In1'}, cp_num, {'previous'});
+% % MD_system_4.SetInputGen(BreachSignalGen({MD_input_gen_4}));
+% % input_param_4 = {};
+% % input_range_4 = [];
+% % for ii = 0:cp_num-1
+% %     input_param_4{end+1} =  ['In1_u' num2str(ii)];
+% %     input_range_4 = [input_range_4; 0 100];
+% % end
+% % 
+% % MD_system_4.SetInputGen(BreachSignalGen({MD_input_gen_4}));
+% % MD_system_4.SetParamRanges(input_param_4, input_range_4);
+% % breach_problem_4 = FalsificationProblem(MD_system_4, phi);
+% % breach_problem_4.max_obj_eval = 4000;
+% % breach_problem_4.max_time = inf;
+% % %breach_problem_2.setup_solver('fminsearch');
+% % breach_problem_4.setup_solver('cmaes');
+% % t = clock;
+% % breach_problem_4.solve();
+% % time_run=[time_run etime(clock,t)];
+% % num_sim = [num_sim breach_problem_4.nb_obj_eval];
+% % falsify = [falsify breach_problem_4.obj_best<0];
