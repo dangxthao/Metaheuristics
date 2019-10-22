@@ -1,3 +1,96 @@
 
  *** Running Simulated Annealing
- Time limit of computation is 2000 seconds
+ Time limit of computation is 100 seconds
+
+ This solver time = 101.697503 seconds
+ Best Robustness Value of this call = 0.000020
+ Best Robustness Value so far = 0.000020
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00002033    0.02127105
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 1 done
+ **** Running CMAES
+ Time limit of computation is 100 seconds
+
+ Max eval number is 200 
+
+ This solver time = 3.521019 seconds
+ Best Robustness Value of this call = 0.000092
+ Best Robustness Value so far = 0.000020
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00002033    0.02127105
+ 2  1    0.00002033    0.02176091
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 2 done
+ *** Running Simulated Annealing
+ Time limit of computation is 100 seconds
+
+ This solver time = 101.744793 seconds
+ Best Robustness Value of this call = 0.000020
+ Best Robustness Value so far = 0.000020
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00002033    0.02127105
+ 2  1    0.00002033    0.02176091
+ 3  2    0.00002032    0.02465383
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 3 done
+ **** Running CMAES
+ Time limit of computation is 100 seconds
+
+ Max eval number is 200 
+
+ This solver time = 4.139113 seconds
+ Best Robustness Value of this call = 0.001575
+ Best Robustness Value so far = 0.000020
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00002033    0.02127105
+ 2  1    0.00002033    0.02176091
+ 3  2    0.00002032    0.02465383
+ 4  1    0.00002032    0.02489958
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 4 done
+ *** Running QuasiRandom
+ Time limit of computation is 200 seconds
+
+ Max eval number is 200 
+
+ This solver time = 162.958080 seconds
+ Best Robustness Value of this call = 0.000020
+ Best Robustness Value so far = 0.000020
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.00002033    0.02127105
+ 2  1    0.00002033    0.02176091
+ 3  2    0.00002032    0.02465383
+ 4  1    0.00002032    0.02489958
+ 5  0    0.00002032    0.02706718
+ rob_stagnant = 1
+ cov_monitoring_length = 1
+ Solver call 5 done
+ *** Running QuasiRandom
+ Time limit of computation is 200 seconds
+
+ Max eval number is 200 
