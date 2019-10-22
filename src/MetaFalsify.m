@@ -542,39 +542,16 @@ classdef MetaFalsify < handle
                         fprintf(fileID, '\n Max eval number is %d seconds\n',eval_lim);
 %                      
                         
-                        %% start pseudo random sampling
+                        %% start pseudo random sampling                                                
+                        
                         nb = this.max_obj_eval(1,solver_index +1);
-                
-                        if CBS.AppendWhenSample
-                         Pold = CBS.P;
-                        end
-                
                         ip = CBS.VaryingParamList;
-                        param_names = CBS.P.ParamList(1,ip);
-                        param_ranges = [CBS.LowerLeftCorner(),CBS.UpperRightCorner()]; 
-                        num_params = numel(param_names);
-              
-                        CBS.ResetParamSet();
-                        newP = CBS.P;
-                
-                        newP.pts = repmat(newP.pts,[1 nb]);
-                        %newP.pts(newP.dim,:) = repmat(width,[1 nb]).*r+repmat(mini,[1 nb]);
-                        newP.pts(newP.dim,:) = rand(1, nb).*(param_ranges(:,2)...
-                                  -param_ranges(:,1))+param_ranges(:,1)
-                        %input('ENTER');
-                
-                        if CBS.AppendWhenSample
-                           CBS.P = SConcat(Pold, newP);
-                        else
-                            CBS.P = newP;
-                        end            
-                        CBS.CheckinDomainParam();
-                        CBS.ApplyParamGens();
+                        var = CBS.P.ParamList(1,ip); % check that these are actually the variables we want...
+                        CBS.SampleDomain(var, nb, 'rand');   % default sampling is pseudo random 
+                        
                         %% end pseudo random sampling           
-
-                        this.Br = CBS.copy();
-                
-                
+                                                
+                        this.Br = CBS.copy();                                
                         %CBS.QuasiRandomSample(this.max_obj_eval(1,solver_index +1));
                
                         falsif_pb = this.Pbs; %FalsificationProblem(CBS, this.R);
