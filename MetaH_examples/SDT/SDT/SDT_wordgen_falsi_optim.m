@@ -26,11 +26,12 @@ InitBreach('./../../../breach-dev',true);
 %init_SDT_lowpass
 init_SDT
 
-phi = STL_Formula('notsaturation', 'alw(abs(OutSat[t])<1.73978)'); %1.74 falsified
+formuleSt = 'alw(abs(OutSat[t])<1.73976)';
+                        
+phi = STL_Formula('notsaturation', formuleSt);
 %phi = STL_Formula('notsaturation', 'alw(OutSat[t]<1.145)');
+
 R = BreachRequirement(phi); 
-
-
 
 
 %% Wordgen generator
@@ -120,9 +121,9 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
 
     %%%% Search Monitoring Parameters 
     %% cov_epsilon = input('Specify coverage increase threshold : '); 
-    MetaObj.cov_epsilon = 1e-5; %1e-3;
+    MetaObj.cov_epsilon = 1e-3; %1e-3;
     %% min robustness decrease in percentage
-    MetaObj.rob_epsilon_percent = 1e-3; %0.05;
+    MetaObj.rob_epsilon_percent = 1e-2; %0.05;
     %% min robustness stagnant monitoring window
     MetaObj.rob_stagnant_win = 1 
     %% coverage stagnant monitoring window
@@ -130,13 +131,13 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     
     %%%% Problem-specific computation parameters
     %%% Options for picking initial conditions
-    MetaObj.re_init_strategy = 2 %2; %1; 
+    MetaObj.re_init_strategy = 2; %2; %1; 
     % re_init_strategy=0 to pick randomly from the whole space
     % re_init_strategy=1 to pick randomly from xlog
     % re_init_strategy=2 to pick randomly from xbest
             
     % re_init_num_xbest: window of choice from xbest, for picking initial point         
-    MetaObj.re_init_num_xbest = 10;
+    MetaObj.re_init_num_xbest = 20; %10;
 
     % num_solvers=nb of solvers %%other than pseudorandom sampling
     % TODO add solver_list, and init num_solver as numel(solver_list)
@@ -145,15 +146,25 @@ MetaObj.GridSetUp(gridsize_vector,nb_ctr_pts);
     %% limit on nb of solver calls
     MetaObj.nb_solver_calls = 10; %30;
     
-    MetaObj.start_solver_index = 2;  %PR 0, cmaes 1, SA 2, GNM 3 
-    MetaObj.solver_time =  [200 100 100 100];
-    MetaObj.max_obj_eval = [200 200 200 200];
+    MetaObj.start_solver_index = 0;  %PR 0, cmaes 1, SA 2, GNM 3 
+    MetaObj.solver_time =  [200 1000 100 100];
+    MetaObj.max_obj_eval = [100 2000 200 20];
     MetaObj.seed = 100;
           
     
     
 % fprintf('\n The falsification problem by metaheuristics is\n ')
 % MetaObj
+% Open file to save intermediate results
+fileID = fopen('OutFalsification.txt','w');
+MetaObj.OutFileID = fileID;
+
+fprintf(1,'\n STL_Formula %', formuleSt);
+fprintf(fileID,'\n STL_Formula %', formuleSt);
+fprintf(1, '\n Model name is %s \n', model_name);
+fprintf(fileID, '\n Model name is %s \n', model_name);
+
+MetaObj.MetaShortFilePrint(fileID); 
 
 %%%% Run the falsification
 MetaObj.MetaCall();
@@ -168,6 +179,5 @@ MetaObj.MetaCall();
 % Fpb.set_y_axis('notsaturation');
 
 
-
-
-
+%% closing output file 
+fclose(fileID);
