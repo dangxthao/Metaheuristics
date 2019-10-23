@@ -1,0 +1,59 @@
+
+ **** Running CMAES
+ Time limit of computation is 100 seconds
+
+ Max eval number is 200 
+
+ This solver time = 6.797459 seconds
+ Best Robustness Value of this call = 0.000033
+ Best Robustness Value so far = 0.000033
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  1    0.00003347    0.01230449
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 1 done
+ *** Running Simulated Annealing
+ Time limit of computation is 100 seconds
+
+ This solver time = 90.301756 seconds
+ Best Robustness Value of this call = 0.000026
+ Best Robustness Value so far = 0.000026
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  1    0.00003347    0.01230449
+ 2  2    0.00002642    0.02220108
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 2 done
+ **** Running CMAES
+ Time limit of computation is 100 seconds
+
+ Max eval number is 200 
+
+ This solver time = 7.075327 seconds
+ Best Robustness Value of this call = 0.001527
+ Best Robustness Value so far = 0.000026
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  1    0.00003347    0.01230449
+ 2  2    0.00002642    0.02220108
+ 3  1    0.00002642    0.02296665
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 3 done
+ *** Running Simulated Annealing
+ Time limit of computation is 100 seconds
+
+ This solver time = 31.724176 seconds
+ Exit from Solver 2 
+ Exit! TOTAL Computation time = 137.383999 seconds

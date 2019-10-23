@@ -10,8 +10,9 @@ function NewSys = CoverageBreachSet_Add_Pts(Sys,new_pts)
  % NewSys: New CoverageBreachSet object after adding all the new points.
  
     num_iterations = size(new_pts,2);
-    NewSys = Sys;
+    NewSys = Sys.copy();
     for i = 1:num_iterations
+       %new_pts(:,i) 
        NewSys.AddPoint(new_pts(:,i));
     end
 

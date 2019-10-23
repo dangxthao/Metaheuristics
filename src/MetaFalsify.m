@@ -13,6 +13,11 @@ classdef MetaFalsify < handle
         input_ranges
         %CoverageBreachSet Br;
         
+        OutFileID
+        
+        params
+        ranges
+        
         %% Problem definition and logging
         
         %%
@@ -63,7 +68,7 @@ classdef MetaFalsify < handle
     methods
         %% Simple constructor
                 
-        function this = MetaFalsify(Br, R, Pbs)
+        function this = MetaFalsify(Br, R, params, ranges)
             this.Br = Br.copy();
             
             %% Transform the STL formula into Breach Requirement
@@ -74,6 +79,11 @@ classdef MetaFalsify < handle
             else
                 this.R = R;
             end
+            
+            this.params = params;
+            this.ranges = ranges;
+            
+            Pbs = FalsificationProblem(Br, R, params, ranges);
             this.Pbs = Pbs.copy();
         end 
         
@@ -90,8 +100,7 @@ classdef MetaFalsify < handle
             model_name
             this.Br = BreachSimulinkSystem(model_name,{},[],IO_signal_names);        
             this.IO_signal_names=IO_signal_names;
-            this.model_name=model_name;
-            
+            this.model_name=model_name;            
         end
         
         function SimTimeSetUp(this,simTime)
@@ -192,7 +201,7 @@ classdef MetaFalsify < handle
             % Inputs:
             % strategy_id: choice of strategy
             % winlen: window of choice from xbest
-            CBS = this.Br;
+            CBS = this.Br.copy();
             
             rand_idvec = [];
             x0 = [];
@@ -200,137 +209,121 @@ classdef MetaFalsify < handle
             xbest_vec= [];
             
             switch strategy_id
-                case 0 %init from xlogPR
-                    
-                    %xlogPR_vec = Xlog.xlogPR;
+                case 0 %init from xlogPR                    
                     xlogPR_vec = SolverInfo(1).Xlog;
                     nb_pt_xlogPR =size(xlogPR_vec,2);
                     if (nbsamples>nb_pt_xlogPR)
                         nbsamples = nb_pt_xlogPR;
                     end
-                    i=1;
-                    itrial=1;
-                    while (i<=nbsamples && itrial<=2*nbsamples)
-                        rand_id = max(1, floor(rand*nb_pt_xlogPR));
-                        if (i==1)
-                            rand_idvec = [rand_idvec; rand_id];
-                            i=i+1;
-                        else
-                            if (isempty(find(rand_idvec == rand_id)))
-                                i=i+1;
-                                rand_idvec = [rand_idvec; rand_id];
-                                x0i = xlogPR_vec(:,rand_id);
-                                inRange = CBS.TestPointInRange(x0i);
-                                if (inRange)
-                                    x0 = [x0, x0i];
-                                end
-                            end
-                        end
-                        if (rand_id<1 || rand_id>nb_pt_xlogPR)
-                            error('Error in rand_id_xlogPR');
-                        end
-                        itrial=itrial+1;
-                    end %end while
+                    
+                    if (nbsamples<=0)
+                        return;
+                    end
+                    
+                    rand_id = randi(nb_pt_xlogPR,[nbsamples,1]);
+                    %nbsamples random integers in [1,nb_pt_xlog]
+                    [rand_id,~,~] = unique(rand_id);
+                        
+                    for (ii=1:1:size(rand_id,1)) 
+                       if (rand_id(ii,1)<1 || rand_id(ii,1)>nb_pt_xlogPR)
+                          error('Error in rand_id_xlogPR');
+                       end
+                       x0i = xlogPR_vec(:,rand_id(ii,1));
+                       inRange = CBS.TestPointInRange(x0i);
+                       if (inRange)
+                          x0 = [x0, x0i];
+                       end
+                     end
+                    
                     
                 case 1 %init from Xlog of not-current solvers
                     for (ii=1:1:num_solvers)
-                        if (~(ii==solver_index))
-                            xlog_vec = [xlog_vec, SolverInfo(ii).Xlog];
-                        end
+                       if (~(ii==(solver_index+1)))
+                         xlog_vec =[xlog_vec SolverInfo(ii).Xlog];
+                       end
                     end
                     
-                    nb_pt_xlog=size(xlog_vec,2);
+                    nb_pt_xlog = size(xlog_vec,2);
                     if (nbsamples>nb_pt_xlog)
                         nbsamples = nb_pt_xlog;
+                    end 
+                    
+                    if (nbsamples<=0)
+                        return;
                     end
-                    i=1;
-                    itrial=1;
-                    while (i<=nbsamples && itrial<=2*nbsamples)
-                        rand_id = max(1, floor(rand*nb_pt_xlog));
-                        if (i==1)
-                            rand_idvec = [rand_idvec; rand_id];
-                            x0i = xlog_vec(:,rand_id);
-                            inRange = CBS.TestPointInRange(x0i);
-                            if (inRange)
-                                x0 = [x0, x0i];
-                            end
-                            i=i+1;
-                        else
-                            if (isempty(find(rand_idvec == rand_id)))
-                                i=i+1;
-                                rand_idvec = [rand_idvec; rand_id];
-                                x0i = xlog_vec(:,rand_id);
-                                inRange = CBS.TestPointInRange(x0i);
-                                if (inRange)
-                                    x0 = [x0, x0i];
-                                end
-                            end
-                        end
-                        if (rand_id<1 || rand_id>nb_pt_xlog)
+                    
+                    rand_id = randi(nb_pt_xlog,[nbsamples,1]);
+                    %nbsamples random integers in [1,nb_pt_xlog]
+                    [rand_id,~,~] = unique(rand_id);
+                        
+                    for (ii=1:1:size(rand_id,1)) 
+                         if (rand_id(ii,1)<1 || rand_id(ii,1)>nb_pt_xlog)
                             error('Error in rand_id_xlog');
-                        end
-                        itrial=itrial+1;
-                    end %end while
+                         end
+                         x0i = xlog_vec(:,rand_id(ii,1));
+                         inRange = CBS.TestPointInRange(x0i);
+                         if (inRange)
+                            x0 = [x0, x0i];
+                         end
+                     end
+                    
                     
                 case 2 %init from Xbest of one solver chosen randomly
-                    
-                    solversdone= zeros(num_solvers);  %[ 0 0 0 ];
+                    solversdone= zeros(num_solvers,1);  %[0 0 0 0];
                     nbsolversdone = 0;
-
+                    nbxbest_available = 0;
                     for ii = 1:1:(num_solvers)
                         if (size(SolverInfo(ii).Xbest,2)>0)
-                            solversdone(1) = 1;
-                            nbsolversdone = nbsolversdone + 1;
+                           solversdone(ii,1) = 1;
+                           nbsolversdone = nbsolversdone + 1;
+                           nbxbest_available = nbxbest_available +...
+                                size(SolverInfo(ii).Xbest,2);
                         end
                     end
                     
+                    if (nbsamples > nbxbest_available) 
+                        nbsamples = nbxbest_available; 
+                    end
                     
-                    itrial=1;
-                    while (itrial<=nbsamples && nbsolversdone>0)
-                        %rand_id = nb_pt_xbest - floor(rand*winlen1);
-                        rand_solverid = randi(3);
-                        %rand_solverid = 3;
+                    if (nbsamples<=0)
+                        return;
+                    end
+                    
+                    nbpt = 0;
+                    while (nbpt<nbsamples && nbsolversdone>0)
+                        rand_solverid = randi(4,1); %random integer in [1,3] 
                         
-                        %do not use xbest of the same solver
-                        %if (rand_solverid==solver_index)
-                        %  break
-                        %end
-                        
-                        if (solversdone(rand_solverid) >0)
-                            %switch rand_solverid
-                            % case 1
-                            nb_pt_xbest=size(SolverInfo(rand_solverid+1).Xbest,2);
+                        if (solversdone(rand_solverid,1) >0)
+                            nb_pt_xbest=size(SolverInfo(rand_solverid).Xbest,2);
                             if nb_pt_xbest>0
-                                rand_id = randi(nb_pt_xbest);
+                                rand_id = randi(nb_pt_xbest,1);
                                 if (rand_id<0 || rand_id>nb_pt_xbest)
                                     error('Error in rand_id_xbest');
                                 end
-                                xbest_vec = SolverInfo(rand_solverid+1).Xbest;
+                                xbest_vec = SolverInfo(rand_solverid).Xbest;
                                 x0i = xbest_vec(:,rand_id);
                                 xbest_vec(:,rand_id) = [];
-                                SolverInfo(rand_solverid+1).Xbest = xbest_vec;
+                                SolverInfo(rand_solverid).Xbest = xbest_vec;
                             end
-                            
                             
                             if nb_pt_xbest>0
                                 inRange = CBS.TestPointInRange(x0i);
                                 if (inRange)
                                     x0 = [x0, x0i];
+                                    nbpt=nbpt+1;
                                 end
                             end
                             
                         end %if (nbsolversdone(rand_solverid) >0)
-                        
-                        itrial=itrial+1;
                     end %end while
                 otherwise
+                    
                     error('error in reinit_strategy')
             end %end of switch
         end
         
         
-        function this = GridSetUp(this,gridsize_vector,nb_ctr_pts,timeFixed)
-            
+        function this = GridSetUp(this,gridsize_vector,nb_ctr_pts,timeFixed)         
             if ~exist('timeFixed','var')
                 timeFixed = true;
             end
@@ -351,7 +344,6 @@ classdef MetaFalsify < handle
             this.Br.SetEpsGridsize(gridsizeMat);
             this.Br.SetDeltaGridsize(2*this.Br.epsgridsize);
             disp('Done with grid setup');
-
         end        
         
         function this = STLFormulaSetUp(this,phi)
@@ -363,12 +355,43 @@ classdef MetaFalsify < handle
             end
             disp('Done with STL setup');
         end
+        
      
         function this = MetaFalsifySetup(model_name,IO_signal_names)
             disp('Creating Coverage Breach Set');
             this.CoverageBreachSetCreation(model_name,IO_signal_names);
             disp('Done Creating Coverage Breach Set');
         end
+        
+        
+        function this = MetaShortFilePrint(this, fileID)                 
+          fprintf(fileID, '\n seed is %d \n', this.seed); 
+          fprintf(fileID, '\n nb_solver_calls is %d \n', this.nb_solver_calls);
+          fprintf(fileID, '\n cov_epsilon is %d \n', this.cov_epsilon);
+          fprintf(fileID, '\n rob_epsilon_percent is %d \n', this.rob_epsilon_percent);
+          fprintf(fileID, '\n rob_stagnant_win is %d \n', this.rob_stagnant_win);
+          fprintf(fileID, '\n cov_monitoring_win is %d \n', this.cov_monitoring_win);
+          fprintf(fileID, '\n re_init_strategy is %d \n', this.re_init_strategy);
+          fprintf(fileID, '\n re_init_num_xbest is %d \n', this.re_init_num_xbest);
+          fprintf(fileID, '\n num_solvers is %d \n', this.num_solvers);
+          fprintf(fileID, '\n re_init_num_xbest is %d \n', this.re_init_num_xbest);
+          
+          fprintf(fileID, '\n solver_time is [');
+          for (i=1:1:this.num_solvers)
+            fprintf(fileID, '%d ', this.solver_time(1,i));
+          end
+          fprintf(fileID, '] \n');
+          
+          fprintf(fileID, '\n max_obj_eval is [');
+          for (i=1:1:this.num_solvers)
+            fprintf(fileID, '%d ', this.max_obj_eval(1,i));
+          end
+          fprintf(fileID, '] \n');
+          
+          
+          fprintf(fileID, '\n start_solver_index is %d \n', this.start_solver_index);
+        end
+        
         
         function this = MetaSetupRun(this, Br, R)
             this.Br = Br.copy();
@@ -422,18 +445,13 @@ classdef MetaFalsify < handle
                 case 'meta'
                     % run a metaheuristic combined approach (should call
                     % MetaCall
-            end
-            
-            
-            
-            
+            end            
         end
         %%
         
         %%
         function h = PlotResults(this)
-            % collect logs of falsification runs and open figures
-            
+            % collect logs of falsification runs and open figures        
             for ipb = 1:numel(this.Pbs)
                 pb = this.Pbs{ipb};
                 Rlog = pb.GetLog();
@@ -463,11 +481,11 @@ classdef MetaFalsify < handle
             rng(this.seed,'twister');            
             
             %% Transform the STL formula into Breach Requirement
-%             if isa(this.R, 'STL_Formula')
-%                 disp('You selected the following STL formula for falsification')
-%                 this.R
-%                 this.R = BreachRequirement(this.R);
-%             end
+            if isa(this.R, 'STL_Formula')
+                disp('You selected the following STL formula for falsification')
+                this.R
+                this.R = BreachRequirement(this.R);
+            end
             
             prev_solver_index=0;
             solver_index = this.start_solver_index; %PR 0, cmaes 1, SA 2, GNM 3
@@ -494,9 +512,6 @@ classdef MetaFalsify < handle
             % search_space_dim is used to estimate the number of initial points
             
             total_nb_sim = 0; % current total number of simulations
-            
-            % file to save intermediate results
-            fileID = fopen('OutFalsification.txt','w');
                         
             round_count=1;
             TotCompTime = tic;            
@@ -505,17 +520,8 @@ classdef MetaFalsify < handle
             for call_count = 1:this.nb_solver_calls
                 
                 
-                %% Make a working copy of the original coverage breach set object
-                if call_count>1
-                    CBS = this.Br.copy();
-                else
-                    CBS = this.Br.copy();
-                end
-                
-                %% Initialize the falsification problem with the system and the requirement
-                falsif_pb = this.Pbs; %%%Thao temporily set this
-                %FalsificationProblem(CBS, this.R);
-                falsif_pb.StopAtFalse = 1;
+                %% Make a working copy of the original breach set object
+                CBS = this.Br.copy();
                 
                 %% start counting computation time for each solver
                 timervar_solver = tic;                                
@@ -525,142 +531,161 @@ classdef MetaFalsify < handle
                     case 0 % quasi-random sampling
                         
                         fprintf(1,'\n *** Running QuasiRandom');
-                        fprintf(fileID,'\n *** Running QuasiRandom');
+                        fprintf(this.OutFileID,'\n *** Running QuasiRandom');
                         
                         time_lim = this.solver_time(1,solver_index +1); %100; %500;
                         eval_lim = this.max_obj_eval(1,solver_index +1);
-%                         nb_samples = 10;
-%                         nb_hits = 20;
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
-                        fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
-%                         fprintf(1, 'nb_samples for PR is %d seconds\n',nb_samples);
-%                         fprintf(fileID, 'nb_samples for PR is %d \n',nb_samples);
-%                         fprintf(1, 'nb_hits for PR %d \n',nb_hits);
-%                         fprintf(fileID, 'nb_hits for PR is %d \n',nb_hits);
+                        fprintf(this.OutFileID, '\n Time limit of computation is %d seconds\n',time_lim);
                         
-                        fprintf(1, '\n Max eval number is %d seconds\n',eval_lim);
-                        fprintf(fileID, '\n Max eval number is %d seconds\n',eval_lim);
-%                      
+                        fprintf(1, '\n Max eval number is %d \n',eval_lim);
+                        fprintf(this.OutFileID, '\n Max eval number is %d \n',eval_lim);                     
                         
                         %% start pseudo random sampling
-                        nb = this.max_obj_eval(1,solver_index +1);
-                
-                        if CBS.AppendWhenSample
-                         Pold = CBS.P;
-                        end
-                
-                        ip = CBS.VaryingParamList;
-                        param_names = CBS.P.ParamList(1,ip);
-                        param_ranges = [CBS.LowerLeftCorner(),CBS.UpperRightCorner()]; 
-                        num_params = numel(param_names);
-              
-                        CBS.ResetParamSet();
-                        newP = CBS.P;
-                
-                        newP.pts = repmat(newP.pts,[1 nb]);
-                        %newP.pts(newP.dim,:) = repmat(width,[1 nb]).*r+repmat(mini,[1 nb]);
-                        newP.pts(newP.dim,:) = rand(1, nb).*(param_ranges(:,2)...
-                                  -param_ranges(:,1))+param_ranges(:,1)
-                        %input('ENTER');
-                
-                        if CBS.AppendWhenSample
-                           CBS.P = SConcat(Pold, newP);
-                        else
-                            CBS.P = newP;
-                        end            
-                        CBS.CheckinDomainParam();
-                        CBS.ApplyParamGens();
-                        %% end pseudo random sampling           
-
-                        this.Br = CBS.copy();
-                
-                
-                        %CBS.QuasiRandomSample(this.max_obj_eval(1,solver_index +1));
+%                         nb = this.max_obj_eval(1,solver_index +1);
+%                 
+%                         if CBS.AppendWhenSample
+%                          Pold = CBS.P;
+%                         end
+%                 
+%                         ip = CBS.VaryingParamList;
+%                         param_names = CBS.P.ParamList(1,ip);
+%                         param_ranges = [CBS.LowerLeftCorner(),CBS.UpperRightCorner()]; 
+%                                
+%                         CBS.ResetParamSet();
+%                         newP = CBS.P;
+%                 
+%                         newP.pts = repmat(newP.pts,[1 nb]);
+%                         newP.pts(newP.dim,:) = rand(1, nb).*(param_ranges(:,2)...
+%                                   -param_ranges(:,1))+param_ranges(:,1);
+%                         %input('ENTER');
+%                 
+%                         if CBS.AppendWhenSample
+%                            CBS.P = SConcat(Pold, newP);
+%                         else
+%                             CBS.P = newP;
+%                         end            
+%                         CBS.CheckinDomainParam();
+%                         CBS.ApplyParamGens();
+%                         
+%                         this.Br = CBS.copy();
+                        %%-- end pseudo random sampling 
+                        
+                        
+                        
+                        %%Thao temporarily removed quasi-random
+                        CBS.QuasiRandomSample(this.max_obj_eval(1,solver_index+1));
+                        
+                        
                
-                        falsif_pb = this.Pbs; %FalsificationProblem(CBS, this.R);
+                        %% Initialize the falsification problem
+                        falsif_pb = FalsificationProblem(CBS,this.R,this.params,this.ranges); %this.Pbs;
+                        falsif_pb.StopAtFalse = 1;
+                        
                         falsif_pb.setup_init();
-                        falsif_pb.max_obj_eval = this.max_obj_eval(1,solver_index +1);
+                        falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index +1);
                         falsif_pb.max_time = this.solver_time(1,solver_index +1); 
                         falsif_pb.solve();
                         
                         
                         % adding new points to xlog
-                        new_pts = falsif_pb.X_log % column vectors of newly simulated points.
-                        % Br = CoverageBreachSet_Add_Pts(Br, new_pts);
-                                                
+                        new_pts = CBS.GetParam(falsif_pb.params); 
+                        %new_pts = falsif_pb.X_log; %col vectors of newly simulated points.
+                        disp('Nb of Log points:'); size(new_pts,2)
+                        %new_pts
+                        %input('ENTER')
+                        
+                        %size(new_pts,1)
+                        disp('Nb of random sampled points:'); size(new_pts,2)
+                        
                         % adding new points to xbest
                         new_obj_best = falsif_pb.obj_best;
-                        %%%%%%%%%
                         
+                        
+                   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%     
                     case 1 % CMAES
                         %%
                         fprintf(1,'\n **** Running CMAES');
-                        fprintf(fileID,'\n **** Running CMAES');
+                        fprintf(this.OutFileID,'\n **** Running CMAES');
                         
-                        if (call_count==1)
-                            time_lim = this.solver_time(1,solver_index +1); %2000; %2000 %800
-                        else
-                            time_lim = this.solver_time(1,solver_index +1); %2000; %500 %2000 %400
-                        end
-                        
+                        time_lim = this.solver_time(1,solver_index +1); 
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
-                        fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
+                        fprintf(this.OutFileID, '\n Time limit of computation is %d seconds\n',time_lim);
+                        
+                        
+                        %% Initialize the falsification problem
+                        falsif_pb=FalsificationProblem(CBS,this.R,this.params,this.ranges); %this.Pbs;
+                        falsif_pb.StopAtFalse=1;
                         
                         falsif_pb.setup_solver('cmaes');
                         falsif_pb.solver_options.SaveVariables = 'off';
-                        falsif_pb.solver_options.MaxFunEvals=this.max_obj_eval(1,solver_index +1)
-                        falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index+1)
+                        falsif_pb.solver_options.MaxFunEvals=this.max_obj_eval(1,solver_index +1);
+                        %falsif_pb.solver_options.StopOnStagnation = 'off';               
+
+                        %falsif_pb.solver_options.FunctionTolerance = 1e-12;
+                        %falsif_pb.solver_options.OptimalityTolerance = 1e-20;
+                        %falsif_pb.solver_options.TolFun = 1e-16;
                         
+                        falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index+1);
+                        fprintf(1, '\n Max eval number is %d \n',falsif_pb.max_obj_eval);
+                        fprintf(this.OutFileID, '\n Max eval number is %d \n',falsif_pb.max_obj_eval);
+%                      
                         %falsif_pb.solver_options.Restarts = 3;
                         falsif_pb.max_time = time_lim;
                         
                         %this.re_init_strategy=2;
                         if (call_count>1)
-                            nbsamples=200;
+                            nbsamples=20;
                             if (this.re_init_strategy==2)
                                 nbsamples=this.re_init_num_xbest; %taken from the last xbest point(s)
                             end
                             
-                            x0= this.InitSolver(nbsamples,solver_index,this.num_solvers,SolverInfo,this.re_init_strategy,this.re_init_num_xbest);
+                            x0=this.InitSolver(nbsamples,solver_index,this.num_solvers,...
+                                SolverInfo,this.re_init_strategy,this.re_init_num_xbest);
+                            
                             
                             if (this.re_init_strategy==0)
-                                nbsamplesPR=1000; %100
+                                nbsamplesPR=20; %100
                                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
                                 x0_more = CBS.GetParam(falsif_pb.params);
                                 x0 = [ x0, x0_more ];
-                                if (~isempty(x0))
-                                    falsif_pb.x0 = x0';
-                                end
                             end
                         else
-                            CBS.QuasiRandomSample(200, 2^10);
+                            nbsamples=this.re_init_num_xbest;
+                            CBS.QuasiRandomSample(nbsamples, 2^10);
                             x0 = CBS.GetParam(falsif_pb.params);
-                            falsif_pb.x0 = x0';
                         end
                         
+                        disp('nb x0: '); size(x0, 2)
                         %x0
                         %input('ENTER');
-                        
+                        if (~isempty(x0))
+                          falsif_pb.x0 = x0';
+                        end
+                                
                         falsif_pb.solve();
                         
                         % adding new points to xlog
-                        new_pts = falsif_pb.X_log; % column vectors of newly simulated points.
-                        %Br = CoverageBreachSet_Add_Pts(Br, new_pts);
+                        new_pts = falsif_pb.X_log; %col vectors of newly simulated points.
+                        disp('Nb of Log points:'); size(new_pts,2)
                         
-                        %new_pts
                         
                         % adding new points to xbest
                         new_obj_best = falsif_pb.obj_best;
                         
-                        %%%%%%%%%%
-                        %%%%%%%%%%
+                    %%%%%%%%%%
+                    %%%%%%%%%%
                     case 2 %Simulated Annealing
                         fprintf(1,'\n *** Running Simulated Annealing');
-                        fprintf(fileID,'\n *** Running Simulated Annealing');
+                        fprintf(this.OutFileID,'\n *** Running Simulated Annealing');
                         
                         time_lim = this.solver_time(1,solver_index +1); %1000;
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
-                        fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
+                        fprintf(this.OutFileID, '\n Time limit of computation is %d seconds\n',time_lim);
+                        
+                        %% Initialize the falsification problem
+                        falsif_pb=FalsificationProblem(CBS,this.R,this.params,this.ranges); %this.Pbs;
+                        falsif_pb.StopAtFalse = 1;
                         
                         
                         falsif_pb.setup_solver('simulannealbnd');
@@ -672,45 +697,41 @@ classdef MetaFalsify < handle
                         
                         %this.re_init_strategy=1;
                         if (call_count>1)
-                            %nbsamples=100;
-                            %if (this.re_init_strategy==2)
-                            %  nbsamples=1; %taken from the last xbest point(s)
-                            %end
-                            nbsamples=1;
-                            x0 = this.InitSolver(nbsamples,solver_index,this.num_solvers,SolverInfo,this.re_init_strategy,this.re_init_num_xbest);
-                            
-                            %nbsamplesPR=0;
-                            %CBS.QuasiRandomSample(nbsamplesPR, 2^10);
-                            %x0_more = CBS.GetParam(falsif_pb.params);
-                            %x0 = [ x0, x0_more ];
-                            %
-                            if (~isempty(x0))
-                                falsif_pb.x0 = x0;
-                            end
+                           nbsamples=1; %cannot wotk with population of points
+                           x0=this.InitSolver(nbsamples,solver_index,this.num_solvers,...
+                                   SolverInfo,this.re_init_strategy,this.re_init_num_xbest);                
+                           
                         else
-                            %CBS.QuasiRandomSample(100, 2^10);
-                            nbsamples=1;
-                            CBS.QuasiRandomSample(nbsamples, 2^10);
-                            x0 = CBS.GetParam(falsif_pb.params);
-                            falsif_pb.x0 = x0;
+                           %CBS.QuasiRandomSample(100, 2^10);
+                           nbsamples=1;
+                           CBS.QuasiRandomSample(nbsamples, 2^10);
+                           x0 = CBS.GetParam(falsif_pb.params);
                         end
                         
+                        disp('nb x0: '); size(x0, 2)
+                        %x0
+                        %input('ENTER');
+                        if (~isempty(x0))
+                            falsif_pb.x0 = x0;
+                        end
+                            
                         falsif_pb.verbose=0;
-                        falsif_pb.solver_options.FunctionTolerance = 1e-3;
-                        falsif_pb.solver_options.OptimalityTolerance = 1e-3;
-                        falsif_pb.solver_options.MaxFunEvals = 1000;
+                        %falsif_pb.solver_options.FunctionTolerance = 1e-3;
+                        %falsif_pb.solver_options.OptimalityTolerance = 1e-3;
+                        falsif_pb.solver_options.MaxFunEvals=this.max_obj_eval(1,solver_index +1);
                         falsif_pb.solver_options.InitialTemperature = 100;
-                        falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index +1);
+                        
+                        falsif_pb.solver_options.FunctionTolerance = 1e-12;
+                        falsif_pb.solver_options.OptimalityTolerance = 1e-20;
+                        falsif_pb.solver_options.TolFun = 1e-16;
+                        
+                        falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index+1);
                         
                         falsif_pb.solve();
                         
-                        new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-                        %Br = CoverageBreachSet_Add_Pts(Br, new_pts);
-                        %Xlog.xlogSA = [Xlog.xlogSA, new_pts];
-                        
-                        %new_obj_val = falsif_pb.obj_log;
-                        %Vlog.objlogSA = [Vlog.objlogSA, new_obj_val];
-                        
+                        new_pts = falsif_pb.X_log; %col vectors of newly simulated points
+                        disp('Nb of Log points:'); size(new_pts,2)
+                         
                         new_obj_best = falsif_pb.obj_best;
                         
                         
@@ -718,24 +739,37 @@ classdef MetaFalsify < handle
                         %%
                         
                         fprintf(1,'\n *** Running Global Nelder Mead');
-                        fprintf(fileID,'\n *** Running Global Nelder Mead');
+                        fprintf(this.OutFileID,'\n *** Running Global Nelder Mead');
                         
                         
                         time_lim = this.solver_time(1,solver_index +1); %1000; %100
                         fprintf(1, '\n Time limit of computation is %d seconds\n',time_lim);
-                        fprintf(fileID, '\n Time limit of computation is %d seconds\n',time_lim);
+                        fprintf(this.OutFileID, '\n Time limit of computation is %d seconds\n',time_lim);
                         
                         nb_local_iter = 100;
-                        fprintf(fileID, '\n Nb of local iterations %d \n', nb_local_iter);
+                        fprintf(this.OutFileID, '\n Nb of local iterations %d \n', nb_local_iter);
                         fprintf(1, '\n Nb of local iterations %d \n', nb_local_iter);
                         
+                        
+                        %% Initialize the falsification problem 
+                        falsif_pb = FalsificationProblem(CBS,this.R,this.params,this.ranges); %this.Pbs;
+                        falsif_pb.StopAtFalse = 1;
+                        
                         falsif_pb.setup_solver('global_nelder_mead');
+                        %falsif_pb.setup_global_nelder_mead();
                         falsif_pb.max_time = time_lim;
                         falsif_pb.solver_options.nb_local_iter = nb_local_iter;
+              
+                        %falsif_pb.solver_options.start_at_trial=2^search_space_dim;
+                        %falsif_pb.solver_options.nb_new_trials=2^(search_space_dim/2);
+                        
+                        falsif_pb.solver_options.MaxFunEvals = this.max_obj_eval(1,solver_index +1);
+                        
+                        falsif_pb.solver_options.FunctionTolerance = 1e-12;
+                        falsif_pb.solver_options.OptimalityTolerance = 1e-20;
+                        falsif_pb.solver_options.TolFun = 1e-16;
+                        
                         falsif_pb.max_obj_eval=this.max_obj_eval(1,solver_index +1);
-                        %search_space_dim
-                        falsif_pb.solver_options.start_at_trial=2^search_space_dim;
-                        falsif_pb.solver_options.nb_new_trials=2^(search_space_dim/2);
                         
                         %this.re_init_strategy=2;
                         if (call_count>1)
@@ -744,36 +778,27 @@ classdef MetaFalsify < handle
                                 nbsamples=call_count; %taken from the last xbest point(s)
                             end
                             
-                            x0 = this.InitSolver(nbsamples,solver_index,this.num_solvers,SolverInfo,this.re_init_strategy,this.re_init_num_xbest);
-                            
-                            %CBS.QuasiRandomSample(100, 2^10);
-                            %x0_qrandom = CBS.GetParam(falsif_pb.params);
-                            %x0 = [ x0, x0_qrandom ];
-                            %input('')
-                            
-                            %                 nbsamplesPR=0;
-                            %                 CBS.QuasiRandomSample(nbsamplesPR, 2^10);
-                            %                 x0_more = CBS.GetParam(falsif_pb.params);
-                            %                 x0 = [ x0, x0_more ];
-                            
-                            if (~isempty(x0))
-                                falsif_pb.x0 = x0;
-                            end
+                            x0 = this.InitSolver(nbsamples,solver_index,...
+                                    this.num_solvers,SolverInfo,this.re_init_strategy,this.re_init_num_xbest);                
                         else
                             nbsamplesPR=500; %200
                             CBS.QuasiRandomSample(nbsamplesPR, 2^37);
                             x0 = CBS.GetParam(falsif_pb.params);
-                            falsif_pb.x0 = x0;
-                            %size(x0,2)
                         end
                         
                         falsif_pb.verbose=0;
+                        
+                        disp('nb x0: '); size(x0, 2)
+                        %input('ENTER');
+                        if (~isempty(x0))
+                            falsif_pb.x0 = x0;
+                        end
+                        
                         falsif_pb.solve();
                         
-                        new_pts = falsif_pb.X_log; % column vectors of newly simulated points
-                        %                     Br = CoverageBreachSet_Add_Pts(Br, new_pts);
-                        %                     Xlog.xlogGNM = [Xlog.xlogGNM, new_pts];
-                        
+                        new_pts = falsif_pb.X_log; % col vectors of newly simulated points
+                        disp('Nb of Log points:'); size(new_pts,2)
+                         
                         new_obj_best = falsif_pb.obj_best;
                         
                         
@@ -784,7 +809,7 @@ classdef MetaFalsify < handle
                 
                 %% Updating visited points in the current CoverageBreachSet Br
                 this.Br = CoverageBreachSet_Add_Pts(this.Br,new_pts);
-                
+                %CBS = CoverageBreachSet_Add_Pts(CBS,new_pts);
                 
                 %% Updating SolverInfo to store xlog, xbest, valbest
                 %% updating xlog of the current solver
@@ -795,12 +820,7 @@ classdef MetaFalsify < handle
                 end
                 
                 %% get the new xbest of the current solver
-                if (solver_index==0) %%PR solver stores results in StatFalsObj
-                    %new_xbest = (StatFalsObj.lower_bounds.pts(new_best_id,:))';
-                    new_xbest = falsif_pb.x_best;
-                else
-                    new_xbest = falsif_pb.x_best;
-                end
+                new_xbest = falsif_pb.x_best;
                 
                 %% update xbest if smaller than xbest of current solver
                 if (~isempty(SolverInfo(solver_index+1).Valbest))
@@ -817,18 +837,19 @@ classdef MetaFalsify < handle
                 %% end of updating SolverInfo
                 
                 time_solver = toc(timervar_solver);
-                fprintf(fileID,'\n This solver time = %f seconds',time_solver);
+                fprintf(this.OutFileID,'\n This solver time = %f seconds',time_solver);
                 fprintf(1,'\n This solver time = %f seconds',time_solver);
                 
                 trace = falsif_pb.GetBrSet_False();
-                if ~isempty(trace)
+                if (~isempty(trace))
                     falsified = true;
                     falsi_point = new_xbest;
                     trace.PlotSignals
-                    fprintf(fileID,'\n Exit from Solver %d ', solver_index);
+                    fprintf(this.OutFileID,'\n Exit from Solver %d ', solver_index);
                     comptime = toc(TotCompTime);
-                    fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                    %error('Falsifier found! Exit normally');
+                    fprintf(this.OutFileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+                    %disp('Falsifier found! Exit normally');
+                    error('Falsifier found! Exit normally');
                 end
                 
                 total_nb_sim = total_nb_sim+size(new_pts,2); % update total nb simulations
@@ -837,14 +858,14 @@ classdef MetaFalsify < handle
                 
                 
                 fprintf(1,'\n Best Robustness Value of this call = %f', new_obj_best);
-                fprintf(fileID,'\n Best Robustness Value of this call = %f', new_obj_best);
+                fprintf(this.OutFileID,'\n Best Robustness Value of this call = %f', new_obj_best);
                 
                 if (new_obj_best<=0)
-                    fprintf(fileID,'\n Falsifier Found!');
+                    fprintf(this.OutFileID,'\n Falsifier Found!');
                     
                     comptime = toc(TotCompTime);
-                    fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
-                    error('Falisifier found! Exit normally');
+                    fprintf(this.OutFileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+                    %error('Falisifier found! Exit normally');
                 end
                 
                 
@@ -875,7 +896,7 @@ classdef MetaFalsify < handle
                 end
                 
                 fprintf(1,'\n Best Robustness Value so far = %f', min_robustness);
-                fprintf(fileID,'\n Best Robustness Value so far = %f', min_robustness);
+                fprintf(this.OutFileID,'\n Best Robustness Value so far = %f', min_robustness);
                 
                 
                 robustness_graph_data=...
@@ -885,9 +906,9 @@ classdef MetaFalsify < handle
                 % the coverage graph is monotonic, we check the evolution of coverage
                 % for non-increase by this.cov_epsilon
                 % recompute current coverage
-                disp('Current coverage');
+                disp('\nCurrent coverage');
                 current_coverage_value = this.Br.ComputeLogCellOccupancyCoverage
-               
+                %current_coverage_value = CBS.ComputeLogCellOccupancyCoverage
                 
                 
                 % update coverage graph data
@@ -898,13 +919,13 @@ classdef MetaFalsify < handle
                 
                 
                 fprintf(1,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
-                fprintf(fileID,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
+                fprintf(this.OutFileID,'\n\n\n\n #Call  SolverID  Robustness  Coverage');
                 fprintf(1,'\nQuasi-random (0), CMA-ES (1), SA (2), GNM (3)');
-                fprintf(fileID,'\nQuasi-random (0), CMA-ES (1), SA (2), GNM (3)');
+                fprintf(this.OutFileID,'\nQuasi-random (0), CMA-ES (1), SA (2), GNM (3)');
                 for iii  = 1:call_count
                     fprintf(1,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
                         robustness_graph_data(iii,2),coverage_graph_data(iii,2));
-                    fprintf(fileID,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
+                    fprintf(this.OutFileID,'\n %d  %d  %12.8f  %12.8f',iii, solver_index_data(iii,1),...
                         robustness_graph_data(iii,2),coverage_graph_data(iii,2));
                 end
                 
@@ -925,7 +946,7 @@ classdef MetaFalsify < handle
                     
                     if (stagnant_count>cov_monitoring_length)
                         cov_stagnant=true;
-                        fprintf(fileID,'\n Coverage stagnant');
+                        fprintf(this.OutFileID,'\n Coverage stagnant');
                     else
                         stagnant_count=stagnant_count+1;
                     end
@@ -936,9 +957,9 @@ classdef MetaFalsify < handle
                     prev_solver_index = solver_index;
                 %end
                 
-                fprintf(1,'\n stagnant_count = %d', stagnant_count);
-                fprintf(fileID,'\n rob_stagnant = %d', rob_stagnant);
-                fprintf(fileID,'\n cov_monitoring_length = %d', cov_monitoring_length);
+                fprintf(this.OutFileID,'\n stagnant_count = %d', stagnant_count);
+                fprintf(this.OutFileID,'\n rob_stagnant = %d', rob_stagnant);
+                fprintf(this.OutFileID,'\n cov_monitoring_length = %d', cov_monitoring_length);
                 
                 local_optimum_stuck=(stagnant_count>=cov_monitoring_length) && rob_stagnant
                 
@@ -948,18 +969,21 @@ classdef MetaFalsify < handle
                     PR_duration=0;
                     
                     if (prev_solver_index==0)
-                        this.re_init_strategy = 1 %pick from xlog, if previously random
+                        this.re_init_strategy = 2; %pick from xlog, if previously random
                     end
                     
                     solver_index = prev_solver_index + 1;
                     
-%                     if (solver_index==3)
-%                         solver_index=1; %GNM
-%                     end
+                    if (solver_index==3)
+	                  solver_index=2; %GNM
+                    end
+                    if (solver_index==1)
+	                  solver_index=2; %GNM
+	                end
                     
                     if (solver_index>(this.num_solvers-1))
                         fprintf(1,'\n\n*******\n #%d round(s) of solver calls done', round_count);
-                        fprintf(fileID,'\n #%d round(s) of solver calls done', round_count);
+                        fprintf(this.OutFileID,'\n #%d round(s) of solver calls done', round_count);
                         solver_index = 1;
                         round_count = round_count + 1;
                          
@@ -986,20 +1010,20 @@ classdef MetaFalsify < handle
                 end
                 
                 fprintf(1,'\n Solver call %d done', call_count);
-                fprintf(fileID,'\n Solver call %d done', call_count);
+                fprintf(this.OutFileID,'\n Solver call %d done', call_count);
                 
             end % end of for-loop call_count
             
             
             comptime = toc(TotCompTime);
-            fprintf(fileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
+            fprintf(this.OutFileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
             fprintf(1,'\n Exit! TOTAL Computation time = %f seconds \n',comptime );
             
             figure('Name','Coverage');
             plot(coverage_graph_data(:,2));
             figure('Name','Robustness');
             plot(robustness_graph_data(:,2));
-            input('ENTER');
+            %input('ENTER');
             
         end %end function
         
