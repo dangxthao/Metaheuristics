@@ -8,6 +8,7 @@ classdef TA_param_gen < param_gen
        template_out       
        val_map       
        p0_out
+       verbose=0
     end
     
     methods
@@ -59,8 +60,7 @@ classdef TA_param_gen < param_gen
             exe = this.wordgen_exe;
             in_file = this.TA_file;
             num_pts = size(p_in,2);        
-            
-            
+                        
             p_out = repmat(this.p0_out, 1, num_pts);
             
             for ipt = 1:num_pts
@@ -73,7 +73,9 @@ classdef TA_param_gen < param_gen
                 
                 cmd = [exe ' ' in_file ' --template "' sprintf(this.template_in, p) ...
                       '" --poly ' num2str(this.poly) ' --traj 1 > res.txt'];                
-                
+                if this.verbose
+                    disp(cmd);
+                end
                 stat = system(cmd);
                                 
                 if stat

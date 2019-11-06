@@ -19,12 +19,12 @@ while num<num_evt
     num = num +4;
     sdt_template = [sdt_template '%g[a]%g[b]%g[c]%g[d]']; % template for lasso init
 end
+
 sdt_template = sdt_template(1:5*num_evt);
 pg.set_template_in(sdt_template);
 pg.template_in = regexprep(pg.template_in,'\[(\w+)\]', '\[_\]'); % erase letters 
 params_evt = pg.params(1:end-3);
 ranges = repmat([0,1], numel(params_evt),1);
-
 S = BreachSignalGen(sg);
 
 
@@ -45,9 +45,9 @@ Bwg.SetTime(time);
 Rwg = BreachRequirement(notsat, {}, per); 
 pbwg = FalsificationProblem(Bwg, Rwg, params_evt, ranges);
 
-%%
-pbwg.max_obj_eval=1000;
-pbwg.solver_options.num_corners = 0; 
+%
+pbwg.max_obj_eval=100;
+pbwg.solver_options.num_corners = 10; 
 pbwg.solver_options.num_quasi_rand_samples = 50;
 pbwg.solve();
 Rpb= pbwg.GetLog();
