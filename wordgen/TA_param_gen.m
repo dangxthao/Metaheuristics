@@ -72,7 +72,7 @@ classdef TA_param_gen < param_gen
                 p_out(1:2:end,ipt) = alpha*(p_out(1:2:end,ipt) +beta);                
                 
                 cmd = [exe ' ' in_file ' --template "' sprintf(this.template_in, p) ...
-                      '" --poly ' num2str(this.poly) ' --traj 1 > res.txt'];                
+                      '" --poly ' num2str(this.poly) ' --traj 1 -v 0 res.txt'];                
                 if this.verbose
                     disp(cmd);
                 end

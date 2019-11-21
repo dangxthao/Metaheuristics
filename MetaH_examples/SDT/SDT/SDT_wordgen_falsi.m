@@ -22,7 +22,7 @@ end
 
 sdt_template = sdt_template(1:5*num_evt);
 pg.set_template_in(sdt_template);
-pg.template_in = regexprep(pg.template_in,'\[(\w+)\]', '\[_\]'); % erase letters 
+pg.template_in = regexprep(pg.template_in,'\[(\w+)\]', '\[0.1\]'); % erase letters 
 params_evt = pg.params(1:end-3);
 ranges = repmat([0,1], numel(params_evt),1);
 S = BreachSignalGen(sg);

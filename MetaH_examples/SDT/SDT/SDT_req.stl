@@ -1,0 +1,14 @@
+# Saturation
+notsat := alw(OutSat[t]<2)
+
+# (Quasi) Periodicity 
+up := In1[t]>1.4
+up_next := ev_[8*time_scale, 12*time_scale] (up)
+first_up := ev_[0, 12*time_scale] up
+
+down := In1[t]<0.1
+down_next := ev_[8*time_scale, 12*time_scale] (down)
+first_down := ev_[0, 12*time_scale] down
+
+param tend = 1e-6
+per := alw_[0, tend] (up => up_next) and alw_[0, tend] (down => down_next)
