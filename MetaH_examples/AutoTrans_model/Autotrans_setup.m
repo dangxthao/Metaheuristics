@@ -3,7 +3,7 @@
 
 close all
 clear all
-warning('off', 'ALL')
+%warning('off', 'ALL')
 
 addpath('/Users/thaodang/Metaheuristics/supp_code')
 addpath('/Users/thaodang/Metaheuristics/src')

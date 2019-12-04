@@ -9,6 +9,7 @@ classdef TA_param_gen < param_gen
        val_map       
        p0_out
        verbose=0
+       min_dt = 1e-9
     end
     
     methods
@@ -83,7 +84,9 @@ classdef TA_param_gen < param_gen
                     p_out(2:2:end, ipt) = 1;
                 else
                     f= fopen('res.txt');
-                    p_out(2:2:end, ipt) = fscanf(f,this.template_out)*time_scale;
+                    dts = fscanf(f,this.template_out)*time_scale;
+                    dts(dts==0) = this.min_dt;
+                    p_out(2:2:end, ipt) = dts;
                     fclose(f);
                 end
                 
