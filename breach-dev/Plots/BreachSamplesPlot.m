@@ -476,7 +476,7 @@ classdef BreachSamplesPlot < handle
                         plot_this = @plot_sum;
                     case 'num'
                         ydata_vac = this.data.vac_pts.v_num_vac;
-                        if strcmp(this.z_axis, none_z)
+                        if any(strcmp(this.z_axis, none_z))
                             plot_this = @plot_num;
                         end
                     otherwise
@@ -486,7 +486,7 @@ classdef BreachSamplesPlot < handle
                         else
                             ydata_vac  = B.GetParam(this.y_axis, vac_idx);
                         end
-                        if strcmp(this.z_axis, none_z)
+                        if any(strcmp(this.z_axis, none_z))
                             plot_this = @plot_param;
                         end
                 end
@@ -534,12 +534,12 @@ classdef BreachSamplesPlot < handle
                         plot_this=@plot_num;
                     case 'sum'
                         ydata_neg = this.data.neg_pts.v_sum_neg;
-                        if strcmp(this.z_axis, none_z)
+                        if any(strcmp(this.z_axis, none_z))
                             plot_this = @plot_sum;
                         end
                     case 'num'
                         ydata_neg = this.data.neg_pts.v_num_neg;
-                        if strcmp(this.z_axis, none_z)
+                        if any(strcmp(this.z_axis, none_z))
                             plot_this = @plot_num;
                         end
                     otherwise
@@ -549,7 +549,7 @@ classdef BreachSamplesPlot < handle
                         else
                             ydata_neg = B.GetParam(this.y_axis, neg_idx);
                         end
-                        if strcmp(this.z_axis, none_z)
+                        if any(strcmp(this.z_axis, none_z))
                             plot_this =  @plot_param;
                         end
                 end                
@@ -646,7 +646,7 @@ classdef BreachSamplesPlot < handle
             
             
             function plot_num()
-                
+                leg = {};
                 if has_pos&&~isempty(xdata_pos)
                     if has_vac&&~isempty(xdata_vac)
                         ydata_pos = this.data.pos_pts.v_num_pos;

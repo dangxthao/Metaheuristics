@@ -134,8 +134,10 @@ classdef var_cp_signal_gen < signal_gen
                 pts_x = pts_x(2*this.num_cp(i_cp):end);
                 
                 dt_cp = cp_values(2:2:end-1);
-                t_cp = unique( [0; cumsum(dt_cp)]);
+                [t_cp, i_t_cp] = unique( [0; cumsum(dt_cp)], 'last');
+                
                 x_values = cp_values(1:2:end);
+                x_values = x_values(i_t_cp);
                 if numel(t_cp)==1
                     x = x_values(end)*ones(numel(time),1);
                 else

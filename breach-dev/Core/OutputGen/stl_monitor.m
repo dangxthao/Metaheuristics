@@ -92,7 +92,7 @@ classdef stl_monitor < req_monitor
             this.rob_map = containers.Map;
             phi = this.formula;
 
-            [~,~,this.rob_map] = STL_Eval_IO_Rob(this.Sys, phi, this.P, this.P.traj{1}, 'out', 'rel', this.rob_map);
+            [~,~,this.rob_map] = STL_Eval_IO_Rob(this.Sys, phi, this.P0, this.P.traj{1}, 'out', 'rel', this.rob_map);
             this.diag_map = containers.Map;
             
             this.formula_names_map = containers.Map;
@@ -128,7 +128,12 @@ classdef stl_monitor < req_monitor
         
         function plot_full_diagnostics(this,F,phi)
             % Assumes F has data about this formula
-            this.explain();
+            
+            itraj = F.BrSet.P.traj_ref(F.ipts);
+            time = F.BrSet.P.traj{itraj}.time;
+            X = F.BrSet.GetSignalValues(this.signals_in, itraj);
+            p = F.BrSet.GetParam(this.params, F.ipts);
+            this.explain(time, X,p);
             
             if nargin<3
                 phi=this.formula;
