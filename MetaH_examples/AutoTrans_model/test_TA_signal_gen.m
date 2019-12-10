@@ -17,6 +17,7 @@ Rreach_labels = BreachRequirement({req_a, req_b, req_c, req_d, req_e, req_f, req
 Rreach_labels.Eval(S1);
 BreachSamplesPlot(Rreach_labels);
 
+return;
 %% 
 
 S2 = S0.copy();

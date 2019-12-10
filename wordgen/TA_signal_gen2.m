@@ -64,6 +64,7 @@ classdef TA_signal_gen2 < var_cp_signal_gen
         function X = computeSignals(this,p, time) % compute the signals
             [p_cp, dts, labels_idx] = computeParams(this, p);
             X = computeSignals@var_cp_signal_gen(this, p_cp, time);            
+            dts(dts<this.min_dt) = this.min_dt;
             ts = cumsum(dts);
             X(end+1, :) = interp1([0 ts(1:end-1)], labels_idx, time, 'previous', 'extrap');
         

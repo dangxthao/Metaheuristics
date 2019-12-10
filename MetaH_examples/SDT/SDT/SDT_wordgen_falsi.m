@@ -32,7 +32,7 @@ S = BreachSignalGen(sg);
 %% Time and requirements
 S = BreachSignalGen(sg);
 time = 0:1e-10:1.5e-6;
-ts = 1e-8;
+ts = .8e-8;
 STL_ReadFile('SDT_req.stl');
 
 
@@ -57,6 +57,7 @@ Rpb= pbwg.GetLog();
 Fwg = BreachSamplesPlot(Rpb); 
 Fwg.set_y_axis('notsaturation');
 
+return;
 %% Testing without wordgen (free dt)
 Bn = BP2.copy();
 Bn.SetInputGen(S);

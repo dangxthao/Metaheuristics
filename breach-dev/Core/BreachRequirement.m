@@ -253,6 +253,11 @@ classdef BreachRequirement < BreachTraceSystem
                     end
                 end
             end
+            for ia = 1:numel(F.Axes)
+                F.update_legend(F.Axes(ia));
+            end        
+            
+            
         end
              
         function h = PlotSignals(this,varargin)

@@ -1,11 +1,11 @@
-param tend = 1.e-6
+param tend = 0.8e-6
 
 # Saturation
 notsat := alw (abs(OutSat[t])<2)
 
 # (Quasi) Periodicity 
 up := In1[t]>1.9
-up_next := ev_[7*time_scale, 13*time_scale] (up)
+up_next := ev_[7.5*time_scale, 12.5*time_scale] (up)
 first_up := ev_[0, 13*time_scale] up
 
 down := In1[t]<0.1
