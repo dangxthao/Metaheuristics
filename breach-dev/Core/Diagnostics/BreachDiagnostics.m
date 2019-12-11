@@ -460,17 +460,18 @@ classdef BreachDiagnostics
                     prev_time = tmp.times(1);
                     prev_value = tmp.values(1);
                     begin_time = inf;
+                    end_time = inf;
                     % The first sample satisfies phi and the operator is
                     % ev_I phi, or it violates phi and the operator is
                     % alw_I phi -- we have found a beginning of an
                     % explanation
                     if (prev_value >= 0 && operator == BreachOperator.EV)
                         begin_time = prev_time;
-                    elseif (prev_value < 0 && operator == BreachOperator.ALW);
+                    elseif (prev_value < 0 && operator == BreachOperator.ALW)
                         begin_time = prev_time;    
                     end
                 
-                    for(j=2:tmp_size)
+                    for j=2:tmp_size
                         current_time = tmp.times(j);
                         current_value = tmp.values(j);
                         
@@ -503,7 +504,7 @@ classdef BreachDiagnostics
                             out_implicant = out_implicant.addInterval(begin_time, end_time);
                         end
                         samples = in_implicant.getSignificantSamples();
-                        for(k=1:length(samples))
+                        for k=1:length(samples)
                             sample = samples(k);
                             if (sample.value == prev_value)
                                 out_implicant = out_implicant.addSignificantSample(prev_time, prev_value);

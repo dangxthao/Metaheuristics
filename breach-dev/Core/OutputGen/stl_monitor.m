@@ -140,17 +140,28 @@ classdef stl_monitor < req_monitor
             end
             
             subs = STL_Break(phi); 
+            plotted = {};
             for is = numel(subs):-1:1
                 subphi = subs(is);
-                h = F.AddAxes();
-                this.plot_implicant(h, get_id(subphi));
+                id = get_id(subphi);
+                implicant = this.diag_map(id);
+                
+                if ~isempty(implicant.Intervals)&&~ismember(id, plotted)
+                    h = F.AddAxes();
+                    this.plot_implicant(h, id);
+                    plotted = [plotted id];
+                end
             end
             
             for is = 1:numel(this.signals_in)
-                h = F.AddAxes();
-                this.plot_implicant(h, this.signals_in{is});
+                id = this.signals_in{is};
+                implicant = this.diag_map(id);
+                if ~isempty(implicant.Intervals)&&~ismember(id, plotted) 
+                    h = F.AddAxes();
+                    this.plot_implicant(h, id);                    
+                    plotted = [plotted id];
+                end
             end
-                
         end
            
         function plot_implicant(this, ax, id)
@@ -192,13 +203,15 @@ classdef stl_monitor < req_monitor
                 end
             end
             samples = implicant.getSignificantSamples();
-            for j=1:length(samples)
-                sample = samples(j);
+            %for j=1:length(samples)
+            if ~isempty(samples)   
+                sample = samples(1);
                 hold on;
-                plot(sample.time, sample.value, 'x');
+                plot(sample.time, sample.value, 'x', 'Color',color);            
             end
             t0 = this.P.traj{1}.time;
             set(ax, 'XLim', [0 t0(end)]);
+            
         end
         
         function init_tXp(this, t, X, p)

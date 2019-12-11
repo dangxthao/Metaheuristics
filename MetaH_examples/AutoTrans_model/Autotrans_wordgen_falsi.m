@@ -7,7 +7,11 @@ InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initializ
 
 %% TA based signal generator setup 
 %
+<<<<<<< HEAD
 num_evt=5
+=======
+num_evt =25;
+>>>>>>> 8034a3c6cd8ecb4b3cb0457c555b34ba33253765
 init_TA_signal_gen;
 
 
@@ -27,6 +31,24 @@ Ba.Sim();
 
 %% 
 R = BreachRequirement(never_gear3_and_speed_low);
-pb = FalsificationProblem(Ba, R);
+falsif_pb = FalsificationProblem(Ba, R);
+falsif_pb.solver_options.num_corners = 100;
+falsif_pb.solver_options.num_quasi_rand_samples = 100;
+falsif_pb.max_obj_eval = 1000;
+%falsif_pb.SetupDiskCaching();
 
-pb.solve();
+falsif_pb.solve();
+
+%% Initial Counter-example
+BFalse = falsif_pb.BrSet_False;
+%BFalse = falsif_pb.GetFalse();;
+
+%% Fix Specification
+param_pb = ParamSynthProblem(BFalse, never_gear3_and_speed_low, 'v_low', [0 30]);
+param_pb.solver_options.monotony = -1;
+param_pb.solve();
+
+
+%% Requirement mining: Iterate 
+%mining_pb = ReqMiningProblem(param_pb, falsif_pb);
+%mining_pb.solve();

@@ -1,9 +1,11 @@
 %% TA based signal generator setup 
 
-sg2 = TA_signal_gen2({'throttle', 'brake'},'driving.prism',{'a','b','c','d','e','f','g','h'}, num_evt);
+sg2 = TA_signal_gen2({'throttle', 'brake'},'driving_NFM_v2.prism',{'a','b','c','d','e','f','g','h'}, num_evt);
 S0 = BreachSignalGen(sg2);
 ts = 0.5;
-time = 0:.01:100;
+time = 0:.005:100;
+sg2.min_dt = .01;
+
 S0.SetParam('time_scale',ts);
 S0.SetTime(time);
 
