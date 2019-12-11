@@ -1,5 +1,13 @@
+addpath('/Users/thaodang/Metaheuristics/src')
+addpath('/Users/thaodang/Metaheuristics/wordgen')
+addpath('/Users/thaodang/Metaheuristics/breach-dev')
+addpath('.')    
+InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
+
+
 %% TA based signal generator setup 
 %
+num_evt=5
 init_TA_signal_gen;
 
 
