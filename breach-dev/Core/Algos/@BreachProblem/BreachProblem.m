@@ -312,7 +312,19 @@ classdef BreachProblem < BreachStatus
             this.solver = 'quasi_random';
             this.solver_options = solver_opt; 
         end
-         
+
+        function solver_opt = setup_random(this, varargin)
+            solver_opt = struct( ...            
+                'rand_seed', 1,...
+                'num_rand_samples', 100 ...   % arbitrary - should be dim-dependant?  
+            );
+            solver_opt= varargin2struct(solver_opt, varargin{:});
+        
+            this.solver = 'random';
+            this.solver_options = solver_opt; 
+        end
+
+        
         function solver_opt = setup_corners(this)
             solver_opt = struct('num_corners', 100 ...   % arbitrary - should  be dim-dependant?  
             );
@@ -423,6 +435,9 @@ classdef BreachProblem < BreachStatus
                 case 'basic'
                     res = this.solve_basic();
                 
+                case 'random'
+                    res = this.solve_random();
+
                 case 'quasi_random'
                     res = this.solve_quasi_random();
     
