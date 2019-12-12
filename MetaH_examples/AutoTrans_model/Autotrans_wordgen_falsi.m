@@ -26,6 +26,7 @@ falsif_pb.solver_options.num_quasi_rand_samples = 100;
 falsif_pb.max_obj_eval = 1000;
 %falsif_pb.SetupDiskCaching();
 
+%%
 falsif_pb.solve();
 
 %% Initial Counter-example

@@ -179,8 +179,10 @@ classdef BreachSignalsPlot < handle
                         lc(end+1) = c(idx);
                         patch_idx = numel(lc);
                         st{end+1} = 'F';
-                        if isequal(c(idx).Color, [1 0 0])
+                        if isequal(c(idx).FaceColor, [1 0 0])
                             status = 0;
+                        else
+                            status = 1; 
                         end
                     end
                     num_patch = num_patch+1;
@@ -346,8 +348,8 @@ classdef BreachSignalsPlot < handle
             itraj = unique(this.BrSet.P.traj_ref(ipts), 'stable');
             
             for k = 1:numel(itraj)
-                time = this.BrSet.P.traj{k}.time;
-                sig_values = this.BrSet.GetSignalValues(sig, k);
+                time = this.BrSet.P.traj{itraj(k)}.time;
+                sig_values = this.BrSet.GetSignalValues(sig, itraj(k));
                 if ~isempty(sig_values)
                     if k==1
                         l = plot(time , sig_values, 'DisplayName', sig);
