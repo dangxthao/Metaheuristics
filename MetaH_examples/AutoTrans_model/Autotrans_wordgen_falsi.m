@@ -1,3 +1,11 @@
+addpath('/Users/dang/Metaheuristics/breach-dev')
+
+addpath('/Users/dang/Metaheuristics/src')
+addpath('.')
+
+addpath('/Users/dang/Metaheuristics/wordgen')
+InitBreach('/Users/dang/Metaheuristics/breach-dev',true);
+
 %% TA based signal generator setup 
 %
 num_evt =25;
