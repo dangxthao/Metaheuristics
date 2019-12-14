@@ -121,10 +121,10 @@ MetaObj.Plot_signal_names = Plot_signal_names;
 fileID = fopen('OutFalsification.txt','w');
 MetaObj.OutFileID = fileID;
 
-%fprintf(1,'\n STL_Formula %', formuleSt);
-%fprintf(fileID,'\n STL_Formula %', formuleSt);
-%fprintf(1, '\n Model name is %s \n', model_name);
-%fprintf(fileID, '\n Model name is %s \n', model_name);
+fprintf(1,'\n STL_Formula %s', formuleSt);
+fprintf(fileID,'\n STL_Formula %', formuleSt);
+fprintf(1, '\n Model name is %s \n', model_name);
+fprintf(fileID, '\n Model name is %s \n', model_name);
 
 MetaObj.MetaShortFilePrint(fileID); 
 
