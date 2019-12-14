@@ -1,57 +1,61 @@
 Model {
-  Name			  "autotrans_mod01"
-  Version		  8.2
+  Name			  "autotrans_mod04"
+  Version		  8.5
   MdlSubVersion		  0
-  SavedCharacterEncoding  "windows-1252"
+  SavedCharacterEncoding  "US-ASCII"
   GraphicalInterface {
-    NumRootInports	    2
+    NumRootInports	    3
     Inport {
+      Name		      "throttle"
       BusObject		      ""
-      Name		      "In1"
     }
     Inport {
+      Name		      "break"
       BusObject		      ""
-      Name		      "In2"
+    }
+    Inport {
+      Name		      "timeword"
+      BusObject		      ""
     }
     NumRootOutports	    3
     Outport {
+      Name		      "speed"
       BusObject		      ""
       BusOutputAsStruct	      "off"
       SignalName	      "VehicleSpeed"
-      Name		      "speed"
     }
     Outport {
+      Name		      "RPM"
       BusObject		      ""
       BusOutputAsStruct	      "off"
       SignalName	      "EngineRPM"
-      Name		      "RPM"
     }
     Outport {
+      Name		      "gear"
       BusObject		      ""
       BusOutputAsStruct	      "off"
-      Name		      "gear"
     }
     ParameterArgumentNames  ""
-    ComputedModelVersion    "1.252"
+    ComputedModelVersion    "1.253"
     NumModelReferences	    0
     NumTestPointedSignals   5
     TestPointedSignal {
       SignalName	      "EngineRPM"
-      FullBlockPath	      "autotrans_mod01/Engine"
+      FullBlockPath	      "autotrans_mod04/Engine"
       LogSignal		      1
       MaxPoints		      5000
       Decimation	      2
     }
     TestPointedSignal {
       SignalName	      "ImprellerTorque"
-      FullBlockPath	      "autotrans_mod01/Transmission"
+      FullBlockPath	      "autotrans_mod04/Transmission"
       LogSignal		      1
       MaxPoints		      5000
       Decimation	      2
     }
     TestPointedSignal {
       SignalName	      "OutputTorque"
-      FullBlockPath	      "autotrans_mod01/Transmission"
+      FullBlockPath	      "autotrans_mod04/Transmission"
       PortIndex		      2
       LogSignal		      1
       MaxPoints		      5000
@@ -59,14 +63,14 @@ Model {
     }
     TestPointedSignal {
       SignalName	      "VehicleSpeed"
-      FullBlockPath	      "autotrans_mod01/Vehicle"
+      FullBlockPath	      "autotrans_mod04/Vehicle"
       LogSignal		      1
       MaxPoints		      5000
       Decimation	      2
     }
     TestPointedSignal {
       SignalName	      "TransmissionRPM"
-      FullBlockPath	      "autotrans_mod01/Vehicle"
+      FullBlockPath	      "autotrans_mod04/Vehicle"
       PortIndex		      2
       LogSignal		      1
       MaxPoints		      5000
@@ -82,9 +86,8 @@ Model {
   "s strength in this capacity by performing the function of gear\nselection in an automatic transmission. This functio"
   "n is combined with the\ndrivetrain dynamics in a natural and intuitive manner by incorporating a\nStateflow block in"
   " the Simulink block diagram.\n"
-  SaveDefaultBlockParams  on
   ScopeRefreshTime	  0.035000
-  OverrideScopeRefreshTime on
+  OverrideScopeRefreshTime off
   DisableAllScopes	  off
   DataTypeOverride	  "Double"
   DataTypeOverrideAppliesTo "AllNumericTypes"
@@ -101,7 +104,7 @@ Model {
       $ObjectID		      2
       $ClassName	      "Simulink.WindowInfo"
       IsActive		      [1]
-      Location		      [350.0, 139.0, 1086.0, 752.0]
+      Location		      [386.0, 41.0, 1086.0, 752.0]
       Object {
 	$PropName		"ModelBrowserInfo"
 	$ObjectID		3
@@ -125,7 +128,7 @@ Model {
 	IsActive		[1]
 	ViewObjType		"SimulinkTopLevel"
 	LoadSaveID		"0"
-	Extents			[908.0, 578.0]
+	Extents			[1052.0, 582.0]
 	ZoomFactor		[1.0]
 	Offset			[0.0, 0.0]
       }
@@ -135,11 +138,11 @@ Model {
   Creator		  "The MathWorks Inc."
   UpdateHistory		  "UpdateHistoryNever"
   ModifiedByFormat	  "%<Auto>"
-  LastModifiedBy	  "bhoxha"
+  LastModifiedBy	  "thaodang"
   ModifiedDateFormat	  "%<Auto>"
-  LastModifiedDate	  "Fri Mar 28 15:33:26 2014"
-  RTWModifiedTimeStamp	  317921605
-  ModelVersionFormat	  "1.%<AutoIncrement:252>"
+  LastModifiedDate	  "Wed Dec 11 16:49:46 2019"
+  RTWModifiedTimeStamp	  497983775
+  ModelVersionFormat	  "1.%<AutoIncrement:253>"
   ConfigurationManager	  "none"
   SampleTimeColors	  on
   SampleTimeAnnotations	  off
@@ -157,13 +160,14 @@ Model {
   SortedOrder		  off
   ExecutionContextIcon	  off
   ShowLinearizationAnnotations on
+  ShowMarkup		  on
   BlockNameDataTip	  off
   BlockParametersDataTip  on
   BlockDescriptionStringDataTip	off
   ToolBar		  on
   StatusBar		  on
   BrowserShowLibraryLinks off
-  BrowserLookUnderMasks	  on
+  BrowserLookUnderMasks	  off
   SimulationMode	  "normal"
   PauseTimes		  "5"
   NumberOfSteps		  1
@@ -181,11 +185,11 @@ Model {
     $PropName		    "DataLoggingOverride"
     $ObjectID		    6
     $ClassName		    "Simulink.SimulationData.ModelLoggingInfo"
-    model_		    "autotrans_mod01"
+    model_		    "autotrans_mod04"
     Array {
       Type		      "Cell"
       Dimension		      1
-      Cell		      "autotrans_mod01"
+      Cell		      "autotrans_mod04"
       PropName		      "logAsSpecifiedByModels_"
     }
     Array {
@@ -210,6 +214,12 @@ Model {
   CovReportOnPause	  on
   CovModelRefEnable	  "Off"
   CovExternalEMLEnable	  off
+  CovSFcnEnable		  on
+  CovBoundaryAbsTol	  0.000010
+  CovBoundaryRelTol	  0.010000
+  CovUseTimeInterval	  off
+  CovStartTime		  0
+  CovStopTime		  0
   ExtModeBatchMode	  off
   ExtModeEnableFloating	  on
   ExtModeTrigType	  "manual"
@@ -231,7 +241,6 @@ Model {
   ExtModeSkipDownloadWhenConnect off
   ExtModeLogAll		  on
   ExtModeAutoUpdateStatusClock off
-  BufferReuse		  on
   ShowModelReferenceBlockVersion off
   ShowModelReferenceBlockIO off
   Array {
@@ -239,14 +248,14 @@ Model {
     Dimension		    1
     Simulink.ConfigSet {
       $ObjectID		      7
-      Version		      "1.13.1"
+      Version		      "1.15.0"
       Description	      "* Simulation Target Description\nDefault S-Function target.\n"
       Array {
 	Type			"Handle"
 	Dimension		8
 	Simulink.SolverCC {
 	  $ObjectID		  8
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  StartTime		  "0.0"
 	  StopTime		  "30"
 	  AbsTol		  "1e-6"
@@ -281,7 +290,7 @@ Model {
 	}
 	Simulink.DataIOCC {
 	  $ObjectID		  9
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  Decimation		  "1"
 	  ExternalInput		  "[t, u]"
 	  FinalStateName	  "xFinal"
@@ -299,6 +308,7 @@ Model {
 	  SignalLogging		  on
 	  DSMLogging		  on
 	  InspectSignalLogs	  off
+	  VisualizeSimOutput	  on
 	  SaveTime		  off
 	  ReturnWorkspaceOutputs  off
 	  StateSaveName		  "xout"
@@ -313,7 +323,7 @@ Model {
 	}
 	Simulink.OptimizationCC {
 	  $ObjectID		  10
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    4
@@ -327,7 +337,7 @@ Model {
 	  BooleanDataType	  off
 	  ConditionallyExecuteInputs on
 	  InlineParams		  off
-	  UseIntDivNetSlope	  off
+	  UseDivisionForNetSlopeComputation "off"
 	  UseFloatMulNetSlope	  off
 	  DefaultUnderspecifiedDataType	"double"
 	  UseSpecifiedMinMax	  off
@@ -335,6 +345,8 @@ Model {
 	  OptimizeBlockIOStorage  on
 	  BufferReuse		  on
 	  EnhancedBackFolding	  off
+	  CachingGlobalReferences off
+	  GlobalBufferReuse	  on
 	  StrengthReduction	  off
 	  ExpressionFolding	  on
 	  BooleansAsBitfields	  off
@@ -342,15 +354,13 @@ Model {
 	  EnableMemcpy		  on
 	  MemcpyThreshold	  64
 	  PassReuseOutputArgsAs	  "Structure reference"
+	  PassReuseOutputArgsThreshold 12
 	  ExpressionDepthLimit	  2147483647
-	  FoldNonRolledExpr	  on
 	  LocalBlockOutputs	  on
 	  RollThreshold		  5
-	  SystemCodeInlineAuto	  off
 	  StateBitsets		  off
 	  DataBitsets		  off
 	  ActiveStateOutputEnumStorageType "Native Integer"
-	  UseTempVars		  off
 	  ZeroExternalMemoryAtStartup on
 	  ZeroInternalMemoryAtStartup on
 	  InitFltsAndDblsToZero	  on
@@ -361,13 +371,12 @@ Model {
 	  LifeSpan		  "inf"
 	  MaxStackSize		  "Inherit from target"
 	  BufferReusableBoundary  on
-	  SimCompilerOptimization "Off"
+	  SimCompilerOptimization "off"
 	  AccelVerboseBuild	  off
-	  ParallelExecutionInRapidAccelerator on
 	}
 	Simulink.DebuggingCC {
 	  $ObjectID		  11
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  RTPrefix		  "error"
 	  ConsistencyChecking	  "none"
 	  ArrayBoundsChecking	  "none"
@@ -422,17 +431,15 @@ Model {
 	  UnconnectedOutputMsg	  "warning"
 	  UnconnectedLineMsg	  "warning"
 	  SFcnCompatibilityMsg	  "none"
-	  FrameProcessingCompatibilityMsg "warning"
+	  FrameProcessingCompatibilityMsg "error"
 	  UniqueDataStoreMsg	  "none"
 	  BusObjectLabelMismatch  "warning"
 	  RootOutportRequireBusObject "warning"
 	  AssertControl		  "UseLocalSettings"
-	  EnableOverflowDetection off
 	  ModelReferenceIOMsg	  "none"
 	  ModelReferenceMultiInstanceNormalModeStructChecksumCheck "error"
 	  ModelReferenceVersionMismatchMessage "none"
 	  ModelReferenceIOMismatchMessage "none"
-	  ModelReferenceCSMismatchMessage "none"
 	  UnknownTsInhSupMsg	  "warning"
 	  ModelReferenceDataLoggingMessage "warning"
 	  ModelReferenceSymbolNameMessage "warning"
@@ -444,7 +451,6 @@ Model {
 	  StrictBusMsg		  "ErrorLevel1"
 	  BusNameAdapt		  "WarnAndRepair"
 	  NonBusSignalsTreatedAsBus "none"
-	  LoggingUnavailableSignals "none"
 	  BlockIODiagnostic	  "none"
 	  SFUnusedDataAndEventsDiag "warning"
 	  SFUnexpectedBacktrackingDiag "warning"
@@ -454,10 +460,12 @@ Model {
 	  SFUnconditionalTransitionShadowingDiag "warning"
 	  SFUndirectedBroadcastEventsDiag "warning"
 	  SFTransitionActionBeforeConditionDiag	"warning"
+	  SFOutputUsedAsStateInMooreChartDiag "error"
+	  IntegerSaturationMsg	  "none"
 	}
 	Simulink.HardwareCC {
 	  $ObjectID		  12
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  ProdBitPerChar	  8
 	  ProdBitPerShort	  16
 	  ProdBitPerInt		  32
@@ -489,7 +497,6 @@ Model {
 	  TargetIntDivRoundTo	  "Undefined"
 	  TargetEndianess	  "Unspecified"
 	  TargetWordSize	  32
-	  TargetTypeEmulationWarnSuppressLevel 0
 	  TargetPreprocMaxBitsSint 32
 	  TargetPreprocMaxBitsUint 32
 	  TargetHWDeviceType	  "Specified"
@@ -498,7 +505,7 @@ Model {
 	}
 	Simulink.ModelReferenceCC {
 	  $ObjectID		  13
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  UpdateModelReferenceTargets "IfOutOfDateOrStructuralChange"
 	  CheckModelReferenceTargetMessage "error"
 	  EnableParallelModelReferenceBuilds off
@@ -513,13 +520,10 @@ Model {
 	}
 	Simulink.SFSimCC {
 	  $ObjectID		  14
-	  Version		  "1.13.1"
-	  SFSimEnableDebug	  on
+	  Version		  "1.15.0"
 	  SFSimOverflowDetection  on
 	  SFSimEcho		  off
-	  SimBlas		  on
 	  SimCtrlC		  on
-	  SimExtrinsic		  on
 	  SimIntegrity		  on
 	  SimUseLocalCustomCode	  off
 	  SimParseCustomCode	  off
@@ -529,7 +533,7 @@ Model {
 	Simulink.RTWCC {
 	  $BackupClass		  "Simulink.RTWCC"
 	  $ObjectID		  15
-	  Version		  "1.13.1"
+	  Version		  "1.15.0"
 	  Array {
 	    Type		    "Cell"
 	    Dimension		    1
@@ -554,11 +558,6 @@ Model {
 	  TLCDebug		  off
 	  TLCCoverage		  off
 	  TLCAssert		  off
-	  ProcessScriptMode	  "Default"
-	  ConfigurationMode	  "Optimized"
-	  ProcessScript		  ""
-	  ConfigurationScript	  ""
-	  ConfigAtBuild		  off
 	  RTWUseLocalCustomCode	  off
 	  RTWUseSimCustomCode	  off
 	  CustomSourceCode	  ""
@@ -573,7 +572,6 @@ Model {
 	  IncludeHyperlinkInReport off
 	  LaunchReport		  off
 	  PortableWordSizes	  off
-	  GenerateErtSFunction	  off
 	  CreateSILPILBlock	  "None"
 	  CodeExecutionProfiling  off
 	  CodeExecutionProfileVariable "executionProfile"
@@ -582,28 +580,25 @@ Model {
 	  SILDebugging		  off
 	  TargetLang		  "C"
 	  IncludeBusHierarchyInRTWFileBlockHierarchyMap	off
-	  IncludeERTFirstTime	  on
 	  GenerateTraceInfo	  off
 	  GenerateTraceReport	  off
 	  GenerateTraceReportSl	  off
 	  GenerateTraceReportSf	  off
 	  GenerateTraceReportEml  off
-	  GenerateCodeInfo	  off
 	  GenerateWebview	  off
 	  GenerateCodeMetricsReport off
 	  GenerateCodeReplacementReport	off
-	  RTWCompilerOptimization "Off"
+	  GenerateMissedCodeReplacementReport off
+	  RTWCompilerOptimization "off"
 	  RTWCustomCompilerOptimizations ""
 	  CheckMdlBeforeBuild	  "Off"
-	  CustomRebuildMode	  "OnUpdate"
-	  DataInitializer	  ""
 	  SharedConstantsCachingThreshold 1024
 	  Array {
 	    Type		    "Handle"
 	    Dimension		    2
 	    Simulink.CodeAppCC {
 	      $ObjectID		      16
-	      Version		      "1.13.1"
+	      Version		      "1.15.0"
 	      Array {
 		Type			"Cell"
 		Dimension		9
@@ -620,6 +615,7 @@ Model {
 	      }
 	      ForceParamTrailComments off
 	      GenerateComments	      on
+	      CommentStyle	      "Auto"
 	      IgnoreCustomStorageClasses on
 	      IgnoreTestpoints	      off
 	      IncHierarchyInIds	      off
@@ -659,12 +655,12 @@ Model {
 	    Simulink.GRTTargetCC {
 	      $BackupClass	      "Simulink.TargetCC"
 	      $ObjectID		      17
-	      Version		      "1.13.1"
+	      Version		      "1.15.0"
 	      Array {
 		Type			"Cell"
-		Dimension		11
+		Dimension		10
 		Cell			"IncludeMdlTerminateFcn"
-		Cell			"CombineOutputUpdateFcns"
+		Cell			"GenerateAllocFcn"
 		Cell			"SuppressErrorStatus"
 		Cell			"ERTCustomFileBanners"
 		Cell			"GenerateSampleERTMain"
@@ -673,21 +669,22 @@ Model {
 		Cell			"SupportNonInlinedSFcns"
 		Cell			"SupportComplex"
 		Cell			"SupportAbsoluteTime"
-		Cell			"GenerateAllocFcn"
 		PropName		"DisabledProps"
 	      }
 	      TargetFcnLib	      "ansi_tfl_tmw.mat"
 	      TargetLibSuffix	      ""
 	      TargetPreCompLibLocation ""
-	      CodeReplacementLibrary  "ANSI_C"
+	      GenFloatMathFcnCalls    "NOT IN USE"
+	      TargetLangStandard      "C89/C90 (ANSI)"
+	      CodeReplacementLibrary  "None"
 	      UtilityFuncGeneration   "Auto"
 	      ERTMultiwordTypeDef     "System defined"
 	      ERTMultiwordLength      256
 	      MultiwordLength	      2048
 	      GenerateFullHeader      on
+	      InferredTypesCompatibility off
 	      GenerateSampleERTMain   off
 	      GenerateTestInterfaces  off
-	      IsPILTarget	      off
 	      ModelReferenceCompliant on
 	      ParMdlRefBuildCompliant on
 	      CompOptLevelCompliant   on
@@ -704,20 +701,22 @@ Model {
 	      LogVarNameModifier      "rt_"
 	      MatFileLogging	      on
 	      MultiInstanceERTCode    off
+	      CodeInterfacePackaging  "Nonreusable function"
 	      SupportNonFinite	      on
 	      SupportComplex	      on
 	      PurelyIntegerCode	      off
 	      SupportContinuousTime   on
 	      SupportNonInlinedSFcns  on
 	      SupportVariableSizeSignals off
-	      EnableShiftOperators    on
 	      ParenthesesLevel	      "Nominal"
+	      CastingMode	      "Nominal"
 	      MATLABClassNameForMDSCustomization "Simulink.SoftwareTarget.GRTCustomization"
 	      ModelStepFunctionPrototypeControlCompliant off
-	      CPPClassGenCompliant    off
+	      CPPClassGenCompliant    on
 	      AutosarCompliant	      off
 	      GRTInterface	      on
 	      GenerateAllocFcn	      off
+	      GenerateSharedConstants on
 	      UseMalloc		      off
 	      ExtMode		      off
 	      ExtModeStaticAlloc      off
@@ -731,6 +730,7 @@ Model {
 	      RTWCAPIStates	      off
 	      RTWCAPIRootIO	      off
 	      GenerateASAP2	      off
+	      MultiInstanceErrorCode  "Error"
 	    }
 	    PropName		    "Components"
 	  }
@@ -863,6 +863,9 @@ Model {
       LimitOutput	      off
       UpperSaturationLimit    "inf"
       LowerSaturationLimit    "-inf"
+      WrapState		      off
+      WrappedStateUpperValue  "pi"
+      WrappedStateLowerValue  "-pi"
       ShowSaturationPort      off
       ShowStatePort	      off
       AbsoluteTolerance	      "auto"
@@ -948,14 +951,15 @@ Model {
       SFunctionModules	      "''"
       PortCounts	      "[]"
       SFunctionDeploymentMode off
+      EnableBusSupport	      off
     }
     Block {
-      BlockType		      SignalViewerScope
-      Floating		      off
+      BlockType		      Scope
       ModelBased	      off
       TickLabels	      "OneTimeTick"
       ZoomMode		      "on"
       Grid		      "on"
+      ShowLegends	      off
       TimeRange		      "auto"
       YMin		      "-5"
       YMax		      "5"
@@ -966,9 +970,8 @@ Model {
       MaxDataPoints	      "5000"
       Decimation	      "1"
       SampleInput	      off
-      SampleTime	      "0"
-      Disabled		      off
-      ScrollMode	      on
+      SampleTime	      "-1"
+      ScrollMode	      off
     }
     Block {
       BlockType		      Signum
@@ -981,11 +984,15 @@ Model {
       Permissions	      "ReadWrite"
       PermitHierarchicalResolution "All"
       TreatAsAtomicUnit	      off
+      MinAlgLoopOccurrences   off
+      PropExecContextOutsideSubsystem off
       CheckFcnCallInpInsideContextMsg off
       SystemSampleTime	      "-1"
+      RTWSystemCode	      "Auto"
       RTWFcnNameOpts	      "Auto"
       RTWFileNameOpts	      "Auto"
       FunctionInterfaceSpec   "void_void"
+      FunctionWithSeparateData off
       RTWMemSecFuncInitTerm   "Inherit from model"
       RTWMemSecFuncExecute    "Inherit from model"
       RTWMemSecDataConstants  "Inherit from model"
@@ -995,10 +1002,13 @@ Model {
       DataTypeOverride	      "UseLocalSettings"
       DataTypeOverrideAppliesTo	"AllNumericTypes"
       MinMaxOverflowLogging   "UseLocalSettings"
+      Opaque		      off
+      MaskHideContents	      off
       SFBlockType	      "NONE"
       Variant		      off
       GeneratePreprocessorConditionals off
       ContentPreviewEnabled   off
+      IsWebBlock	      off
     }
     Block {
       BlockType		      Sum
@@ -1017,8 +1027,12 @@ Model {
       SampleTime	      "-1"
     }
     Block {
+      BlockType		      Terminator
+    }
+    Block {
       BlockType		      TriggerPort
       TriggerType	      "rising"
+      IsSimulinkFunction      off
       StatesWhenEnabling      "inherit"
       PropagateVarSize	      "During execution"
       ShowOutputPort	      off
@@ -1035,8 +1049,8 @@ Model {
     }
   }
   System {
-    Name		    "autotrans_mod01"
-    Location		    [350, 139, 1436, 891]
+    Name		    "autotrans_mod04"
+    Location		    [386, 41, 1472, 793]
     Open		    on
     ModelBrowserVisibility  off
     ModelBrowserWidth	    200
@@ -1050,10 +1064,10 @@ Model {
     ShowPageBoundaries	    off
     ZoomFactor		    "100"
     ReportName		    "simulink-default.rpt"
-    SIDHighWatermark	    "105"
+    SIDHighWatermark	    "107"
     Block {
       BlockType		      Inport
-      Name		      "In1"
+      Name		      "throttle"
       SID		      "84"
       Position		      [40, 168, 70, 182]
       ZOrder		      -1
@@ -1061,11 +1075,20 @@ Model {
     }
     Block {
       BlockType		      Inport
-      Name		      "In2"
+      Name		      "break"
       SID		      "105"
-      Position		      [525, 298, 555, 312]
+      Position		      [40, 313, 70, 327]
       ZOrder		      2
       Port		      "2"
+      IconDisplay	      "Port number"
+    }
+    Block {
+      BlockType		      Inport
+      Name		      "timeword"
+      SID		      "107"
+      Position		      [40, 503, 70, 517]
+      ZOrder		      4
+      Port		      "3"
       IconDisplay	      "Port number"
     }
     Block {
@@ -1075,13 +1098,7 @@ Model {
       Ports		      [2, 1]
       Position		      [185, 145, 275, 185]
       ZOrder		      -3
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
       RequestExecContextInheritance off
-      MaskHideContents	      off
       Port {
 	PortNumber		1
 	Name			"EngineRPM"
@@ -1231,8 +1248,9 @@ Model {
 	  SID			  "96"
 	  Name			  "Engine"
 	  Position		  [225, 152, 273, 170]
-	  AutoSize		  on
-	  WordWrap		  off
+	  InternalMargins	  [0, 0, 0, 0]
+	  FixedHeight		  off
+	  FixedWidth		  off
 	  ZOrder		  -1
 	  FontName		  "Arial"
 	  FontSize		  14
@@ -1251,13 +1269,7 @@ Model {
       ErrorFcn		      "Stateflow.Translate.translate"
       PermitHierarchicalResolution "ExplicitOnly"
       TreatAsAtomicUnit	      on
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
       RequestExecContextInheritance off
-      MaskHideContents	      off
       SFBlockType	      "Chart"
       System {
 	Name			"ShiftLogic"
@@ -1274,7 +1286,7 @@ Model {
 	TiledPageScale		1
 	ShowPageBoundaries	off
 	ZoomFactor		"100"
-	SIDHighWatermark	"19"
+	SIDHighWatermark	"21"
 	Block {
 	  BlockType		  Inport
 	  Name			  "speed"
@@ -1304,10 +1316,10 @@ Model {
 	Block {
 	  BlockType		  Demux
 	  Name			  " Demux "
-	  SID			  "16::19"
+	  SID			  "16::21"
 	  Ports			  [1, 1]
 	  Position		  [270, 230, 320, 270]
-	  ZOrder		  2
+	  ZOrder		  4
 	  Outputs		  "1"
 	  Port {
 	    PortNumber		    1
@@ -1319,15 +1331,14 @@ Model {
 	Block {
 	  BlockType		  S-Function
 	  Name			  " SFunction "
-	  SID			  "16::18"
-	  Tag			  "Stateflow S-Function autotrans_mod01 1"
+	  SID			  "16::20"
+	  Tag			  "Stateflow S-Function autotrans_mod04 1"
 	  Ports			  [3, 2]
 	  Position		  [180, 100, 230, 180]
-	  ZOrder		  1
+	  ZOrder		  3
 	  FunctionName		  "sf_sfun"
 	  Parameters		  "TWAIT"
 	  PortCounts		  "[3 2]"
-	  EnableBusSupport	  off
 	  Port {
 	    PortNumber		    2
 	    Name		    "gear"
@@ -1353,21 +1364,21 @@ Model {
 	  IconDisplay		  "Port number"
 	}
 	Line {
-	  ZOrder		  7
+	  ZOrder		  13
 	  SrcBlock		  "speed"
 	  SrcPort		  1
 	  DstBlock		  " SFunction "
 	  DstPort		  1
 	}
 	Line {
-	  ZOrder		  8
+	  ZOrder		  14
 	  SrcBlock		  "up_th"
 	  SrcPort		  1
 	  DstBlock		  " SFunction "
 	  DstPort		  2
 	}
 	Line {
-	  ZOrder		  9
+	  ZOrder		  15
 	  SrcBlock		  "down_th"
 	  SrcPort		  1
 	  DstBlock		  " SFunction "
@@ -1375,7 +1386,7 @@ Model {
 	}
 	Line {
 	  Name			  "gear"
-	  ZOrder		  10
+	  ZOrder		  16
 	  Labels		  [0, 0]
 	  SrcBlock		  " SFunction "
 	  SrcPort		  2
@@ -1384,7 +1395,7 @@ Model {
 	}
 	Line {
 	  Name			  "CALC_TH"
-	  ZOrder		  11
+	  ZOrder		  17
 	  Labels		  [0, 0]
 	  SrcBlock		  " Demux "
 	  SrcPort		  1
@@ -1392,7 +1403,7 @@ Model {
 	  DstPort		  1
 	}
 	Line {
-	  ZOrder		  12
+	  ZOrder		  18
 	  SrcBlock		  " SFunction "
 	  SrcPort		  1
 	  Points		  [20, 0]
@@ -1400,6 +1411,13 @@ Model {
 	  DstPort		  1
 	}
       }
+    }
+    Block {
+      BlockType		      Terminator
+      Name		      "Terminator"
+      SID		      "106"
+      Position		      [200, 500, 220, 520]
+      ZOrder		      3
     }
     Block {
       BlockType		      SubSystem
@@ -1411,13 +1429,7 @@ Model {
       BlockMirror	      on
       ForegroundColor	      "red"
       TreatAsAtomicUnit	      on
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
       RequestExecContextInheritance off
-      MaskHideContents	      off
       System {
 	Name			"ThresholdCalculation"
 	Location		[444, 164, 917, 563]
@@ -1557,9 +1569,10 @@ Model {
 	Annotation {
 	  SID			  "97"
 	  Name			  "Threshold Calculation"
-	  Position		  [212, 196, 361, 214]
-	  AutoSize		  on
-	  WordWrap		  off
+	  Position		  [212, 196, 360, 214]
+	  InternalMargins	  [0, 0, 0, 0]
+	  FixedHeight		  off
+	  FixedWidth		  off
 	  ZOrder		  -1
 	  FontName		  "Arial"
 	  FontSize		  14
@@ -1574,13 +1587,7 @@ Model {
       Ports		      [3, 2]
       Position		      [395, 180, 450, 300]
       ZOrder		      -6
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
       RequestExecContextInheritance off
-      MaskHideContents	      off
       Port {
 	PortNumber		1
 	Name			"ImprellerTorque"
@@ -1647,13 +1654,7 @@ Model {
 	  ZOrder		  -4
 	  FontName		  "Arial"
 	  ShowPortLabels	  "none"
-	  MinAlgLoopOccurrences	  off
-	  PropExecContextOutsideSubsystem off
-	  RTWSystemCode		  "Auto"
-	  FunctionWithSeparateData off
-	  Opaque		  off
 	  RequestExecContextInheritance	off
-	  MaskHideContents	  off
 	  Object {
 	    $PropName		    "MaskObject"
 	    $ObjectID		    19
@@ -1895,8 +1896,9 @@ Model {
 	      SID		      "98"
 	      Name		      "Torque Converter"
 	      Position		      [297, 217, 415, 235]
-	      AutoSize		      on
-	      WordWrap		      off
+	      InternalMargins	      [0, 0, 0, 0]
+	      FixedHeight	      off
+	      FixedWidth	      off
 	      VerticalAlignment	      "top"
 	      ZOrder		      -1
 	      FontName		      "Arial"
@@ -1912,13 +1914,7 @@ Model {
 	  Ports			  [3, 2]
 	  Position		  [300, 46, 370, 164]
 	  ZOrder		  -5
-	  MinAlgLoopOccurrences	  off
-	  PropExecContextOutsideSubsystem off
-	  RTWSystemCode		  "Auto"
-	  FunctionWithSeparateData off
-	  Opaque		  off
 	  RequestExecContextInheritance	off
-	  MaskHideContents	  off
 	  System {
 	    Name		    "TransmissionRatio"
 	    Location		    [690, 230, 1137, 648]
@@ -2067,9 +2063,10 @@ Model {
 	    Annotation {
 	      SID		      "99"
 	      Name		      "Transmission Gear Ratio"
-	      Position		      [205, 213, 372, 231]
-	      AutoSize		      on
-	      WordWrap		      off
+	      Position		      [205, 213, 371, 231]
+	      InternalMargins	      [0, 0, 0, 0]
+	      FixedHeight	      off
+	      FixedWidth	      off
 	      ZOrder		      -1
 	      FontName		      "Arial"
 	      FontSize		      14
@@ -2153,8 +2150,9 @@ Model {
 	  SID			  "100"
 	  Name			  "Transmission"
 	  Position		  [237, 209, 329, 227]
-	  AutoSize		  on
-	  WordWrap		  off
+	  InternalMargins	  [0, 0, 0, 0]
+	  FixedHeight		  off
+	  FixedWidth		  off
 	  ZOrder		  -1
 	  FontName		  "Arial"
 	  FontSize		  14
@@ -2171,13 +2169,7 @@ Model {
       ZOrder		      -7
       NamePlacement	      "alternate"
       ShowPortLabels	      "none"
-      MinAlgLoopOccurrences   off
-      PropExecContextOutsideSubsystem off
-      RTWSystemCode	      "Auto"
-      FunctionWithSeparateData off
-      Opaque		      off
       RequestExecContextInheritance off
-      MaskHideContents	      off
       Object {
 	$PropName		"MaskObject"
 	$ObjectID		23
@@ -2536,9 +2528,10 @@ Model {
 	Annotation {
 	  SID			  "101"
 	  Name			  "Vehicle"
-	  Position		  [447, 352, 504, 374]
-	  AutoSize		  on
-	  WordWrap		  off
+	  Position		  [447, 352, 504, 370]
+	  InternalMargins	  [0, 0, 0, 0]
+	  FixedHeight		  off
+	  FixedWidth		  off
 	  VerticalAlignment	  "top"
 	  ZOrder		  -1
 	  FontSize		  16
@@ -2573,13 +2566,14 @@ Model {
       IconDisplay	      "Port number"
     }
     Block {
-      BlockType		      SignalViewerScope
+      BlockType		      Scope
       Name		      "Scope1"
       SID		      "67"
       Ports		      []
       Position		      [20, 15, 60, 55]
       ZOrder		      -10
       IOType		      "viewer"
+      Floating		      off
       Location		      [74, 539, 357, 735]
       Open		      off
       NumInputPorts	      "1"
@@ -2587,13 +2581,11 @@ Model {
 	ListType		AxesTitles
 	axes1			"%<SignalLabel>"
       }
-      ShowDataMarkers	      off
-      ShowLegends	      off
       TimeRange		      "30"
       YMin		      "1000"
       YMax		      "5000"
       MaxDataPoints	      "7500"
-      RefreshTime	      0.035000
+      SampleTime	      "0"
     }
     Line {
       Name		      "ImprellerTorque"
@@ -2711,7 +2703,7 @@ Model {
     }
     Line {
       ZOrder		      15
-      SrcBlock		      "In1"
+      SrcBlock		      "throttle"
       SrcPort		      1
       Points		      [35, 0]
       Branch {
@@ -2737,17 +2729,26 @@ Model {
     }
     Line {
       ZOrder		      33
-      SrcBlock		      "In2"
+      SrcBlock		      "break"
       SrcPort		      1
+      Points		      [452, 0; 0, -15]
       DstBlock		      "Vehicle"
       DstPort		      2
+    }
+    Line {
+      ZOrder		      34
+      SrcBlock		      "timeword"
+      SrcPort		      1
+      DstBlock		      "Terminator"
+      DstPort		      1
     }
     Annotation {
       SID		      "102"
       Name		      "Modeling an Automatic Transmission Controller"
-      Position		      [431, 60, 842, 84]
-      AutoSize		      on
-      WordWrap		      off
+      Position		      [431, 60, 842, 83]
+      InternalMargins	      [0, 0, 0, 0]
+      FixedHeight	      off
+      FixedWidth	      off
       ZOrder		      -1
       FontName		      "Arial"
       FontSize		      18
@@ -2755,29 +2756,29 @@ Model {
     }
     Annotation {
       SID		      "103"
-      Position		      [653, 121, 653, 121]
-      AutoSize		      on
-      WordWrap		      off
+      Position		      [653, 121, 655, 133]
+      InternalMargins	      [0, 0, 0, 0]
+      FixedHeight	      off
+      FixedWidth	      off
       ZOrder		      -2
     }
   }
 }
-# Finite State Machines
+#Finite State Machines
 #
-#    Stateflow Version 7.6 (R2013a) dated Aug  8 2013, 23:20:01
+#   Stateflow 80000005
 #
 #
-
 Stateflow {
   machine {
     id			    1
-    name		    "autotrans_mod01"
+    name		    "autotrans_mod04"
     isLibrary		    0
     firstTarget		    35
     debug {
-      runTimeCheck	      [0 0 0 0]
+      runTimeCheck	      [0 0 0]
     }
-    sfVersion		    76014001.0016
+    sfVersion		    80000005
     sfDemoChecksum	    [508233801 3487789180 2503317914 316703550]
   }
   chart {
@@ -2953,7 +2954,7 @@ Stateflow {
   }
   transition {
     id			    14
-    labelPosition	    [98.33 29.008 6.872 12.476]
+    labelPosition	    [94.33 23.008 6.872 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -2977,7 +2978,7 @@ Stateflow {
   transition {
     id			    15
     labelString		    "UP"
-    labelPosition	    [277.532 31.819 14.993 12.476]
+    labelPosition	    [273.532 25.819 14.993 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3002,7 +3003,7 @@ Stateflow {
   transition {
     id			    16
     labelString		    "UP"
-    labelPosition	    [183.65 32.673 14.993 12.476]
+    labelPosition	    [179.65 26.673 14.993 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3027,7 +3028,7 @@ Stateflow {
   transition {
     id			    17
     labelString		    "UP"
-    labelPosition	    [385.386 34.713 14.993 12.476]
+    labelPosition	    [381.386 28.713 14.993 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3052,7 +3053,7 @@ Stateflow {
   transition {
     id			    18
     labelString		    "DOWN"
-    labelPosition	    [182.456 70.031 32.484 12.476]
+    labelPosition	    [178.456 64.031 32.484 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3078,7 +3079,7 @@ Stateflow {
   transition {
     id			    19
     labelString		    "DOWN"
-    labelPosition	    [376.834 76.954 32.484 12.476]
+    labelPosition	    [372.834 70.954 32.484 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3103,7 +3104,7 @@ Stateflow {
   transition {
     id			    20
     labelString		    "DOWN"
-    labelPosition	    [282.118 80.898 32.484 12.476]
+    labelPosition	    [278.118 74.898 32.484 12.476]
     fontSize		    10
     arrowSize		    9.224
     src {
@@ -3127,7 +3128,7 @@ Stateflow {
   }
   transition {
     id			    21
-    labelPosition	    [297.249 127.526 6.872 12.476]
+    labelPosition	    [293.249 121.526 6.872 12.476]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3151,7 +3152,7 @@ Stateflow {
   transition {
     id			    22
     labelString		    "[speed > up_th]"
-    labelPosition	    [353.518 146.237 68.092 12.476]
+    labelPosition	    [349.518 140.237 68.092 12.476]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3176,7 +3177,7 @@ Stateflow {
   transition {
     id			    23
     labelString		    "[speed < down_th]"
-    labelPosition	    [128.191 147.742 80.586 12.476]
+    labelPosition	    [124.191 141.742 80.586 12.476]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3201,7 +3202,7 @@ Stateflow {
   transition {
     id			    24
     labelString		    "after(TWAIT,tick)\n[speed <= down_th]\n{gear_state.DOWN}"
-    labelPosition	    [192.136 248.598 88.082 34.932]
+    labelPosition	    [188.136 242.598 88.082 34.932]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3226,7 +3227,7 @@ Stateflow {
   transition {
     id			    25
     labelString		    "[speed > down_th]"
-    labelPosition	    [127.216 205.56 80.586 12.476]
+    labelPosition	    [123.216 199.56 80.586 12.476]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3251,7 +3252,7 @@ Stateflow {
   transition {
     id			    26
     labelString		    "after(TWAIT,tick)\n[speed >= up_th]\n{gear_state.UP}"
-    labelPosition	    [292.977 248.559 73.714 34.932]
+    labelPosition	    [288.977 242.559 73.714 34.932]
     fontSize		    10
     arrowSize		    10
     src {
@@ -3276,7 +3277,7 @@ Stateflow {
   transition {
     id			    27
     labelString		    "[speed < up_th]"
-    labelPosition	    [346.724 198.744 68.092 12.476]
+    labelPosition	    [342.724 192.744 68.092 12.476]
     fontSize		    10
     arrowSize		    10
     src {
