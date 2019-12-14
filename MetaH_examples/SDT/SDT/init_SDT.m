@@ -3,9 +3,9 @@ addpath('./ExampleBand-Pass')
 addpath('./ExampleLow-Pass')
 addpath('./periodic.signals')
 addpath('./periodic_6.signals')
-%addpath('../../../breach-dev')
-addpath('../../../src')
-addpath('../../../wordgen')        
+%addpath('/Users/thaodang/Metaheuristics/breach-dev')
+%addpath('/Users/thaodang/Metaheuristics/src')
+addpath('/Users/thaodang/Metaheuristics/wordgen')        
 
 InitBreach
 BP2param

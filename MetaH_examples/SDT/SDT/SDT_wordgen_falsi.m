@@ -7,12 +7,12 @@ warning('OFF', 'ALL')
 init_SDT
 
 %% Wordgen generator
-addpath('../../../wordgen');
+addpath('/Users/thaodang/Metaheuristics/wordgen/wordgen');
 num_evt = 70;
 sg = var_cp_signal_gen('In1',num_evt+1, 'linear');
 
 pg = TA_param_gen('In1','cycle_8_12.prism', num_evt);
-pg.wordgen_exe = './wordgen';
+pg.wordgen_exe = '/Users/thaodang/Metaheuristics/wordgen/wordgen';
 sdt_template = '%g[b]%g[c]%g[d]';
 num = 3;
 while num<num_evt
