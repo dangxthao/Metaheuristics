@@ -109,7 +109,7 @@ MetaObj.GridNbSetUp(gridnb_vector);
     
     MetaObj.start_solver_index = 3;  %PR 0, cmaes 1, SA 2, GNM 3 
     MetaObj.solver_time =  [100 100 100 100];
-    MetaObj.max_obj_eval = [200 500 0 1000];
+    MetaObj.max_obj_eval = [200 200 0 1000];
     MetaObj.seed = 100;
           
 Plot_signal_names = {'brake','throttle','speed','gear','RPM'};

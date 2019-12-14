@@ -21,11 +21,11 @@ req_h := ev(label_h)
 
 
 # The speed is never below 30 while in gear3 
-param v_low = 25
+param v_low = 19.76
 output signal speed
 input signal gear  
 
 speed_low                 :=  speed[t]< v_low 
 gear3                     :=  gear[t] == 3
 gear3_and_speed_low       :=  (gear3) and (speed_low)    
-never_gear3_and_speed_low :=  alw (not (gear3_and_speed_low)) 
+never_gear3_and_speed_low :=  alw_[20,100] (not (gear3_and_speed_low)) 
