@@ -7,11 +7,9 @@ InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initializ
 
 %% TA based signal generator setup 
 %
-<<<<<<< HEAD
+
 num_evt=5
-=======
-num_evt =25;
->>>>>>> 8034a3c6cd8ecb4b3cb0457c555b34ba33253765
+
 init_TA_signal_gen;
 
 
@@ -22,6 +20,7 @@ STL_ReadFile('Autotrans_req.stl');
 
 S2 = S0.copy();
 mdl = 'Autotrans_wordgen';
+%mdl = 'autotrans_mod04';
 Ba = BreachSimulinkSystem(mdl);
 Ba.SetTime(time);
 Ba.SetInputGen(S2);
