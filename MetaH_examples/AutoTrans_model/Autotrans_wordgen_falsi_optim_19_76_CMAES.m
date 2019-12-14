@@ -105,11 +105,11 @@ MetaObj.GridNbSetUp(gridnb_vector);
     MetaObj.num_solvers = 4; 
     
     %% limit on nb of solver calls
-    MetaObj.nb_solver_calls = 2; 
+    MetaObj.nb_solver_calls = 1; 
     
-    MetaObj.start_solver_index = 3;  %PR 0, cmaes 1, SA 2, GNM 3 
+    MetaObj.start_solver_index = 1;  %PR 0, cmaes 1, SA 2, GNM 3 
     MetaObj.solver_time =  [100 100 100 100];
-    MetaObj.max_obj_eval = [200 1200 0 70];
+    MetaObj.max_obj_eval = [200 1200 0 1000];
     MetaObj.seed = 100;
           
 Plot_signal_names = {'brake','throttle','speed','gear','RPM'};
