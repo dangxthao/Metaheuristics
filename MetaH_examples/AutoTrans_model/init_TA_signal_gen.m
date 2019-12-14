@@ -36,9 +36,10 @@ p_brake_h = S0.expand_param_name('.*brake_h_val');
 
 
 %%
-acc_range = [50 100];
+acc_range = [0 100];
 brake_range = [100 325];
 
+%%
 S0.SetParam(p_throttle_a, 0);
 S0.SetParam(p_brake_a, 0);
 

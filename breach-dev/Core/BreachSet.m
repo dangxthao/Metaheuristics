@@ -596,7 +596,7 @@ classdef BreachSet < BreachStatus
             [params, ipr] = GetVariables(this);
             if ~isempty(params)
                 req_params = this.GetPropParamList();
-                [params, i_diff] = setdiff(params, req_params);
+                [params, i_diff] = setdiff(params, req_params, 'stable');
                 ipr = ipr(i_diff);
             end
         end
@@ -605,7 +605,7 @@ classdef BreachSet < BreachStatus
             [params, ipr] = GetVariables(this);
             if ~isempty(params)
                 req_params = this.GetPropParamList();
-                [params, i_intersect] = intersect(params, req_params);
+                [params, i_intersect] = intersect(params, req_params, 'stable');
                 ipr = ipr(i_intersect);
             end
         end
