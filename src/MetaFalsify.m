@@ -10,9 +10,7 @@ classdef MetaFalsify < handle
         signal_gen_method % = {'previous','previous'};
         %signal_types = { 'UniStep', 'UniStep'} ;
         nb_ctr_pts % = [ 10; 10 ] ;
-        input_ranges
-        %CoverageBreachSet Br;
-        
+        input_ranges        
         OutFileID
         Plot_signal_names
         
@@ -63,6 +61,7 @@ classdef MetaFalsify < handle
         % num_solvers=nb of solvers other than random sampling
         % TODO add solver_list, and init num_solver as numel(solver_list)
         num_solvers = 4;
+        solver_list = {'PRandom', 'cmaes', 'SA', 'GNM'};
         
         %solver_time = [ 100 500 400 200 ]; % default for diesel model
         solver_time = [ inf inf inf inf];
@@ -75,7 +74,7 @@ classdef MetaFalsify < handle
     methods
         %% Simple constructor
                 
-         function this = MetaFalsify(Br, R, Pbs)
+         function this = MetaFalsifyPb(Br, R, Pbs)
             this.Br = Br.copy();
             
             %% Transform the STL formula into Breach Requirement
@@ -99,10 +98,11 @@ classdef MetaFalsify < handle
             for i=1:numel(varying_domains)
               ranges=[ranges;[varying_domains(i).domain(1) varying_domains(i).domain(2)]];
             end  
+            
             this.ranges = ranges;
          end
         
-        function this = MetaFalsifyP(Br, R, params, ranges)
+        function this = MetaFalsify(Br, R, params, ranges)
             this.Br = Br.copy();
             
             %% Transform the STL formula into Breach Requirement
@@ -385,14 +385,6 @@ classdef MetaFalsify < handle
                 gridsizeMat = [ gridsizeMat;...
                     (varying_domains_size/gridnb_vector(1,ii)) ];
             end
-            %         fprintf('\n Grid discretization unit for signal value range is\n');
-            %         gridsize_vector;
-            
-            % add this grid size for time parameters, # = nb_ctr_pts(ii,1)-1
-%             if (timeFixed==false)
-%                 gridsizeMat = [ gridsizeMat; gridsize_vector(1,1)*ones(nb_ctr_pts(ii,1)-1,1) ];
-%             end
-            
             
             this.Br.SetEpsGridsize(gridsizeMat);
             this.Br.SetDeltaGridsize(2*this.Br.epsgridsize);
@@ -426,8 +418,9 @@ classdef MetaFalsify < handle
           fprintf(fileID, '\n cov_monitoring_win is %d \n', this.cov_monitoring_win);
           fprintf(fileID, '\n re_init_strategy is %d \n', this.re_init_strategy);
           fprintf(fileID, '\n re_init_num_xbest is %d \n', this.re_init_num_xbest);
+          fprintf(fileID, '\n re_init_num_xlog is %d \n', this.re_init_num_xlog);
+          fprintf(fileID, '\n re_init_num_rand is %d \n', this.re_init_num_rand);
           fprintf(fileID, '\n num_solvers is %d \n', this.num_solvers);
-          fprintf(fileID, '\n re_init_num_xbest is %d \n', this.re_init_num_xbest);
           
           fprintf(fileID, '\n solver_time is [');
           for (i=1:1:this.num_solvers)
@@ -514,22 +507,14 @@ classdef MetaFalsify < handle
         
         %% Combined metaheuristics main algo
         function [this,falsified,total_nb_sim,falsi_point] = MetaCall(this)
-            % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL(Br, PHI, NB_SAMPLES, HITS)
+            % [FALSIFIED, NB, FALSI_POINT] = THIS.METACALL()
             % FUNCTION: Call the metaheuristics to optimize the
             % robustness values
-            %
-            % INPUTS:
-            % Br: CoverageBreachSet object.
-            %
-            % phi: STL formula or BreachRequirement
-            %
             % OUTPUTS:
-            %
             % falsified: Boolean value indicating if property is falsified.
-            %
             % total_nb_sim: Number of function evaluations (simulation+robustness)
             
-            %%%%%%% Method 'MetaCall' starts here            
+            %%           
             rng(this.seed,'twister');            
             
             %% Transform the STL formula into Breach Requirement
