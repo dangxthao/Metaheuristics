@@ -67,6 +67,9 @@ classdef BreachProblem < BreachStatus
         
         constraints_fn    % constraints function
         robust_fn         % base robustness function - typically the robust satisfaction of some property by some trace
+        
+        %%Thao added
+        insigma
     end
     
     % properties related to the function to minimize
@@ -454,8 +457,16 @@ classdef BreachProblem < BreachStatus
                     res = this.solve_global_nelder_mead();
                     
                 case 'cmaes'
-                    
-                    [x, fval, counteval, stopflag, out, bestever] = cmaes(this.objective, this.x0', [], this.solver_options);
+                    %% set default sigma -- thao
+                    if isempty(this.insigma)
+                       sigmadefault = (this.ub-this.lb)/3;
+                       if ~isrow(sigmadefault)
+                           sigmadefault = sigmadefault'; 
+                       end
+                       this.insigma = sigmadefault';
+                    end
+                    %%
+                    [x, fval, counteval, stopflag, out, bestever] = cmaes(this.objective, this.x0', this.insigma, this.solver_options);
                     res = struct('x',x, 'fval',fval, 'counteval', counteval,  'stopflag', stopflag, 'out', out, 'bestever', bestever);
                     this.add_res(res);
 

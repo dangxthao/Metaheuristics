@@ -1,6 +1,16 @@
+
+addpath('/Users/thaodang/Metaheuristics/src')
+addpath('/Users/thaodang/Metaheuristics/wordgen')
+addpath('/Users/thaodang/Metaheuristics/breach-dev')
+addpath('.')    
+InitBreach('/Users/thaodang/Metaheuristics/breach-dev',true); % forces initialization from folder in Metaheuristics
+
+
 %% TA based signal generator setup 
 %
-num_evt =25;
+
+num_evt=5
+
 init_TA_signal_gen;
 
 
@@ -11,6 +21,7 @@ STL_ReadFile('Autotrans_req.stl');
 
 S2 = S0.copy();
 mdl = 'Autotrans_wordgen';
+%mdl = 'autotrans_mod04';
 Ba = BreachSimulinkSystem(mdl);
 Ba.SetTime(time);
 Ba.SetInputGen(S2);

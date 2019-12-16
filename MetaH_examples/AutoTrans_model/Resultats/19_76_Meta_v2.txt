@@ -1,7 +1,7 @@
 
  seed is 100 
 
- nb_solver_calls is 2 
+ nb_solver_calls is 10 
 
  cov_epsilon is 1.000000e-03 
 
@@ -21,14 +21,14 @@
 
  solver_time is [100 100 100 100 ] 
 
- max_obj_eval is [200 1200 0 70 ] 
+ max_obj_eval is [200 500 0 200 ] 
 
  start_solver_index is 3 
 
- Max eval number is 70 
+ Max eval number is 200 
 
  *** Running Global Nelder Mead
- This solver time = 94.171205 seconds
+ This solver time = 246.220979 seconds
  Best Robustness Value of this call = 0.007845
  Best Robustness Value so far = 0.007845
 
@@ -36,16 +36,16 @@
 
  #Call  SolverID  Robustness  Coverage
 Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
- 1  3    0.00784545    0.00922549
+ 1  3    0.00784545    0.01150515
  stagnant_count = 0
  rob_stagnant = 0
  cov_monitoring_length = 2
  #1 round(s) of solver calls done
  Solver call 1 done
- Max eval number is 1200 
+ Max eval number is 500 
 
  **** Running CMAES
 
- This solver time = 326.989979 seconds
+ This solver time = 338.961329 seconds
  Exit from Solver 1 
- Exit! TOTAL Computation time = 434.048696 seconds
+ Exit! TOTAL Computation time = 593.549675 seconds

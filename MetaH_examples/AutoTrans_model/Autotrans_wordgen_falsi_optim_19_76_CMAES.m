@@ -1,68 +1,70 @@
-close all;
-clear all;
-clc;
-warning('OFF', 'ALL')
+addpath('/Users/dang/Metaheuristics/breach-dev')
 
-%% Setup DeltaSigma model
-init_SDT
+addpath('/Users/dang/Metaheuristics/src')
+addpath('.')
 
-%% Wordgen generator
-addpath('/Users/thaodang/Metaheuristics/wordgen');
-num_evt = 70;
-sg = var_cp_signal_gen('In1', num_evt+1, 'linear');
+addpath('/Users/dang/Metaheuristics/wordgen')
+InitBreach('/Users/dang/Metaheuristics/breach-dev',true);
 
-pg = TA_param_gen('In1','cycle_8_12.prism', num_evt);
-pg.wordgen_exe = '/Users/thaodang/Metaheuristics/wordgen/wordgen';
-sdt_template = '%g[b]%g[c]%g[d]';
-num = 3;
-while num<num_evt
-    num = num +4;
-    sdt_template = [sdt_template '%g[a]%g[b]%g[c]%g[d]']; % template for lasso init
-end
-
-sdt_template = sdt_template(1:5*num_evt);
-pg.set_template_in(sdt_template);
-pg.template_in = regexprep(pg.template_in,'\[(\w+)\]', '\[0.5\]'); % erase letters 
-
-params_evt = pg.params(1:end-3);
-ranges = repmat([0,1], numel(params_evt),1);
-S = BreachSignalGen(sg);
+%% TA based signal generator setup 
+%
+num_evt=25;
+init_TA_signal_gen;
 
 
-%% Time and requirements
-S = BreachSignalGen(sg);
-time = 0:1e-10:1.5e-6;
-ts = .8e-8;
-STL_ReadFile('SDT_req.stl');
+%%  Checking reachable labels
+STL_ReadFile('Autotrans_req.stl');
+
+%% 
+
+S2 = S0.copy();
+mdl = 'Autotrans_wordgen';
+Ba = BreachSimulinkSystem(mdl);
+Ba.SetTime(time);
+Ba.SetInputGen(S2);
+Ba.SetParamRanges([pevts pbranching], [0.000001 0.999999]);
+% Ba.Sim();
 
 
-%% Falsification Problem
-Bwg = BP2.copy();
-Bwg.SetInputGen(S);
-Bwg.SetParamGen(pg);
-Bwg.SetParam('time_scale', ts);
-Bwg.SetTime(time);
+%% 
+R = BreachRequirement(never_gear3_and_speed_low);
+falsif_pb = FalsificationProblem(Ba, R);
 
-%Rwg = BreachRequirement(notsat, {}, per); 
-formuleSt = 'alw(abs(OutSat[t])<1.73977)';                        
-phi = STL_Formula('notsaturation', formuleSt);
-%phi = STL_Formula('notsaturation', 'alw(OutSat[t]<1.145)');
-R = BreachRequirement(phi); 
+nb_varying_params = size(Ba.VaryingParamList(),2);
 
-%pbwg = FalsificationProblem(Bwg, Rwg, params_evt, ranges);
+% falsif_pb.solver_options.num_corners = 100;
+% falsif_pb.solver_options.num_quasi_rand_samples = 100;
+% falsif_pb.max_obj_eval = 1000;
+%falsif_pb.SetupDiskCaching();
+
+%falsif_pb.solve();
+
+%% Initial Counter-example
+%%BFalse = falsif_pb.BrSet_False;
+%BFalse = falsif_pb.GetFalse();;
+
+%% Fix Specification
+% param_pb = ParamSynthProblem(BFalse, never_gear3_and_speed_low, 'v_low', [0 30]);
+% param_pb.solver_options.monotony = -1;
+% param_pb.solve();
+
+
+%% Requirement mining: Iterate 
+%mining_pb = ReqMiningProblem(param_pb, falsif_pb);
+%mining_pb.solve();
+
+
 
 % grid size collumn on the range of each var param
-nb_varying_params = size(Bwg.VaryingParamList(),2);
 gridnb_vector = [];
 for ii = 1:nb_varying_params
    gridnb_vector = [ gridnb_vector 10  ];
 end
 
-
 %%%% Once the above system specifications and falsification options are given,
 %%%% the following part of the code need not be modified by the user
-MetaObj = MetaFalsify(Bwg, R, params_evt, ranges);
-%MetaObj = MetaFalsify(Bwg, R, pbwg);
+%MetaObj = MetaFalsify(B, R, params, ranges);
+MetaObj = MetaFalsify(Ba, R, falsif_pb);
 
 
 % fprintf('\n The falsification problem by metaheuristics is\n ')
@@ -105,24 +107,24 @@ MetaObj.GridNbSetUp(gridnb_vector);
     %% limit on nb of solver calls
     MetaObj.nb_solver_calls = 1; 
     
-    MetaObj.start_solver_index = 3;  %PR 0, cmaes 1, SA 2, GNM 3 
+    MetaObj.start_solver_index = 1;  %PR 0, cmaes 1, SA 2, GNM 3 
     MetaObj.solver_time =  [100 100 100 100];
-    MetaObj.max_obj_eval = [200 500 0 1000];
+    MetaObj.max_obj_eval = [200 1200 0 1000];
     MetaObj.seed = 100;
           
-Plot_signal_names = {'In1','OutSat'};;
+Plot_signal_names = {'brake','throttle','speed','gear','RPM'};
 MetaObj.Plot_signal_names = Plot_signal_names;
     
 % fprintf('\n The falsification problem by metaheuristics is\n ')
 % MetaObj
 % Open file to save intermediate results
-fileID = fopen('Meta_v1.txt','w');
+fileID = fopen('OutFalsification.txt','w');
 MetaObj.OutFileID = fileID;
 
-fprintf(1,'\n STL_Formula %s', formuleSt);
-fprintf(fileID,'\n STL_Formula %s', formuleSt);
-fprintf(1, '\n Model name is %s \n', model_name);
-fprintf(fileID, '\n Model name is %s \n', model_name);
+%fprintf(1,'\n STL_Formula %', formuleSt);
+%fprintf(fileID,'\n STL_Formula %', formuleSt);
+%fprintf(1, '\n Model name is %s \n', model_name);
+%fprintf(fileID, '\n Model name is %s \n', model_name);
 
 MetaObj.MetaShortFilePrint(fileID); 
 
