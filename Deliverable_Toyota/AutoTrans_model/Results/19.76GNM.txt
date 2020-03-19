@@ -1,0 +1,33 @@
+
+ seed is 100 
+
+ nb_solver_calls is 1 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 2 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 10 
+
+ num_solvers is 4 
+
+ re_init_num_xbest is 10 
+
+ solver_time is [100 100 100 100 ] 
+
+ max_obj_eval is [200 200 0 1000 ] 
+
+ start_solver_index is 3 
+
+ Max eval number is 1000 
+
+ *** Running Global Nelder Mead
+ This solver time = 974.023183 seconds
+ Exit from Solver 3 
+ Exit! TOTAL Computation time = 981.250381 seconds

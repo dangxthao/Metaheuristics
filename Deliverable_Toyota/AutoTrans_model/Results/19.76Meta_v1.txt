@@ -1,0 +1,108 @@
+
+ seed is 100 
+
+ nb_solver_calls is 10 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 2 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 10 
+
+ num_solvers is 4 
+
+ re_init_num_xbest is 10 
+
+ solver_time is [100 100 100 100 ] 
+
+ max_obj_eval is [200 200 0 200 ] 
+
+ start_solver_index is 3 
+
+ Max eval number is 200 
+
+ *** Running Global Nelder Mead
+ This solver time = 240.095322 seconds
+ Best Robustness Value of this call = 0.007845
+ Best Robustness Value so far = 0.007845
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3    0.00784545    0.01150515
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ #1 round(s) of solver calls done
+ Solver call 1 done
+ Max eval number is 200 
+
+ **** Running CMAES
+
+ This solver time = 245.138450 seconds
+ Best Robustness Value of this call = 0.003066
+ Best Robustness Value so far = 0.003066
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3    0.00784545    0.01150515
+ 2  1    0.00306595    0.01300486
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 2 done
+ Max eval number is 200 
+
+ **** Running CMAES
+
+ This solver time = 244.013174 seconds
+ Best Robustness Value of this call = 0.002978
+ Best Robustness Value so far = 0.002978
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3    0.00784545    0.01150515
+ 2  1    0.00306595    0.01300486
+ 3  1    0.00297766    0.01388713
+ stagnant_count = 1
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 3 done
+ Max eval number is 200 
+
+ **** Running CMAES
+
+ This solver time = 247.507270 seconds
+ Best Robustness Value of this call = 0.000325
+ Best Robustness Value so far = 0.000325
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  3    0.00784545    0.01150515
+ 2  1    0.00306595    0.01300486
+ 3  1    0.00297766    0.01388713
+ 4  1    0.00032506    0.01451273
+ stagnant_count = 1
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 4 done
+ Max eval number is 200 
+
+ **** Running CMAES
+
+ This solver time = 4.453839 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 990.819058 seconds
