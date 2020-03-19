@@ -418,6 +418,37 @@ classdef BreachProblem < BreachStatus
             this.solver_options = solver_opt;
         end
         
+        function solver_opt = setup_gnmLausen(this)
+            %disp('Setting options for GNM Lausen solver - use help gnm for details');
+%             solver_opt = saoptimset('Display', 'off');
+%             solver_opt.Seed = 0;
+%             solver_opt.LBounds = this.lb;
+%             solver_opt.UBounds = this.ub;
+            
+            solver_opt.maxRestarts = 15; % maximum (probablistic or degenerated) restarts
+            solver_opt.maxEvals = 2500;  % maximum function evaluations
+            solver_opt.nPoints = 5;      % number of random points per restart
+
+            solver_opt.maxIter=250;      % maximum iterations per restart
+            solver_opt.alpha = 1;        % reflection coeff
+            solver_opt.beta = 0.5;       % contraction coeff
+            solver_opt.gamma = 2;        % expansion coeff
+            solver_opt.epsilon = 1e-9;   % T2 convergence test coefficient
+            solver_opt.ssigma = 5e-4;    % small simplex convergence test coefficient
+        
+            if isempty(this.x0)
+               this.x0 = (this.ub-this.lb)/2;
+            end
+            if ~isrow(this.x0)
+                 solver_opt.xinit = this.x0';
+            else
+                solver_opt.xinit = this.x0;
+            end
+            
+            this.solver = 'gnmLausen';
+            this.solver_options = solver_opt;
+        end
+        
         %% solve functions for various solvers
         function res = solve(this)
             
@@ -469,6 +500,19 @@ classdef BreachProblem < BreachStatus
                     [x, fval, counteval, stopflag, out, bestever] = cmaes(this.objective, this.x0', this.insigma, this.solver_options);
                     res = struct('x',x, 'fval',fval, 'counteval', counteval,  'stopflag', stopflag, 'out', out, 'bestever', bestever);
                     this.add_res(res);
+                    
+                 case 'gnmLausen'
+                    [x, fval, output, used_options] = gbnm(this.objective,this.lb,this.ub,this.solver_options);     
+                    res = struct('x', output.usedPoints, 'fval', output.usedVals,...
+                        'counteval', output.nEval, 'output', output, 'used_options', used_options);
+%                     === example of output for 2D problem:
+%                     usedPoints: [2×30 double]
+%                     usedVals: [1×30 double]
+%                     usedSimplex: {1×30 cell}
+%                     reason: {1×15 cell}
+%                     nEval: 831
+                    this.add_res(res);
+                    
 
                 case 'meta'
                     res = this.solve_meta();        
