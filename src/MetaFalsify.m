@@ -58,14 +58,20 @@ classdef MetaFalsify < handle
         % re_init_num_xlog: nb ofinitial points picked from xbest
         re_init_num_rand = 1;
         
+        % re_init_num_xbest: nb of initial points picked probabilistically from xbest 
+        re_init_num_xprobbest = 1;
+        
+        % re_init_num_xbest: nb of initial points picked probabilistically from all xlog 
+        re_init_num_xproblog = 1;
+        
         % num_solvers=nb of solvers other than random sampling
         % TODO add solver_list, and init num_solver as numel(solver_list)
-        num_solvers = 4;
-        solver_list = {'PRandom', 'cmaes', 'SA', 'GNM'};
+        num_solvers = 5;
+        solver_list = {'PRandom', 'cmaes', 'SA', 'GNMLausen', 'GNM'};
         
         %solver_time = [ 100 500 400 200 ]; % default for diesel model
-        solver_time = [ inf inf inf inf];
-        max_obj_eval = [ 100 100 100 100 ]; % default for diesel model
+        solver_time = [ inf inf inf inf inf];
+        max_obj_eval = [ 100 100 100 100 100]; % default for diesel model
         
         start_solver_index = 0; %1; %PR 0, cmaes 1, SA 2, GNM 3
     end
@@ -220,7 +226,8 @@ classdef MetaFalsify < handle
             
         end
                 
-        function x0= InitSolver(this,nbsamples,solver_index,num_solvers,SolverInfo,strategy_id,winlen)
+        function x0= InitSolver(this,nbsamples,solver_index,num_solvers,...
+                SolverInfo,strategy_id,winlen,lb,ub,nbTrials)
             % Pick an initial point for solvers
             % Inputs:
             % strategy_id: choice of strategy
@@ -241,18 +248,22 @@ classdef MetaFalsify < handle
                     end
                     
                     if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
                         return;
                     end
                     
                     rand_id = randi(nb_pt_xlogPR,[nbsamples,1]);
-                    %nbsamples random integers in [1,nb_pt_xlog]
+                    %nbsamples random integers in [1,nb_pt_xlogPR]
                     [rand_id,~,~] = unique(rand_id);
                         
                     for (ii=1:1:size(rand_id,1)) 
-                       if (rand_id(ii,1)<1 || rand_id(ii,1)>nb_pt_xlogPR)
+                       ir = rand_id(ii,1);
+                       if (ir<1 || ir>nb_pt_xlogPR)
                           error('Error in rand_id_xlogPR');
                        end
-                       x0i = xlogPR_vec(:,rand_id(ii,1));
+                       pt_val = xlogPR_vec(:,ir);
+                       pt_val(end)=[]; %remove value element
+                       x0i = pt_val;
                        inRange = CBS.TestPointInRange(x0i);
                        if (inRange)
                           x0 = [x0, x0i];
@@ -273,31 +284,132 @@ classdef MetaFalsify < handle
                     end 
                     
                     if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
                         return;
                     end
                     
-                    rand_id = randi(nb_pt_xlog,[nbsamples,1]);
-                    %nbsamples random integers in [1,nb_pt_xlog]
-                    [rand_id,~,~] = unique(rand_id);
-                        
-                    for (ii=1:1:size(rand_id,1)) 
-                         if (rand_id(ii,1)<1 || rand_id(ii,1)>nb_pt_xlog)
-                            error('Error in rand_id_xlog');
-                         end
-                         x0i = xlog_vec(:,rand_id(ii,1));
-                         inRange = CBS.TestPointInRange(x0i);
-                         if (inRange)
-                            x0 = [x0, x0i];
-                         end
-                     end
+                    indexes = randperm(size(xlog_vec,2), nbsamples);
+                    x0s = xlog_vec(:,indexes);
+                    for i=1:size(x0s,2)
+                       x0si = x0s(:,i);
+                       x0si(end,:) = []; %remove the last value row
+                       inRange = CBS.TestPointInRange(x0si);
+                       if (inRange)
+                          x0 = [x0, x0si];
+                       end
+                    end
+                    
+                    %remove chosen points 
+                    for (ii=1:1:num_solvers)
+                       if (~(ii==(solver_index+1)))
+                           if (~isempty(SolverInfo(ii).Xlog))
+                             for i=1:size(x0s,2) 
+                                 if (size(SolverInfo(ii).Xlog',2)==size(x0s(:,i)',2)) 
+                                   [Lia, Locb]=ismember(SolverInfo(ii).Xlog', x0s(:,i)','rows');
+                                   indexesii=find(Locb);
+                                   SolverInfo(ii).Xlog(:,indexesii)=[];
+                                 else
+                                   warning('Sizes mismatch in InitSolver with Xlog'); 
+                                 end
+                             end
+                           end  
+                       end
+                    end
                     
                     
-                case 2 %init from Xbest of one solver chosen randomly
+                case 2 %init from Xbest of not-current solvers
+                    for (ii=1:1:num_solvers)
+                       if (~(ii==(solver_index+1)))
+                         xbest_vec =[xbest_vec SolverInfo(ii).Xbest];
+                       end
+                    end
+                    if (nbsamples > size(xbest_vec,2)) 
+                        nbsamples = size(xbest_vec,2); 
+                    end
+                    if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
+                        return;
+                    end
+                    
+                    indexes = randperm(size(xbest_vec,2), nbsamples);
+                    x0s = xbest_vec(:,indexes);
+                    for i=1:size(x0s,2)
+                       inRange = CBS.TestPointInRange(x0s(:,i));
+                       if (inRange)
+                          x0 = [x0, x0s(:,i)];
+                       end
+                    end
+                    
+                    %remove chosen best points
+                    for (ii=1:1:num_solvers)
+                       if (~(ii==(solver_index+1)))
+                           if (~isempty(SolverInfo(ii).Xbest))
+                             for i=1:size(x0s,2) 
+                                 if (size(SolverInfo(ii).Xbest',2)==size(x0s(:,i)',2)) 
+                                   [Lia, Locb] = ismember(SolverInfo(ii).Xbest', x0s(:,i)', 'rows');
+                                   indexesii = find(Locb);
+                                   SolverInfo(ii).Xbest(:,indexesii)=[];
+                                 else
+                                   warning('Sizes mismatch in InitSolver with Xbest'); 
+                                 end
+                             end
+                           end 
+                       end
+                    end 
+                    
+                    
+                case 3 %probabilistic init from all Xlog  
+                    nbxlog_available=size(SolverInfo(num_solvers+1).Xlog,2);
+                    if (nbsamples > nbxlog_available) 
+                        nbsamples = nbxlog_available; 
+                    end
+                    
+                    if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
+                        return;
+                    end 
+                    
+                    nbTrials = 2*nbsamples;
+                    Xl=SolverInfo(num_solvers+1).Xlog;
+                    Xl(end,:) = []; %remove the last value row
+                    for (ii=1:1:nbsamples)
+                       guess_best_point = probabilistic_restart(Xl,lb,(ub-lb),nbTrials);
+                       inRange = CBS.TestPointInRange(guess_best_point);
+                       if (inRange)
+                           x0 = [x0, guess_best_point];
+                       end
+                    end
+                
+                case 4 %probabilistic init from all Xbest  
+                    nbxbest_available=size(SolverInfo(num_solvers+1).Xbest,2);
+                    if (nbsamples > nbxbest_available) 
+                        nbsamples = nbxbest_available; 
+                    end
+                    
+                    if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
+                        return;
+                    end 
+                    
+                    nbTrials = 2*nbsamples;
+                    Xl=SolverInfo(num_solvers+1).Xbest
+                    for (ii=1:1:nbsamples)
+                       guess_best_point = probabilistic_restart(Xl,lb,(ub-lb),nbTrials);
+                       inRange = CBS.TestPointInRange(guess_best_point);
+                       if (inRange)
+                           x0 = [x0, guess_best_point];
+                       end
+                    end
+                    
+                    
+                case 5 %init from Xbest of one solver chosen randomly
                     solversdone= zeros(num_solvers,1);  %[0 0 0 0];
                     nbsolversdone = 0;
                     nbxbest_available = 0;
+                    Xbest = [];
                     for ii = 1:1:(num_solvers)
                         if (size(SolverInfo(ii).Xbest,2)>0)
+                           Xbest = [ Xbest; SolverInfo(ii).Xbest];
                            solversdone(ii,1) = 1;
                            nbsolversdone = nbsolversdone + 1;
                            nbxbest_available = nbxbest_available +...
@@ -310,12 +422,13 @@ classdef MetaFalsify < handle
                     end
                     
                     if (nbsamples<=0)
+                        warning('Error in InitSolver, nbsamples is not postive');
                         return;
                     end
                     
                     nbpt = 0;
                     while (nbpt<nbsamples && nbsolversdone>0)
-                        rand_solverid = randi(4,1); %random integer in [1,3] 
+                        rand_solverid = randi(num_solvers,1); %random integer in [1,num_solvers] 
                         
                         if (solversdone(rand_solverid,1) >0)
                             nb_pt_xbest=size(SolverInfo(rand_solverid).Xbest,2);
@@ -340,9 +453,10 @@ classdef MetaFalsify < handle
                             
                         end %if (nbsolversdone(rand_solverid) >0)
                     end %end while
+                
                 otherwise
-                    
                     error('error in reinit_strategy')
+                    
             end %end of switch
         end
         
@@ -420,6 +534,7 @@ classdef MetaFalsify < handle
           fprintf(fileID, '\n re_init_num_xbest is %d \n', this.re_init_num_xbest);
           fprintf(fileID, '\n re_init_num_xlog is %d \n', this.re_init_num_xlog);
           fprintf(fileID, '\n re_init_num_rand is %d \n', this.re_init_num_rand);
+          fprintf(fileID, '\n re_init_num_xprobbest is %d \n', this.re_init_num_xprobbest);
           fprintf(fileID, '\n num_solvers is %d \n', this.num_solvers);
           
           fprintf(fileID, '\n solver_time is [');
@@ -526,7 +641,7 @@ classdef MetaFalsify < handle
             
             prev_solver_index=0; %initial value has no effect
             solver_index = this.start_solver_index; %PR 0, cmaes 1, SA 2, GNM 3
-            re_init_strategy = this.re_init_strategy;
+            re_init_strategy = this.re_init_strategy
             
             %% Set local variables for search monitoring
             falsified = false;
@@ -541,7 +656,7 @@ classdef MetaFalsify < handle
             solver_index_data = [];
             
             %% Initialize Solver Log Information
-            for (ii=1:1:this.num_solvers)
+            for (ii=1:1:(this.num_solvers + 1))
                 SolverInfo(ii).Xlog=[];
                 SolverInfo(ii).Xbest=[];
                 SolverInfo(ii).Valbest=[];
@@ -560,13 +675,14 @@ classdef MetaFalsify < handle
             call_count = 1;
             while call_count<=this.nb_solver_calls
                 %%
-                if (call_count>1 && solver_index==3)
-	              solver_index = 1; %skip calling GNM the second time
-                end
+%                 if (call_count>1 && solver_index==3)
+% 	              solver_index = 1; %skip calling GNM the second time
+%                 end
+                solver_index
                 eval_lim = this.max_obj_eval(1,solver_index +1);
                 if (eval_lim <= 0)
                   solver_index = solver_index + 1;
-                  if (solver_index>this.num_solvers)
+                  if (solver_index>=this.num_solvers)
                     solver_index = 1;
                   end
                   continue;
@@ -608,32 +724,43 @@ classdef MetaFalsify < handle
                      nbinitsamples=this.re_init_num_xlog;
                   case 2
                      nbinitsamples=this.re_init_num_xbest;
+                  case 3 
+                     nbinitsamples=this.re_init_num_xprobbest;
+                  case 4 
+                     nbinitsamples=this.re_init_num_xproblog;
+                  case 5 
+                     nbinitsamples=this.re_init_num_xbest;
+                     
                   otherwise
-                     error('Error in reinitialisation strategy choice');
+                     warning('Error in reinitialisation strategy choice');
                 end
                             
                 %% Call the current solver
                 switch solver_index
                     
                     case 0 % quasi-random sampling                     
-                        fprintf(1,'\n *** Running QuasiRandom');
-                        fprintf(this.OutFileID,'\n *** Running QuasiRandom');
+                        fprintf(1,'\n *** Running Random');
+                        fprintf(this.OutFileID,'\n *** Running Random');
                         
                         %%Thao removed quasi-random
                         %CBS.QuasiRandomSample(this.max_obj_eval(1,solver_index+1));
                         
                         %% Set initial points
-                        ip = CBS.VaryingParamList;
-                        var = CBS.P.ParamList(1,ip); %check these are actually the variables we want
-                        CBS.SampleDomain(var,eval_lim,'rand'); %default sampling is pseudo random                      
-                        
-                        
+%                         ip = CBS.VaryingParamList;
+%                         var = CBS.P.ParamList(1,ip); %check these are actually the variables we want
+%                         CBS.SampleDomain(var,eval_lim,'rand'); %default sampling is pseudo random                      
+%                         
+                        falsif_pb.setup_random('rand_seed',1,'num_rand_samples',eval_lim);
+
                         %% Call this solver by evaluating sampled points
-                        falsif_pb.setup_init();
+                        %falsif_pb.setup_init();
                         falsif_pb.solve();
                         
                         %% Xlog contains sampled points
-                        new_pts = CBS.GetParam(falsif_pb.params);
+                        %new_pts = CBS.GetParam(falsif_pb.params);
+                        new_pts_vals = [ falsif_pb.X_log; falsif_pb.obj_log ];
+                        new_pts = falsif_pb.X_log; 
+                        
                         
                    %%%%%%%%%
                    %%%%%%%%%
@@ -657,14 +784,16 @@ classdef MetaFalsify < handle
 %                             if (nbinitsamples < search_space_dim)
 %                                 nbinitsamples = search_space_dim;
 %                             end
-                            
+                            nbTrials = 2*nbinitsamples;
+                            winlen = this.re_init_num_xbest;
                             x0=this.InitSolver(nbinitsamples,solver_index,this.num_solvers,...
-                                SolverInfo,re_init_strategy,this.re_init_num_xbest);
+                                SolverInfo,re_init_strategy,winlen,falsif_pb.lb,falsif_pb.ub-falsif_pb.lb,nbTrials);
                             
                             if (re_init_strategy==0)
                                 if (size(x0,2) < search_space_dim)
                                     nbsamples_more = search_space_dim - size(x0,2);
-                                    CBS.QuasiRandomSample(nbsamplesPR, 2^10);
+                                    %CBS.QuasiRandomSample(nbsamples_more, 2^10);
+                                    CBS.SampleDomain(falsif_pb.params,nbsamples_more);
                                     x0_more = CBS.GetParam(falsif_pb.params);
                                     x0 = [ x0, x0_more ];
                                 end
@@ -685,6 +814,7 @@ classdef MetaFalsify < handle
                         %% Call this solver
                         falsif_pb.solve();
                         
+                  
                         
                     %%%%%%%%%%
                     %%%%%%%%%%
@@ -700,13 +830,16 @@ classdef MetaFalsify < handle
                         % this.re_init_strategy=2 to pick randomly from xbest
                         if (call_count>1)
                            re_init_strategySA = 2; %always use one xbest
-                           nbinitsamples=1; %cannot wotk with population of points
-                           x0=this.InitSolver(nbinitsamples,solver_index,this.num_solvers,...
-                                   SolverInfo,re_init_strategySA,this.re_init_num_xbest);                
+                           nbinitsamplesSA=1; %cannot wotk with population of points
+                           nbTrials = 2*nbinitsamples;
+                           winlen = this.re_init_num_xbest;
+                           x0=this.InitSolver(nbinitsamplesSA,solver_index,this.num_solvers,...
+                                SolverInfo,re_init_strategySA,winlen,falsif_pb.lb,...
+                                falsif_pb.ub-falsif_pb.lb, nbTrials);
                            
                         else
-                           nbinitsamples=1;
-                           CBS.QuasiRandomSample(nbinitsamples, 2^10);
+                           nbinitsamplesSA=1;
+                           CBS.QuasiRandomSample(nbinitsamplesSA, 2^10);
                            x0 = CBS.GetParam(falsif_pb.params);
                         end
                         fprintf(1, '\n nb x0: %d \n', size(x0, 2));
@@ -727,10 +860,45 @@ classdef MetaFalsify < handle
                         %% Call this solver
                         falsif_pb.solve();
                         
+                    %%%%%
+                    %%%%%
+                    case 3 % GNM Lausen
+                        fprintf(1,'\n **** Running GNM Lausen\n');
+                        fprintf(this.OutFileID,'\n **** Running GNM Lausen\n');           
+                        
+                        falsif_pb.setup_solver('gnmLausen');
+                        
+                        %% Set solver-specific parameters
+                        %falsif_pb.solver_options.SaveVariables = 'off';
+                        falsif_pb.solver_options.maxEvals=this.max_obj_eval(1,solver_index +1);
+                        
+                        %% Set initial points
+                        if (call_count>1)
+                            nbinitsamples = 1;
+                            nbTrials = 2*nbinitsamples;
+                            winlen = this.re_init_num_xbest;
+                            x0=this.InitSolver(nbinitsamples,solver_index,this.num_solvers,...
+                                SolverInfo,re_init_strategy,winlen,falsif_pb.lb,...
+                                falsif_pb.ub-falsif_pb.lb, nbTrials);
+                        else
+                            nbinitsamples=1;
+                            CBS.QuasiRandomSample(nbinitsamples, 2^10);
+                            x0 = CBS.GetParam(falsif_pb.params);
+                        end
+                        fprintf(1, '\n nb x0: %d \n', size(x0, 2));
+                        if (~isempty(x0))
+                          falsif_pb.x0 = x0';
+                        end
+                        
+                        %% Call this solver
+                        falsif_pb.solve();    
+                        
+                        
                     
+                    %%%%%%%%    
+                    %%%%%%%%
                     %%%%%%
-                    %%%%%%
-                    case 3 %global_nelder_mead
+                    case 4 %global_nelder_mead
                         fprintf(1,'\n *** Running Global Nelder Mead');
                         fprintf(this.OutFileID,'\n *** Running Global Nelder Mead');
                         
@@ -749,8 +917,12 @@ classdef MetaFalsify < handle
                         
                         %% Set initial points
                         if (call_count>1)
-                            x0 = this.InitSolver(nbinitsamples,solver_index,...
-                                    this.num_solvers,SolverInfo,re_init_strategy,this.re_init_num_xbest);                
+                           nbinitsamples = 1; 
+                           nbTrials = 2*nbinitsamples;
+                           winlen = this.re_init_num_xbest;
+                           x0=this.InitSolver(nbinitsamples,solver_index,this.num_solvers,...
+                                SolverInfo,re_init_strategy,winlen,falsif_pb.lb,...
+                                falsif_pb.ub-falsif_pb.lb, nbTrials);              
                         else
                             nbsamplesPR=this.re_init_num_rand; %200
                             CBS.QuasiRandomSample(nbsamplesPR, 2^37);
@@ -763,19 +935,19 @@ classdef MetaFalsify < handle
                         
                         %% call the solver
                         falsif_pb.solve();
-                        
-                    %%%%%%%%    
-                    %%%%%%%%
+                    
+                    
                     otherwise
                         error('solver index does not match')
                 end   % end of switch
                 
                 
-                %% Adding new points to xlog for solvers other than random
+                %% Get new points_vals to xlog for solvers other than random
                 if (solver_index~=0)
-                    new_pts = falsif_pb.X_log; %col vectors of newly simulated points.
+                    new_pts = falsif_pb.X_log;
+                    new_pts_vals = [ falsif_pb.X_log; falsif_pb.obj_log ]; %col vectors of newly simulated points                   
                 end
-                fprintf(1,'\n Nb of new points added to Xlog = %d', size(new_pts,2));
+                fprintf(1,'\n Nb of new points added to Xlog = %d', size(new_pts_vals,2));
                                         
                 %% Updating visited points in the current CoverageBreachSet Br
                 this.Br.AddPoints(new_pts);
@@ -785,29 +957,32 @@ classdef MetaFalsify < handle
 
                 
                 %% Updating SolverInfo to store xlog, xbest, valbest
-                %% updating Xlog of the current solver
-                if ( ~isempty( SolverInfo(solver_index+1).Xlog ) )
-                    SolverInfo(solver_index+1).Xlog=[SolverInfo(solver_index+1).Xlog, new_pts];
-                else
-                    SolverInfo(solver_index+1).Xlog=new_pts;
-                end
+                %% updating Xlog of the current solver and global
+                SolverInfo(solver_index+1).Xlog=[SolverInfo(solver_index+1).Xlog, new_pts_vals];
+                SolverInfo(this.num_solvers+1).Xlog=[SolverInfo(this.num_solvers+1).Xlog, new_pts_vals];
+                
                 
                 %% get the new Xbest of the current solver
                 new_xbest = falsif_pb.x_best;
                 
                 %% update Xbest if smaller than xbest of current solver
-                if (~isempty(SolverInfo(solver_index+1).Valbest))
-                    valbest_vec = SolverInfo(solver_index+1).Valbest;
+                valbest_vec = SolverInfo(solver_index+1).Valbest;
+                if  size(valbest_vec,2)>0 
                     valbest_last = valbest_vec(size(valbest_vec,2));
                     if (valbest_last > new_obj_best)
-                        SolverInfo(solver_index+1).Valbest=[SolverInfo(solver_index+1).Valbest, new_obj_best];
-                        SolverInfo(solver_index+1).Xbest=[SolverInfo(solver_index+1).Xbest, new_xbest];
+                            SolverInfo(solver_index+1).Valbest=[SolverInfo(solver_index+1).Valbest, new_obj_best];
+                            SolverInfo(this.num_solvers+1).Valbest=[SolverInfo(this.num_solvers+1).Valbest, new_obj_best];
+                            SolverInfo(solver_index+1).Xbest=[SolverInfo(solver_index+1).Xbest, new_xbest];
+                            SolverInfo(this.num_solvers+1).Xbest=[SolverInfo(this.num_solvers+1).Xbest, new_xbest];
                     end
                 else
-                    SolverInfo(solver_index+1).Valbest=new_obj_best;
-                    SolverInfo(solver_index+1).Xbest=new_xbest;
+                    SolverInfo(solver_index+1).Valbest = [ new_obj_best];
+                    SolverInfo(this.num_solvers+1).Valbest = [ new_obj_best];
+                    SolverInfo(solver_index+1).Xbest = [ new_xbest];
+                    SolverInfo(this.num_solvers+1).Xbest = [ new_xbest];
                 end
                 %% end of updating SolverInfo
+                
                 
                 %% Get execution time
                 time_solver = toc(timervar_solver);
@@ -824,7 +999,7 @@ classdef MetaFalsify < handle
                     % trace_False contains the falsifying trace
                     trace_False.PlotSignals(this.Plot_signal_names);                   
                     %trace.PlotSignals
-                    
+                    fprintf(this.OutFileID,'\n new_obj_best = ', new_obj_best);
                     fprintf(this.OutFileID,'\n Exit from Solver %d ', solver_index);
                     comptime = toc(TotCompTime);
                     fprintf(this.OutFileID,'\n Exit! TOTAL Computation time = %f seconds',comptime );
@@ -885,7 +1060,7 @@ classdef MetaFalsify < handle
                 % the coverage graph is monotonic, we check the evolution of coverage
                 % for non-increase by this.cov_epsilon
                 % recompute current coverage
-                disp('\nCurrent coverage');
+                fprintf(1,'\n Current coverage');
                 current_coverage_value = this.Br.ComputeLogCellOccupancyCoverage
                 %current_coverage_value = CBS.ComputeLogCellOccupancyCoverage
                 
@@ -952,9 +1127,12 @@ classdef MetaFalsify < handle
                         re_init_strategy = this.re_init_strategy;
                     end
                     
+                    disp('updated re_init_strategy');
+                    re_init_strategy
+                    
                     solver_index = prev_solver_index + 1;
                     
-                    if (call_count>1 && solver_index==3)
+                    if (call_count>=2 && solver_index==4)
 	                  solver_index=1; %skip calling GNM the second time
                     end
                     
@@ -969,11 +1147,11 @@ classdef MetaFalsify < handle
                         if rob_stagnant
                             re_init_strategy = 0
                         else
-                            if rob_improved
-                                re_init_strategy = 2
-                            else
-                                re_init_strategy = 1
-                            end
+%                             if rob_improved
+%                                 re_init_strategy = 2
+%                             else
+%                                 re_init_strategy = 1
+%                             end
                         end
                     end %end if (solver_index>(this.num_solvers-1))
                     

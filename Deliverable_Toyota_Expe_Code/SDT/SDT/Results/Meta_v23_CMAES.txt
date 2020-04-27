@@ -1,0 +1,52 @@
+
+ STL_Formula alw(abs(OutSat[t])<2.325)
+ Model name is BP2_in 
+
+ seed is 1000 
+
+ nb_solver_calls is 1 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 2 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 20 
+
+ re_init_num_xlog is 200 
+
+ re_init_num_rand is 200 
+
+ re_init_num_xprobbest is 50 
+
+ num_solvers is 5 
+
+ solver_time is [100 100 100 100 100 ] 
+
+ max_obj_eval is [200 10000 100 100 0 ] 
+
+ start_solver_index is 1 
+
+ Max eval number is 10000 
+
+ **** Running CMAES
+
+ This solver time = 6430.182981 seconds
+ Best Robustness Value of this call = 0.002282
+ Best Robustness Value so far = 0.002282
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  1    0.00228215    0.05712981
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 1 done
+ Exit! TOTAL Computation time = 6430.215422 seconds

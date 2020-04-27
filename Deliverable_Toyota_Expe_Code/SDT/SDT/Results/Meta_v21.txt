@@ -1,0 +1,155 @@
+
+ STL_Formula alw(abs(OutSat[t])<2.325)
+ Model name is BP2_in 
+
+ seed is 100 
+
+ nb_solver_calls is 20 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 2 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 20 
+
+ re_init_num_xlog is 200 
+
+ re_init_num_rand is 200 
+
+ re_init_num_xprobbest is 50 
+
+ num_solvers is 5 
+
+ solver_time is [100 100 100 100 100 ] 
+
+ max_obj_eval is [200 10000 100 100 0 ] 
+
+ start_solver_index is 2 
+
+ Max eval number is 100 
+
+ *** Running Simulated Annealing
+
+ This solver time = 53.147005 seconds
+ Best Robustness Value of this call = 0.067119
+ Best Robustness Value so far = 0.067119
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.06711859    0.02850907
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 1 done
+ Max eval number is 100 
+
+ **** Running GNM Lausen
+
+ This solver time = 51.957044 seconds
+ Best Robustness Value of this call = 0.825015
+ Best Robustness Value so far = 0.067119
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  2    0.06711859    0.02850907
+ 2  3    0.06711859    0.03061450
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 2
+ Solver call 2 done
+ Max eval number is 10000 
+
+ **** Running CMAES
+
+ This solver time = 322.089716 seconds
+ new_obj_best = 
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 431.434701 seconds
+
+Falsified with obj = -0.002414
+
+ ---- Best value -0.002414 found with
+        d_e0 = 0.9999
+        d_e1 = 0.9999
+        d_e2 = 0.49685
+        d_e3 = 0.186374
+        d_e4 = 0.442031
+        d_e5 = 0.9999
+        d_e6 = 0.0343552
+        d_e7 = 0.789874
+        d_e8 = 0.264471
+        d_e9 = 0.9999
+        d_e10 = 0.9999
+        d_e11 = 0.757118
+        d_e12 = 0.9999
+        d_e13 = 0.214224
+        d_e14 = 0.679483
+        d_e15 = 0.766666
+        d_e16 = 0.816598
+        d_e17 = 0.391301
+        d_e18 = 0.628844
+        d_e19 = 0.0001
+        d_e20 = 0.421966
+        d_e21 = 0.574035
+        d_e22 = 0.661397
+        d_e23 = 0.0001
+        d_e24 = 0.564779
+        d_e25 = 0.9999
+        d_e26 = 0.733733
+        d_e27 = 0.551507
+        d_e28 = 0.23663
+        d_e29 = 0.760474
+        d_e30 = 0.250896
+        d_e31 = 0.9999
+        d_e32 = 0.819152
+        d_e33 = 0.9999
+        d_e34 = 0.481064
+        d_e35 = 0.9999
+        d_e36 = 0.367051
+        d_e37 = 0.804326
+        d_e38 = 0.43405
+        d_e39 = 0.706324
+        d_e40 = 0.441917
+        d_e41 = 0.9999
+        d_e42 = 0.99352
+        d_e43 = 0.948185
+        d_e44 = 0.903807
+        d_e45 = 0.262591
+        d_e46 = 0.397959
+        d_e47 = 0.853337
+        d_e48 = 0.9999
+        d_e49 = 0.142773
+        d_e50 = 0.474764
+        d_e51 = 0.204667
+        d_e52 = 0.0001
+        d_e53 = 0.9999
+        d_e54 = 0.9999
+        d_e55 = 0.510183
+        d_e56 = 0.331083
+        d_e57 = 0.619571
+        d_e58 = 0.291362
+        d_e59 = 0.540061
+        d_e60 = 0.538704
+        d_e61 = 0.9999
+        d_e62 = 0.155776
+        d_e63 = 0.260475
+        d_e64 = 0.474992
+        d_e65 = 0.569378
+        d_e66 = 0.24441
+        d_e67 = 0.7791
+        d_e68 = 0.286087
+        d_e69 = 0.257208
+
+
+ Nb of new points added to Xlog = 626
+ This solver time = 322.089716 seconds
