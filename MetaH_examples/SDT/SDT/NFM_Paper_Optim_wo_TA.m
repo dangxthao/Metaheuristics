@@ -21,7 +21,7 @@ Bva.SetTime(time);
 Bva.SetParam('time_scale', ts,true);
 params_dt = Bva.expand_param_name('In1_dt.');
 params_u = Bva.expand_param_name('In1_u.');
-ranges_dt = repmat([0 8*ts], numel(params_dt), 1);
+ranges_dt = repmat([0 4*ts], numel(params_dt), 1);
 
 %
 idx_u = FindParam(Bva.P, params_u);
@@ -36,8 +36,8 @@ Bva.SetParam(params_u, p0_u)
 %%
 pb = FalsificationProblem(Bva, R);
 pb.max_obj_eval = 10000;
-pb.max_consecutive_constraints_failed= 10000;
-pb.setup_global_nelder_mead('num_corners',0,'num_quasi_rand_samples',100, 'local_max_obj_eval',10000)
+pb.max_consecutive_constraints_failed= 1000;
+pb.setup_global_nelder_mead('num_corners',0,'num_quasi_rand_samples',100, 'local_max_obj_eval',1000)
 pb.StopAtFalse=false;
 pb.solve(); 
 Rva = pb.GetLog();

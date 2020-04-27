@@ -1,4 +1,4 @@
-param tend = .8e-6
+param tend = .3e-6
 
 # Saturation
 param sat_val = 2
