@@ -1,0 +1,49 @@
+
+ seed is 100 
+
+ nb_solver_calls is 10 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 1 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 20 
+
+ num_solvers is 4 
+
+ re_init_num_xbest is 20 
+
+ solver_time is [100 100 100 100 ] 
+
+ max_obj_eval is [200 300 50 20 ] 
+
+ start_solver_index is 0 
+
+ Max eval number is 200 
+
+ *** Running QuasiRandom
+ This solver time = 11.546602 seconds
+ Best Robustness Value of this call = 2.000000
+ Best Robustness Value so far = 2.000000
+
+
+
+ #Call  SolverID  Robustness  Coverage
+Quasi-random (0), CMA-ES (1), SA (2), GNM (3)
+ 1  0    2.00000000    0.01150515
+ stagnant_count = 0
+ rob_stagnant = 0
+ cov_monitoring_length = 1
+ Solver call 1 done
+ Max eval number is 300 
+
+ **** Running CMAES
+ This solver time = 404.722871 seconds
+ Exit from Solver 1 
+ Exit! TOTAL Computation time = 425.707569 seconds

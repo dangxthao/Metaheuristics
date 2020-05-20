@@ -1,0 +1,35 @@
+
+ STL_Formula alw(abs(OutSat[t])<2.325)
+ Model name is BP2_in 
+
+ seed is 100 
+
+ nb_solver_calls is 1 
+
+ cov_epsilon is 1.000000e-03 
+
+ rob_epsilon_percent is 1.000000e-02 
+
+ rob_stagnant_win is 1 
+
+ cov_monitoring_win is 2 
+
+ re_init_strategy is 2 
+
+ re_init_num_xbest is 20 
+
+ re_init_num_xlog is 200 
+
+ re_init_num_rand is 200 
+
+ num_solvers is 4 
+
+ solver_time is [100 100 100 100 ] 
+
+ max_obj_eval is [200 500 500 1000 ] 
+
+ start_solver_index is 3 
+
+ Max eval number is 1000 
+
+ *** Running Global Nelder Mead
