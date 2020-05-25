@@ -42,3 +42,31 @@ Ga.AddSignals('gear', ax, 'all');
 xlabel('Time')
 
 save2pdf('Autotrans_TA_traces.pdf');
+
+%% 
+%% Plotting
+Ga = BreachSignalsPlot(Ba);
+
+it = 2;
+figure;
+ax = subplot(3,1,1);
+grid on;
+Ga.AddSignals('throttle', ax, it );
+set(gca, 'FontSize', 14, 'LineWidth',2);
+set(get(gca, 'Children'), 'LineWidth',2)
+
+ax = subplot(3,1,2);
+grid on;
+Ga.AddSignals('brake', ax, it);
+set(gca, 'FontSize', 14, 'LineWidth',2);
+set(get(gca, 'Children'), 'LineWidth',2)
+
+
+ax = subplot(3,1,3);
+grid on;
+Ga.AddSignals('timeword', ax, it);
+xlabel('Time')
+set(gca, 'FontSize', 14, 'LineWidth',2);
+set(get(gca, 'Children'), 'LineWidth',2)
+
+save2pdf('Autotrans_Wordgen_Traces.pdf')

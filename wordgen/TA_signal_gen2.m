@@ -3,7 +3,7 @@ classdef TA_signal_gen2 < var_cp_signal_gen
         TA_file
         num_evts
         labels
-        wordgen_exe = './wordgen'
+        wordgen_exe = './wordgen.linux'
         poly = 5
         template_in
         template_out
@@ -38,7 +38,10 @@ classdef TA_signal_gen2 < var_cp_signal_gen
             
             this.num_evts = num_evt;
             this.params = {'time_scale'};
-                        
+            for i_sig=1:numel(sigs)
+                this.params{end+1} = [sigs{i_sig} '_init_val'];                
+            end
+            
             for ie = 0:num_evt-1
                 this.params{end+1} = ['e' num2str(ie) '_dt'];
                 this.params{end+1} = ['e' num2str(ie) '_branching' ];
@@ -66,7 +69,7 @@ classdef TA_signal_gen2 < var_cp_signal_gen
             X = computeSignals@var_cp_signal_gen(this, p_cp, time);            
             dts(dts<this.min_dt) = this.min_dt;
             ts = cumsum(dts);
-            X(end+1, :) = interp1([0 ts(1:end-1)], labels_idx, time, 'previous', 'extrap');
+            X(end+1, :) = interp1([0 ts(1:end-1)], [0 labels_idx(1:end-1)], time, 'previous', 'extrap');
         
         end
                 
@@ -115,15 +118,19 @@ classdef TA_signal_gen2 < var_cp_signal_gen
                     for isig = 1:numel(this.signals)-1   % assign values from label to signals and control points                      
                         for i_tok = 1:this.num_cp(isig)-1
                             if i_tok<= numel(dts)
-                                ilabel = labels_idx(i_tok);
+                                if i_tok>1
+                                    ilabel = labels_idx(i_tok-1);
+                                else
+                                    ilabel=0;
+                                end
                                 iv = this.get_cp_idx(i_tok, isig, ilabel);
-                                p_cp(idx, ipt) = p(iv);
+                                p_cp(idx, ipt) = p(iv,ipt);
                                 p_cp(idx+1, ipt) = max(dts(i_tok), this.min_dt);
                             end
                             idx = idx+2; % jump over dt..
                         end
                         if i_tok<= numel(dts)
-                            p_cp(idx, ipt) = p(this.num_evts+1+(numel(this.signals)*(labels_idx(i_tok)-1)+isig),1) ;
+                            p_cp(idx, ipt) = p(this.num_evts+3+(numel(this.signals)*(labels_idx(i_tok)-1)+isig),ipt);                            ;
                         end
                         idx = idx+1;                        
                     end
@@ -147,22 +154,28 @@ classdef TA_signal_gen2 < var_cp_signal_gen
         
         function idx = get_idx_dt_branching(this)
                 num_param_per_evt = 2+(numel(this.signals)-1)*numel(this.labels);                
-                idx_dt = [0 rem((1:numel(this.params)-1)-1,num_param_per_evt)==0];
-                idx_branching = [0 rem((1:numel(this.params)-1)-1,num_param_per_evt)==1];
-                idx= idx_dt|idx_branching;                                           
+                idx_dt = [0 0 0 rem((1:numel(this.params)-1)-1,num_param_per_evt)==0];
+                idx_branching = [0 0 0 rem((1:numel(this.params)-1)-1,num_param_per_evt)==1];
+                idx= idx_dt|idx_branching;     
+                idx = idx(1:end-2);
         end
         
         function iv = get_cp_idx(this, ie, isig, ilabel)
-            num_param_per_evt = 2+(numel(this.signals)-1)*numel(this.labels);                
-            iv = 1+...                             % timescale
-                 (ie-1)*num_param_per_evt+...      % num events
-                 2+...                             % dt,branching 
-                 (ilabel-1)*(numel(this.signals)-1)+... % skips labels 
-                 isig;
+            if ie==1
+                iv = 1+isig;
+            else            
+                num_param_per_evt = 2+(numel(this.signals)-1)*numel(this.labels);
+                iv = 1+...                             % timescale
+                    numel(this.signals)-1+...           % initial values
+                    (ie-2)*num_param_per_evt+...      % num events
+                    2+...                             % dt,branching
+                    (ilabel-1)*(numel(this.signals)-1)+... % skips labels
+                    isig;
+            end
         end
         
         function i_labels = get_labels_idx(this)
-           i_labels= this.num_evts+1:this.num_evts+numel(this.signals)*numel(this.labels);
+           i_labels= this.num_evts+3:this.num_evts+numel(this.signals)*numel(this.labels);
         end
                 
         
