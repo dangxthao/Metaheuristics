@@ -17,7 +17,9 @@ BrSD = BreachSimulinkSystem(model_name);
 
 nbSig=10;
 
-% We assume that the input wors are in files named s_01, s_02...
+% We assume that the input words are in files named s_01, s_02...
+% Input words are stored as time series
+
 for sigId = 1:nbSig
     if (sigId < 10)
         sigfilename = strcat('s_0', num2str(sigId));
