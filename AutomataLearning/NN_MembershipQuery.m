@@ -2,7 +2,7 @@
 % converts it to a timeseries by adding the time column, calls the Neural net,
 % and returns the last outputted float
 
-function [out] = NNteacher_test2()
+function [out] = NN_MembershipQuery()
   In1 = [0 1 2 3 4 5; 20 4 6 -2 -4 -6]';
   assignin('base', 'In1', In1)
   timeSim = In1(:,1);
