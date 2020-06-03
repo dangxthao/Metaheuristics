@@ -1,9 +1,11 @@
-% TODO: convert this file into a file that takes an array of floats (input),
-% converts it to a timeseries by adding the time column, calls the Neural net,
-% and returns the last outputted float
+% Function that takes an input word and returns the last output float
+function [out] = NN_MembershipQuery(in)
+  n = length(in);
+  time = 0:n-1;
 
-function [out] = NN_MembershipQuery()
-  In1 = [0 1 2 3 4 5; 20 4 6 -2 -4 -6]';
+  %In1 = [0 1 2 3 4 5; 20 4 6 -2 -4 -6]';
+  In1 = [time; in]';
+  
   assignin('base', 'In1', In1)
   timeSim = In1(:,1);
   timeSim= timeSim-timeSim(1);
