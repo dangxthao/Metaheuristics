@@ -15,7 +15,7 @@ class NNTeacher:
         self.concrete_alphabet = Float_Range(-10, 10)
     def compute(self, word):
         if word == '':
-            return str(0)
+            return 0.0
         else:
             word = word.split()
             inp = [float(c) for c in word]
@@ -26,9 +26,9 @@ class NNTeacher:
             inp = matlab.double(inp)
             out = self.eng.NN_MembershipQuery(inp)
             if out > 0:
-                return str(+1)
+                return 1.0
             else:
-                return str(-1)
+                return -1.0
 
 
 T = NonAdequateTeacher_MM_Float(NNTeacher())
