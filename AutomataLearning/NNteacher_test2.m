@@ -1,3 +1,7 @@
+% TODO: convert this file into a file that takes an array of floats (input),
+% converts it to a timeseries by adding the time column, calls the Neural net,
+% and returns the last outputted float
+
 function [] = NNteacher_test2()
   In1 = [0 1 2 3 4 5; 20 4 6 -2 -4 -6]';
   assignin('base', 'In1', In1)
