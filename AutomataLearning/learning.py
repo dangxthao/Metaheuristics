@@ -135,7 +135,7 @@ class NonAdequateTeacher_Float:
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
-            word = random_word_float(test_on_alphabet, length = len(Hypothesis.states) * 2)
+            word = random_word_float(test_on_alphabet, length = len(Hypothesis.states) * 4)
             if print_on: print('Test word:', word)
             if self.membership_query(word) != Hypothesis.recognizes(word):
                 if print_on: print("  words tested:", j)
@@ -196,7 +196,7 @@ class NonAdequateTeacher_MM_Float:
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
-            word = random_word_float(test_on_alphabet, length = len(Hypothesis.states) * 2)
+            word = random_word_float(test_on_alphabet, length = len(Hypothesis.states) * 4)
             if print_on: print('Test word:', word)
             if self.membership_query(word) != Hypothesis.compute(word):
                 if print_on: print("  words tested:", j)
@@ -2364,7 +2364,7 @@ class SymbPACLearner_MM_Float:
             if self.make_file_on: self.hypothesis[-1].open_graph(self.file_name_prefix + 'H'+str(i), typ = 'gv')
 
             # if the last counterexample is still a counterexample
-            if self.hypothesis[-1].compute(self.cex[-1]) != self.teacher.membership_query(self.cex[-1]):
+            if len(self.cex) > 0 and self.hypothesis[-1].compute(self.cex[-1]) != self.teacher.membership_query(self.cex[-1]):
                if self.print_on: print( "treat same counterexample again")
                if not self.treat_counterexample():
                    print("counterexample", self.cex[-1], 'could not treated succefully')
@@ -2375,7 +2375,7 @@ class SymbPACLearner_MM_Float:
                if self.print_on: print("\nTest new hypothesis")
                self.num_tests += 1
                t0_test = time.clock()
-               w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = False)
+               w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = True)
                self.testing_time += time.clock() - t0_test
                self.num_words_tested += words_tested
                if w == True:
