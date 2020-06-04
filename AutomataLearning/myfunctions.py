@@ -136,7 +136,7 @@ def random_word_float(alphabet, length = None, n = 100):
 # Make for .gv or .dot files (graphs in DOT language)
 #----------------------------------------------------------
 def make_dot_graph(file_name, main):
-    prefix = "digraph " + file_name + " {"
+    prefix = "digraph \"" + file_name + "\" {"
     suffix = "};"
     main = str(main)
 
