@@ -157,7 +157,7 @@ class NonAdequateTeacher_MM_Float:
     give a random word of specific or not lenght.
     """
 
-    def __init__(self, moore_machine):
+    def __init__(self, moore_machine, cex_length=100):
         """
         Provide the Teacher with an object that can do computations
         """
@@ -171,6 +171,7 @@ class NonAdequateTeacher_MM_Float:
         self.moore_machine = moore_machine
 #       self.alphabet = sorted(self.automaton.alphabet, key = cmp_to_key(cmpr))
         self.alphabet = self.moore_machine.concrete_alphabet
+        self.cex_length = cex_length
 
     # Membership Query
     def membership_query(self, word):
@@ -196,7 +197,7 @@ class NonAdequateTeacher_MM_Float:
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
-            word = random_word_float(test_on_alphabet, length = len(Hypothesis.states) * 4)
+            word = random_word_float(test_on_alphabet, length = self.cex_length)
             if print_on: print('Test word:', word)
             if self.membership_query(word) != Hypothesis.compute(word):
                 if print_on: print("  words tested:", j)
@@ -1232,7 +1233,7 @@ class SymbPAC_ObsTable_MM_Float:
     def __init__(self, alphabet):
         # self.alphabet = sorted(concrete_alphabet, key = cmp_to_key(cmpr))  # concrete alphabet taken from the teacher
         self.alphabet = alphabet
-        self.sample_size = 5
+        self.sample_size = 10
         self.initialize()
 
     def initialize(self):
@@ -2358,6 +2359,7 @@ class SymbPACLearner_MM_Float:
             # make new hypothesis
             self.hypothesis.append(self.table.moore_machine())
             i = len(self.hypothesis)-1
+            print("Make new hypothesis H"+str(i))
             if self.print_on:
                 print("Make new hypothesis H"+str(i))
                 print(self.hypothesis[-1])
@@ -2375,7 +2377,7 @@ class SymbPACLearner_MM_Float:
                if self.print_on: print("\nTest new hypothesis")
                self.num_tests += 1
                t0_test = time.clock()
-               w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = True)
+               w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = False)
                self.testing_time += time.clock() - t0_test
                self.num_words_tested += words_tested
                if w == True:

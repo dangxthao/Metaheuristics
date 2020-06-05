@@ -67,9 +67,9 @@ assert outputLowBound < outputUpperBound, "Output lower bound must be less than 
 outputSize = int(sys.argv[5])
 assert outputSize > 0, "Output size must be a positive integer"
 
-T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize))
+T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=100)
 
-L = SymbLearner_MM_Float(T,e =.1, d = .1,  print_on = True, file_name_prefix = 'L'+str(1))
+L = SymbLearner_MM_Float(T,e =.1, d = .1,  print_on = False, file_name_prefix = 'L'+str(1))
 
 L.run()
 
