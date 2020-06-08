@@ -24,16 +24,20 @@ class NNTeacher:
         The returned value x means that output belongs in [x, x + self.step)
         """
         if output < self.outputLowBound:
-            return self.outputLowBound - 1
+            return '< lowBound'
+#           return self.outputLowBound - 1
 
         if output >= self.outputUpperBound:
-            return self.outputUpperBound
+            return '>= upperBound'
+#           return self.outputUpperBound
 
-        return outputLowBound + self.step * int((output - outputLowBound) / self.step)
+        lb = outputLowBound + self.step * int((output - outputLowBound) / self.step)
+        ub = lb + self.step
+        return '[' + str(lb) + ', ' + str(ub) + ')'
 
     def compute(self, word):
         if word == '':
-            return 0.0
+            return 'init'
         else:
             word = word.split()
             inp = [float(c) for c in word]
@@ -67,7 +71,7 @@ assert outputLowBound < outputUpperBound, "Output lower bound must be less than 
 outputSize = int(sys.argv[5])
 assert outputSize > 0, "Output size must be a positive integer"
 
-T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=100)
+T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=20)
 
 L = SymbLearner_MM_Float(T,e =.1, d = .1,  print_on = False, file_name_prefix = 'L'+str(1))
 

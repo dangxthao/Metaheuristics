@@ -1345,8 +1345,8 @@ class SymbPAC_ObsTable_MM_Float:
         the symbolic classification function related to the concrete one
         """
         if suffix in self.suffixes:
-            return float(self.f[self.mr_ext(sconc(prefix,suffix))])
-        return [float(self.f[self.mr_ext(sconc(prefix,e))]) for e in self.suffixes]
+            return self.f[self.mr_ext(sconc(prefix,suffix))]
+        return [self.f[self.mr_ext(sconc(prefix,e))] for e in self.suffixes]
 
 # samples
     def ssample(self):
@@ -1458,7 +1458,7 @@ class SymbPAC_ObsTable_MM_Float:
         updates the concrete classification function by adding to f a pair (word, True/False)
         """
         assert word == '' or valid_float(word, self.alphabet)
-        self.f[word] = float(output)
+        self.f[word] = output
 
     def add_new_symbolic_letter(self, state):
         """adds a new symbol to the symbolic alphabet and returns the new label
