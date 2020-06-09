@@ -123,10 +123,14 @@ def random_word_float(alphabet, length = None, n = 100):
         raise TypeError('length must be a number')
     if length == 0:
         return ''
+#   elif int(length) > 0:
+#       letter = str(random.uniform(alphabet.lowBound, alphabet.upperBound))
+#       return (letter + ' ') * length
     elif int(length) > 0:
 #       letter = random.choice(list(alphabet))
         letter = str(random.uniform(alphabet.lowBound, alphabet.upperBound))
 #       word = sconc(random_word(alphabet, length -1), letter)
+
         word = sconc(random_word_float(alphabet, length -1), letter)
         return word
     else:
