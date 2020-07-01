@@ -20,35 +20,50 @@ classdef alw_monitor < stl_monitor
             this.init_tXp(time,X,p);
 
             % compute robustnes of top formula
-            [time, Xout] = this.get_standard_rob(this.subphi, time);
+            
             idx  = this.get_time_idx_interval(time,p);
-            Xout =  [Xout(1,:)<0 ;...  % violation flags
-                     Xout];         
-            Xout(end-1:end, ~idx) = NaN;
+            
+            [~ , rob] = this.get_standard_rob(this.subphi, time(idx));            
+            Xout = nan(2, numel(time));
+            Xout(1, idx) = rob<0;
+            Xout(2,idx) = rob;            
    
         end
-
         
         function [v, t, Xout] = eval(this, t, X,p)
             [t, Xout] = this.computeSignals(t, X,p);
             v = min(Xout(end,:));
         end
         
-        function st = disp(this)
+        function varargout = disp(this)
             phi = this.subphi;
             st = sprintf(['%s := alw_%s (%s)\n'], this.formula_id,this.interval,  disp(phi,1));
             
             if ~strcmp(get_type(phi),'predicate')
-                st = [st '  where\n'];
-                predicates = STL_ExtractPredicates(phi);
-                for ip = 1:numel(predicates)
-                    st =   sprintf([ st '%s := %s \n' ], get_id(predicates(ip)), disp(predicates(ip)));
+                st_pred = [];
+                preds = STL_ExtractPredicates(phi);
+                for ip = 1:numel(preds)
+                    id = get_id(preds(ip));
+                    status(ip)= STL_CheckID(id);
                 end
+                
+                if any(status==1)
+                    st_pred = '  where \n';
+                    for ip = 1:numel(preds)
+                        if status(ip)==1
+                            st_pred =   sprintf([ st_pred '%s := %s \n' ],id,disp(preds(ip)));
+                        end
+                    end
+                end
+                st = [st st_pred];
             end
-            
+     
             if nargout == 0
+                varargout = {};
                 fprintf(st);
-            end
+            else
+                varargout{1} = st;
+            end            
      
         end
         

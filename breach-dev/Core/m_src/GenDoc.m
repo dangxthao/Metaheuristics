@@ -13,7 +13,7 @@ publish_dir = [get_breach_path( ) filesep 'Doc' ];
 
 options = struct('format', 'html', 'PublishDir', publish_dir);
 if ~isempty(varargin)
-    options = varargin2struct(options, varargin{:});
+    options = varargin2struct_breach(options, varargin{:});
 end
 
 docrun_map = CreateDocRunMap(list_scripts, options.PublishDir);

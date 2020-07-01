@@ -25,6 +25,8 @@ classdef stl_monitor < req_monitor
                 this.formula= STL_Formula(STL_NewID('phi'), formula);
             elseif isa(formula,'STL_Formula')
                 this.formula= formula;
+            elseif isa(formula, 'stl_monitor')
+                this.formula = formula.formula;
             else
                 error('stl_monitor:bad_constructor_arg', ...
                     'stl_monitor constructor requires a string or STL_Formula as argument.')
@@ -39,15 +41,12 @@ classdef stl_monitor < req_monitor
             if isempty(input_signals)&&isempty(output_signals) % if no IO specified, everybody is output and nobody input
                 this.formula = set_out_signal_names(this.formula, this.signals_in);
             end
-            this.init_P();
-            
+            this.init_P();            
         end
         
         function status = set_mode(this, flag1, flag2)            
             input_signals = get_in_signal_names(this.formula);
-            if ~isempty(input_signals)
-                
-                
+            if ~isempty(input_signals)                                
                 switch flag1
                     case {'in','out'}
                         this.inout = flag1;
@@ -244,7 +243,7 @@ classdef stl_monitor < req_monitor
             end
         end
         
-        function st = disp(this)
+        function varargout = disp(this)
             phi = this.formula;
             st = sprintf(['%s := %s\n'], get_id(phi), disp(phi,1));
             
@@ -253,19 +252,27 @@ classdef stl_monitor < req_monitor
                 preds = STL_ExtractPredicates(phi);
                 for ip = 1:numel(preds)
                     id = get_id(preds(ip));
-                    if STL_CheckID(id)
-                        if isempty(st_pred)
-                            st_pred = '  where \n';
+                    status(ip)= STL_CheckID(id);
+                end
+                
+                if any(status==1)
+                    st_pred = '  where \n';
+                    for ip = 1:numel(preds)
+                        if status(ip)==1
+                            st_pred =   sprintf([ st_pred '%s := %s \n' ],id,disp(preds(ip)));
                         end
-                        st_pred =   sprintf([ st_pred '%s := %s \n' ],id,disp(preds(ip)));
                     end
                 end
                 st = [st st_pred];
             end
-            
+     
             if nargout == 0
+                varargout = {};
                 fprintf(st);
-            end
+            else
+                varargout{1} = st;
+            end            
+            
         end
     end
    
