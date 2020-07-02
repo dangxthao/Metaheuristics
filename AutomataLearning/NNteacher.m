@@ -8,11 +8,12 @@ addpath('../breach-dev')
         
 InitBreach
 model_name = 'NN';
-
+var_names_list={'In1','Out1'};
 
 %% set the seed
 %rng(15000,'twister');
-BrSD = BreachSimulinkSystem(model_name);
+%BrSD = BreachSimulinkSystem(model_name);
+BrSD = BreachSimulinkSystem(model_name,'all',[],var_names_list);
 %, 'all', [], {}, [], 'Verbose',0,'SimInModelsDataFolder', true); 
 
 nbSig=10;
