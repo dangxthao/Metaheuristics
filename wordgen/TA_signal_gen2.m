@@ -3,7 +3,7 @@ classdef TA_signal_gen2 < var_cp_signal_gen
         TA_file
         num_evts
         labels
-        wordgen_exe = './wordgen'
+        wordgen_exe = '/Users/thaodang/Metaheuristics/wordgen/wordgen'
         poly = 5
         template_in
         template_out
