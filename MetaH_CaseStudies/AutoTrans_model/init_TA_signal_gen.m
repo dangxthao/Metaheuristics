@@ -1,15 +1,18 @@
 %% TA based signal generator setup 
-
+num_evt = 20;
 sg2 = TA_signal_gen2({'throttle', 'brake'},'driving_NFM_v2.prism',{'a','b','c','d','e','f','g','h'}, num_evt);
 S0 = BreachSignalGen(sg2);
 ts = 0.5;
-time = 0:.005:100;
+time = 0:.005:40;
 sg2.min_dt = .01;
 
 S0.SetParam('time_scale',ts);
 S0.SetTime(time);
 
 %%  Assign values
+p_throttle_init = S0.expand_param_name('.*throttle_init_val');
+p_brake_init = S0.expand_param_name('.*brake_init_val');
+
 p_throttle_a = S0.expand_param_name('.*throttle_a_val');
 p_brake_a = S0.expand_param_name('.*brake_a_val');
 
@@ -40,6 +43,10 @@ acc_range = [0 100];
 brake_range = [100 325];
 
 %%
+S0.SetParamRanges(p_throttle_init, acc_range);
+S0.SetParam(p_brake_init, 0);
+
+
 S0.SetParam(p_throttle_a, 0);
 S0.SetParam(p_brake_a, 0);
 

@@ -17,11 +17,11 @@
 
 %% Initialization (skip if you do not need it)
 
-%clear;close all; clc;
+clear;close all; clc;
 
 %% Simulink model
 
-Simulink_model='watertank_STL_test';
+Simulink_model='watertank_STL_test_2018a';
 
 % loading the model without opening it
 
@@ -35,23 +35,20 @@ load_system(Simulink_model);
 %% STL formula
 
 STL_formula_file='specs_stabilization.stl';
-phi_all=STL_ReadFile(STL_formula_file);
-try
-    phi=phi_all{3};
-catch
-    phi=phi_all{1};
-end
+[phi_id_list, formulas] = STL_ReadFile(STL_formula_file);
+
+
 %% Setting up Falsification Problem
 
 % Creating  Breach System
 var_names_list={'In1','u','y','u_nn','y_nn'};
-Br_falsif = BreachSimulinkSystem(Simulink_model,'all',[],var_names_list);
+Br_falsif = BreachSimulinkSystem(Simulink_model,{},[],var_names_list);
 
-% Setting up the Falsification Problem
+%% Setting up the Falsification Problem
 sim_time = 10;
 invalmin =8;
 invalmax = 12;
-Br_falsif.SetTime(sim_time);
+Br_falsif.SetTime(0:.01:sim_time);
 
 nbinputsig = 1;
 nbctrpt = 2;
@@ -94,7 +91,7 @@ falsif_pb = FalsificationProblem(Br_falsif, R);
 
 %% Solve the falsification problem
 
-choice='quasi';
+choice='GNN';
 falsif_pb.max_obj_eval = 10; % 1000
 
 if strcmp(choice,'GNN')
@@ -112,6 +109,8 @@ falsif_pb.solve();
 Rlog = falsif_pb.GetLog();
 BreachSamplesPlot(Rlog);
 figure;falsif_pb.BrSet_Logged.PlotSignals({'In1', 'y'});
+
+%%
 Br_False = falsif_pb.GetFalse(); 
 try
     Br_False.PlotSignals({'In1','y','y_nn'});
