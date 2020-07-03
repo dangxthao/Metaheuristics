@@ -68,10 +68,13 @@ for k=1:1:1
 %         BrSD_temp.SetParam(input_param, inputseq);
 
     
-    Input_Gen.type = 'UniStep';     
-    Input_Gen.cp = nbctrpt;
+    %Input_Gen.type = 'UniStep';     
+    %Input_Gen.cp = nbctrpt;
+    %BrSD_temp.SetInputGen(Input_Gen);
+    %fprintf('Number of control points is %d\n', nbctrpt)
+
+    Input_Gen = fixed_cp_signal_gen('In1', nbctrpt, 'previous');
     BrSD_temp.SetInputGen(Input_Gen);
-    fprintf('Number of control points is %d\n', nbctrpt)
 
     %% Specifying parameter names
     for i=0:nbctrpt-1
