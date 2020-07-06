@@ -13,7 +13,7 @@ clc
 
 %% Select example net
 
-example=1;
+example=2;
 if example==1
     mat_file='nn_2layers.mat';
     model_name='testing_time_net_2layers'
