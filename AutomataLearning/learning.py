@@ -23,7 +23,7 @@
 import random
 import math
 from functools import cmp_to_key
-from myfunctions import cmpr, sconc, valid, valid_float, random_word, random_word_float, opengv
+from myfunctions import cmpr, sconc, valid, valid_float, random_word, random_word_float, random_words_float, opengv
 from SA import SA, SA_Float, SMM_Float
 import DFA
 
@@ -193,7 +193,8 @@ class NonAdequateTeacher_MM_Float:
         if test_on_alphabet == None: test_on_alphabet = self.alphabet
         repetitions = 2*int(math.ceil(1/e*(math.log(1/d)+(i+1)*math.log(2))))
         if print_on: print('Test Words..')
-
+        testing_words = random_words_float(test_on_alphabet, self.cex_length, repetitions)
+        self.moore_machine.compute_array(testing_words)
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
