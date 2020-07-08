@@ -2,7 +2,8 @@ import matlab.engine
 import sys
 from learning import Float_Range, NonAdequateTeacher_MM_Float
 from learning import SymbPACLearner_MM_Float as SymbLearner_MM_Float
-
+import numpy as np
+import time
 class NNTeacher:
     def __init__(self, inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize):
         if 'MATLAB_4242' not in matlab.engine.find_matlab():
@@ -24,16 +25,23 @@ class NNTeacher:
         The returned value x means that output belongs in [x, x + self.step)
         """
         if output < self.outputLowBound:
-            return self.outputLowBound - 1
+            return '< lowBound'
+#           return self.outputLowBound - 1
 
         if output >= self.outputUpperBound:
-            return self.outputUpperBound
+            return '>= upperBound'
+#           return self.outputUpperBound
 
-        return outputLowBound + self.step * int((output - outputLowBound) / self.step)
+        lb = outputLowBound + self.step * int((output - outputLowBound) / self.step)
+        ub = lb + self.step
+        return '[' + str(lb) + ', ' + str(ub) + ')'
 
     def compute(self, word):
+        t0 = time.time()
         if word == '':
-            return 0.0
+            t1 = time.time() - t0
+#           print("Time:", t1)
+            return 'init'
         else:
             word = word.split()
             inp = [float(c) for c in word]
@@ -43,11 +51,23 @@ class NNTeacher:
                 inp = new
             inp = matlab.double(inp)
             out = self.eng.NN_MembershipQuery(inp)
+            t1 = time.time() - t0
+#           print("Time:", t1)
             return self.concretizeOutput(out)
 #           if out > 0:
 #               return 1.0
 #           else:
 #               return -1.0
+    def compute_array(self, word_array):
+        t0 = time.time()
+        inp = matlab.double(word_array.tolist())
+        out = self.eng.NN_ListMembershipQuery(inp)
+        out = np.array(out).tolist()[0]
+        res = [0] * len(out)
+        for i in range(len(out)):
+            res[i] = self.concretizeOutput(out[i])
+        print(res)
+        print(time.time() - t0)
 
 
 # input range, output range, spacing = 5 + 1 = 6
@@ -67,7 +87,7 @@ assert outputLowBound < outputUpperBound, "Output lower bound must be less than 
 outputSize = int(sys.argv[5])
 assert outputSize > 0, "Output size must be a positive integer"
 
-T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=100)
+T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=20)
 
 L = SymbLearner_MM_Float(T,e =.1, d = .1,  print_on = False, file_name_prefix = 'L'+str(1))
 

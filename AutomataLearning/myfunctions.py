@@ -1,4 +1,5 @@
 import random
+import numpy as np
 
 ###########################################################
 # Functions we need for words over the reals
@@ -123,14 +124,28 @@ def random_word_float(alphabet, length = None, n = 100):
         raise TypeError('length must be a number')
     if length == 0:
         return ''
+#   elif int(length) > 0:
+#       letter = str(random.uniform(alphabet.lowBound, alphabet.upperBound))
+#       return (letter + ' ') * length
     elif int(length) > 0:
 #       letter = random.choice(list(alphabet))
         letter = str(random.uniform(alphabet.lowBound, alphabet.upperBound))
 #       word = sconc(random_word(alphabet, length -1), letter)
+
         word = sconc(random_word_float(alphabet, length -1), letter)
         return word
     else:
         raise ValueError('length must be non negative')
+
+
+def random_words_float(alphabet, length, numb_of_words):
+    low = alphabet.lowBound
+    upper = alphabet.upperBound
+    res = np.zeros([numb_of_words, length])
+    for i in range(numb_of_words):
+        for j in range(length):
+            res[i, j] = random.uniform(low, upper)
+    return res
 
 ###########################################################
 # Make for .gv or .dot files (graphs in DOT language)

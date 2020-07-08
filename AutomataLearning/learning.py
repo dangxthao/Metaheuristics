@@ -23,7 +23,7 @@
 import random
 import math
 from functools import cmp_to_key
-from myfunctions import cmpr, sconc, valid, valid_float, random_word, random_word_float, opengv
+from myfunctions import cmpr, sconc, valid, valid_float, random_word, random_word_float, random_words_float, opengv
 from SA import SA, SA_Float, SMM_Float
 import DFA
 
@@ -193,7 +193,8 @@ class NonAdequateTeacher_MM_Float:
         if test_on_alphabet == None: test_on_alphabet = self.alphabet
         repetitions = 2*int(math.ceil(1/e*(math.log(1/d)+(i+1)*math.log(2))))
         if print_on: print('Test Words..')
-
+        testing_words = random_words_float(test_on_alphabet, self.cex_length, repetitions)
+        self.moore_machine.compute_array(testing_words)
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
@@ -1345,8 +1346,8 @@ class SymbPAC_ObsTable_MM_Float:
         the symbolic classification function related to the concrete one
         """
         if suffix in self.suffixes:
-            return float(self.f[self.mr_ext(sconc(prefix,suffix))])
-        return [float(self.f[self.mr_ext(sconc(prefix,e))]) for e in self.suffixes]
+            return self.f[self.mr_ext(sconc(prefix,suffix))]
+        return [self.f[self.mr_ext(sconc(prefix,e))] for e in self.suffixes]
 
 # samples
     def ssample(self):
@@ -1458,7 +1459,7 @@ class SymbPAC_ObsTable_MM_Float:
         updates the concrete classification function by adding to f a pair (word, True/False)
         """
         assert word == '' or valid_float(word, self.alphabet)
-        self.f[word] = float(output)
+        self.f[word] = output
 
     def add_new_symbolic_letter(self, state):
         """adds a new symbol to the symbolic alphabet and returns the new label
