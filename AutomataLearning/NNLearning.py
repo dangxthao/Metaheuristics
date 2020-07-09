@@ -12,6 +12,7 @@ class NNTeacher:
 
         print("Connecting to MATLAB session...")
         self.eng = matlab.engine.connect_matlab('MATLAB_4242')
+        self.eng.addpath('sim_NN_timing', nargout=0)
         print("Connected to MATLAB session successfully!")
         self.concrete_alphabet = Float_Range(inputLowBound, inputUpperBound)
         self.outputLowBound = outputLowBound
@@ -46,11 +47,12 @@ class NNTeacher:
             word = word.split()
             inp = [float(c) for c in word]
             if len(inp) == 1:
-                new = [inp[0]]
-                new.extend(inp)
-                inp = new
+                inp = [inp[0], inp[0], inp[0]]
+            elif len(inp) == 2:
+                inp = [inp[0], inp[1], inp[1]]
             inp = matlab.double(inp)
-            out = self.eng.NN_MembershipQuery(inp)
+#           out = self.eng.NN_MembershipQuery(inp)
+            out = self.eng.NN_matlab_MQ(inp)
             t1 = time.time() - t0
 #           print("Time:", t1)
             return self.concretizeOutput(out)
@@ -89,7 +91,7 @@ assert outputSize > 0, "Output size must be a positive integer"
 
 T = NonAdequateTeacher_MM_Float(NNTeacher(inputLowBound, inputUpperBound, outputLowBound, outputUpperBound, outputSize), cex_length=20)
 
-L = SymbLearner_MM_Float(T,e =.1, d = .1,  print_on = False, file_name_prefix = 'L'+str(1))
+L = SymbLearner_MM_Float(T,e =.2, d = .2,  print_on = False, file_name_prefix = 'L'+str(1))
 
 L.run()
 

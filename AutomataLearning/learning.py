@@ -193,8 +193,8 @@ class NonAdequateTeacher_MM_Float:
         if test_on_alphabet == None: test_on_alphabet = self.alphabet
         repetitions = 2*int(math.ceil(1/e*(math.log(1/d)+(i+1)*math.log(2))))
         if print_on: print('Test Words..')
-        testing_words = random_words_float(test_on_alphabet, self.cex_length, repetitions)
-        self.moore_machine.compute_array(testing_words)
+#       testing_words = random_words_float(test_on_alphabet, self.cex_length, repetitions)
+#       self.moore_machine.compute_array(testing_words)
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
@@ -2176,7 +2176,7 @@ class SymbPACLearner_Float:
 
         p = self.split(evidence[ind-1], evidence[ind])
 
-        tol = 0.000001
+        tol = self.e
 
         # Dicotomic search
         A = float(evidence[ind-1])
@@ -2361,6 +2361,7 @@ class SymbPACLearner_MM_Float:
             self.hypothesis.append(self.table.moore_machine())
             i = len(self.hypothesis)-1
             print("Make new hypothesis H"+str(i))
+            self.hypothesis[-1].open_graph(self.file_name_prefix + 'H'+str(i), typ = 'pdf')
             if self.print_on:
                 print("Make new hypothesis H"+str(i))
                 print(self.hypothesis[-1])
