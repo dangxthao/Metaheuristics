@@ -1,4 +1,6 @@
 /slprj/*
 /*.m~
+/*.pdf
+/*.gv
 /NN_breach.slxc
 /__pycache__
