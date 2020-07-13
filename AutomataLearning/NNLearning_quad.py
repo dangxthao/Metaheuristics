@@ -71,11 +71,11 @@ if len(sys.argv) < 4:
     print("Usage: python3 NNLearning.py outputLowBound outputUpperBound outputSize")
     exit()
 
-outputLowBound = float(sys.argv[3])
-outputUpperBound = float(sys.argv[4])
+outputLowBound = float(sys.argv[1])
+outputUpperBound = float(sys.argv[2])
 assert outputLowBound < outputUpperBound, "Output lower bound must be less than upper bound"
 
-outputSize = int(sys.argv[5])
+outputSize = int(sys.argv[3])
 assert outputSize > 0, "Output size must be a positive integer"
 
 T = NonAdequateTeacher_MM_Float(NNTeacher_quad(outputLowBound, outputUpperBound, outputSize), cex_length=20)
