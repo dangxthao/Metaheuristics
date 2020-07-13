@@ -1,7 +1,7 @@
 function [out] = NN_matlab_MQ(in2, in3)
 %% simulate delays
 
-load('nets_for_hadi.mat')
+load('quad_NN/nets_for_hadi.mat')
 
 in1 = 0.5 * ones(1, length(in2));
 
