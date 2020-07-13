@@ -86,5 +86,5 @@ L.run()
 
 print("Success!")
 
-fileName = 'H_input_' + str(inputLowBound) + '_' + str(inputUpperBound) + '_output_' + str(outputLowBound) + '_' + str(outputUpperBound) + '_outputSize_' + str(outputSize)
+fileName = 'H_quad_output_' + str(outputLowBound) + '_' + str(outputUpperBound) + '_outputSize_' + str(outputSize)
 L.hypothesis[-1].open_graph(fileName, typ = 'pdf')
