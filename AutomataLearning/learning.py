@@ -194,7 +194,7 @@ class NonAdequateTeacher_MM_Float:
         repetitions = 2*int(math.ceil(1/e*(math.log(1/d)+(i+1)*math.log(2))))
         if print_on: print('Test Words..')
         testing_words = random_words_float(test_on_alphabet, self.cex_length, repetitions)
-        self.moore_machine.compute_array(testing_words)
+        #self.moore_machine.compute_array(testing_words)
         for j in range(repetitions):
             # choose a random word
 #           word = random_word(test_on_alphabet)
@@ -1708,7 +1708,7 @@ class SymbPACLearner:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print('Print is set ON\n')
         else: print('Print is set OFF')
 
@@ -1752,9 +1752,9 @@ class SymbPACLearner:
             # Test the new hypothesis
                if self.print_on: print("\nTest new hypothesis")
                self.num_tests += 1
-               t0_test = time.clock()
+               t0_test = time.process_time()
                w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = self.print_on)
-               self.testing_time += time.clock() - t0_test
+               self.testing_time += time.process_time() - t0_test
                self.num_words_tested += words_tested
                if w == True:
                    if self.print_on:
@@ -1769,7 +1769,7 @@ class SymbPACLearner:
                        self.cex.pop()
                        continue
 
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
 # fill in the table by asking membership queries
     def askMQs(self):
@@ -1798,7 +1798,7 @@ class SymbPACLearner:
         ws = w.split()
         wws = ww.split()
 
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
 
         flag = H.recognizes(w)  # set up the flag for i = m+1
         if self.print_on: print( '\tflag is set to ',flag)
@@ -1819,7 +1819,7 @@ class SymbPACLearner:
                 if self.print_on: print('add suffix: ', v_i)
                 if self.table.add2suffixes(v_i):
                     if self.print_on:  print('distinguish string added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # Treatment ended succefully
 
             # word = m(access(u_i)).a_i.v_i
@@ -1830,17 +1830,17 @@ class SymbPACLearner:
                 if self.print_on: print('add evidence', a_i,'to ', wws[i])
                 if self.table.add2mu(wws[i],a_i):
                     if self.print_on: print('evidence added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # treatment ended succesfully
                 else:
                     # need to add suffix as well
                     self.table.add2suffixes(v_i)
                     if self.print_on:  print('also suffix', v_i, 'is added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return False
 
         print("treatment ended without results")
-        self.treat_time += time.clock()-t0_treat
+        self.treat_time += time.process_time()-t0_treat
         return False
 
 
@@ -1996,7 +1996,7 @@ class SymbPACLearner_Float:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print('Print is set ON\n')
         else: print('Print is set OFF')
 
@@ -2040,9 +2040,9 @@ class SymbPACLearner_Float:
             # Test the new hypothesis
                if self.print_on: print("\nTest new hypothesis")
                self.num_tests += 1
-               t0_test = time.clock()
+               t0_test = time.process_time()
                w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = False)
-               self.testing_time += time.clock() - t0_test
+               self.testing_time += time.process_time() - t0_test
                self.num_words_tested += words_tested
                if w == True:
                    if self.print_on:
@@ -2058,7 +2058,7 @@ class SymbPACLearner_Float:
                        self.cex.pop()
                        continue
 
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
 # fill in the table by asking membership queries
     def askMQs(self):
@@ -2087,7 +2087,7 @@ class SymbPACLearner_Float:
         ws = w.split()
         wws = ww.split()
 
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
 
         flag = H.recognizes(w)  # set up the flag for i = m+1
         if self.print_on: print( '\tflag is set to ',flag)
@@ -2108,7 +2108,7 @@ class SymbPACLearner_Float:
                 if self.print_on: print('add suffix: ', v_i)
                 if self.table.add2suffixes(v_i):
                     if self.print_on:  print('distinguish string added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # Treatment ended succefully
 
             # word = m(access(u_i)).a_i.v_i
@@ -2119,17 +2119,17 @@ class SymbPACLearner_Float:
                 if self.print_on: print('add evidence', a_i,'to ', wws[i])
                 if self.table.add2mu(wws[i],a_i):
                     if self.print_on: print('evidence added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # treatment ended succesfully
                 else:
                     # need to add suffix as well
                     self.table.add2suffixes(v_i)
                     if self.print_on:  print('also suffix', v_i, 'is added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return False
 
         print("treatment ended without results")
-        self.treat_time += time.clock()-t0_treat
+        self.treat_time += time.process_time()-t0_treat
         return False
 
 
@@ -2176,7 +2176,7 @@ class SymbPACLearner_Float:
 
         p = self.split(evidence[ind-1], evidence[ind])
 
-        tol = 0.000001
+        tol = 0.0001
 
         # Dicotomic search
         A = float(evidence[ind-1])
@@ -2332,7 +2332,7 @@ class SymbPACLearner_MM_Float:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print('Print is set ON\n')
         else: print('Print is set OFF')
 
@@ -2364,7 +2364,7 @@ class SymbPACLearner_MM_Float:
             if self.print_on:
                 print("Make new hypothesis H"+str(i))
                 print(self.hypothesis[-1])
-            if self.make_file_on: self.hypothesis[-1].open_graph(self.file_name_prefix + 'H'+str(i), typ = 'gv')
+            if self.make_file_on: self.hypothesis[-1].open_graph(self.file_name_prefix + 'H'+str(i), typ = 'pdf')
 
             # if the last counterexample is still a counterexample
             if len(self.cex) > 0 and self.hypothesis[-1].compute(self.cex[-1]) != self.teacher.membership_query(self.cex[-1]):
@@ -2377,9 +2377,9 @@ class SymbPACLearner_MM_Float:
             # Test the new hypothesis
                if self.print_on: print("\nTest new hypothesis")
                self.num_tests += 1
-               t0_test = time.clock()
+               t0_test = time.process_time()
                w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = False)
-               self.testing_time += time.clock() - t0_test
+               self.testing_time += time.process_time() - t0_test
                self.num_words_tested += words_tested
                if w == True:
                    if self.print_on:
@@ -2394,7 +2394,7 @@ class SymbPACLearner_MM_Float:
                        self.cex.pop()
                        continue
 
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
 # fill in the table by asking membership queries
     def askMQs(self):
@@ -2423,7 +2423,7 @@ class SymbPACLearner_MM_Float:
         ws = w.split()
         wws = ww.split()
 
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
 
         flag = H.compute(w)  # set up the flag for i = m+1
         if self.print_on: print( '\tflag is set to ',flag)
@@ -2444,7 +2444,7 @@ class SymbPACLearner_MM_Float:
                 if self.print_on: print('add suffix: ', v_i)
                 if self.table.add2suffixes(v_i):
                     if self.print_on:  print('distinguish string added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # Treatment ended succefully
 
             # word = m(access(u_i)).a_i.v_i
@@ -2455,17 +2455,17 @@ class SymbPACLearner_MM_Float:
                 if self.print_on: print('add evidence', a_i,'to ', wws[i])
                 if self.table.add2mu(wws[i],a_i):
                     if self.print_on: print('evidence added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return True # treatment ended succesfully
                 else:
                     # need to add suffix as well
                     self.table.add2suffixes(v_i)
                     if self.print_on:  print('also suffix', v_i, 'is added')
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return False
 
         print("treatment ended without results")
-        self.treat_time += time.clock()-t0_treat
+        self.treat_time += time.process_time()-t0_treat
         return False
 
 
@@ -2677,7 +2677,7 @@ class AngluinsPACLearnerClassic:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print('Print is set ON')
         else: print('Print is set OFF')
         # start algorithm
@@ -2711,9 +2711,9 @@ class AngluinsPACLearnerClassic:
 
             if self.print_on: print("\nTest new hypothesis")
             self.num_tests += 1
-            t0_test = time.clock()
+            t0_test = time.process_time()
             w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = self.print_on)
-            self.testing_time += time.clock() - t0_test
+            self.testing_time += time.process_time() - t0_test
             self.num_words_tested += words_tested
 
             if w == True:
@@ -2727,11 +2727,11 @@ class AngluinsPACLearnerClassic:
                 self.cex.append(w)
 
                 self.treat_counterexample(w)
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
     def treat_counterexample(self, word):
         self.num_treatments += 1
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
         assert valid(word, self.table.alphabet), "counterexample is not a valid word"
         word = word.split(' ')
         for i in range(len(word)+1):
@@ -2739,7 +2739,7 @@ class AngluinsPACLearnerClassic:
             if prefix not in self.table.S:
                 self.table.S.append(prefix)
         self.table.S.sort(key = cmp_to_key(cmpr))
-        self.treat_time += time.clock()-t0_treat
+        self.treat_time += time.process_time()-t0_treat
 
     def makeClose(self, new_row):
         """Close table"""
@@ -2829,7 +2829,7 @@ class AngluinsPACLearnerMaler:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print( 'Print is set ON')
         else: print( 'Print is set OFF')
         # start algorithm
@@ -2863,9 +2863,9 @@ class AngluinsPACLearnerMaler:
 
             if self.print_on: print( "\nTest new hypothesis")
             self.num_tests += 1
-            t0_test = time.clock()
+            t0_test = time.process_time()
             w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = self.print_on)
-            self.testing_time += time.clock() - t0_test
+            self.testing_time += time.process_time() - t0_test
             self.num_words_tested += words_tested
 
             if w == True:
@@ -2880,11 +2880,11 @@ class AngluinsPACLearnerMaler:
 
                 self.treat_counterexample(w)
 
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
     def treat_counterexample(self, word):
         self.num_treatments += 1
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
         assert valid(word, self.table.alphabet), "counterexample is not a valid word"
         word = word.split(' ')
         for i in reversed(range(len(word))):
@@ -2892,7 +2892,7 @@ class AngluinsPACLearnerMaler:
             if suffix not in self.table.E:
                 self.table.E.append(suffix)
         self.table.E.sort(key = cmp_to_key(cmpr))
-        self.treat_time += time.clock() - t0_treat
+        self.treat_time += time.process_time() - t0_treat
 
 
     def makeClose(self, new_row):
@@ -2983,7 +2983,7 @@ class AngluinsPACLearnerReduced:
 
 
     def run(self):
-        t0_run = time.clock()
+        t0_run = time.process_time()
         if self.print_on: print( 'Print is set ON')
         else: print( 'Print is set OFF')
         # start algorithm
@@ -3028,9 +3028,9 @@ class AngluinsPACLearnerReduced:
             # Test current hypothesis
             if self.print_on: print( "\nTest new hypothesis")
             self.num_tests += 1
-            t0_test = time.clock()
+            t0_test = time.process_time()
             w, words_tested = self.teacher.test(self.hypothesis[-1], i, print_on = self.print_on)
-            self.testing_time += time.clock() - t0_test
+            self.testing_time += time.process_time() - t0_test
             self.num_words_tested += words_tested
 
             if w == True:  # if no counterexample has been found then terminate
@@ -3046,12 +3046,12 @@ class AngluinsPACLearnerReduced:
 ##                print "treat cex now"
                 self.treat_counterexample()
 
-        self.total_run_time += time.clock() - t0_run
+        self.total_run_time += time.process_time() - t0_run
 
 # treat counterexample
     def treat_counterexample(self):
         self.num_treatments += 1
-        t0_treat = time.clock()
+        t0_treat = time.process_time()
         if self.print_on: print( "Counterexample Treatment")
 
         # last hypothesis
@@ -3099,13 +3099,13 @@ class AngluinsPACLearnerReduced:
                     if self.print_on: print( 'add suffix: ', v_i)
                     self.table.E.append(v_i)
                     self.table.E.sort(key = cmp_to_key(cmpr))
-                    self.treat_time += time.clock()-t0_treat
+                    self.treat_time += time.process_time()-t0_treat
                     return
             if self.print_on: print
 
         print( 'Treatment ended without results')
         self.learned = True
-        self.treat_time += time.clock()-t0_treat
+        self.treat_time += time.process_time()-t0_treat
 ##        return False
 
     def makeClose(self, new_row):
@@ -3165,6 +3165,7 @@ class Float_Range:
         s = []
         for i in range(0, sample_size):
             s.append(random.uniform(self.lowBound, self.upperBound))
+        print("[", self.lowBound, ", ", self.upperBound, "]:", sorted(s))
         return s
 
 
